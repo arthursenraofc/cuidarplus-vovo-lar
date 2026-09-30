@@ -1,0 +1,6 @@
+{
+  "name": "CuidarPlus",
+  "description": "Sistema de gestão e prontuário de idosos para ILPI com cadastro, fichas médicas, busca e captura de fotos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

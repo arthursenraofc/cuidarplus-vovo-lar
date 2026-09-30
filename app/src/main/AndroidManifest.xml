@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Permissão nativa para captura de foto via Câmera -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <!-- Permissões nativas para alarmes, boot e notificações (Sprint 2 Avançado) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.LarIdosos">
+
+        <!-- FileProvider para prover URIs seguras da câmera sem FileUriExposedException -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- 1. Tela Principal / Dashboard (Menu e Seleção de Perfil) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- 2. Lista e Fichas dos Idosos com busca -->
+        <activity
+            android:name=".ListaIdososActivity"
+            android:exported="false"
+            android:label="@string/titulo_lista_idosos"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- 3. Cadastro e Edição de Idoso com Câmera e Validações -->
+        <activity
+            android:name=".CadastroIdosoActivity"
+            android:exported="false"
+            android:label="@string/titulo_cadastro_idoso"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- 4. Ficha Detalhada / Prontuário Clínico do Idoso -->
+        <activity
+            android:name=".DetalhesIdosoActivity"
+            android:exported="false"
+            android:label="@string/titulo_detalhes_idoso" />
+
+        <!-- 5. Lista de Medicamentos do Residente (Sprint 2) -->
+        <activity
+            android:name=".ListaMedicamentosActivity"
+            android:exported="false"
+            android:label="@string/titulo_lista_medicamentos"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- 6. Cadastro de Medicamento e Alarme (Sprint 2) -->
+        <activity
+            android:name=".CadastroMedicamentoActivity"
+            android:exported="false"
+            android:label="@string/titulo_cadastro_medicamento"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- BroadcastReceiver para Alarmes e Ações Rápidas de Notificação (Sprint 2) -->
+        <receiver
+            android:name=".receiver.NotificationReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.cuidarplus.ACTION_MARCAR_ADMINISTRADO" />
+            </intent-filter>
+        </receiver>
+
+        <!-- BroadcastReceiver para Restauração Automática de Alarmes no Boot (Sprint 2) -->
+        <receiver
+            android:name=".receiver.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

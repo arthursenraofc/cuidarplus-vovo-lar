@@ -1,0 +1,14 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Círculo de fundo branco suave com contorno lilás -->
+    <path
+        android:fillColor="#FEF7FF"
+        android:pathData="M54,20c-18.78,0 -34,15.22 -34,34s15.22,34 34,34 34,-15.22 34,-34S72.78,20 54,20z"/>
+    <!-- Cruz da Saúde Roxa Vibrante -->
+    <path
+        android:fillColor="#6750A4"
+        android:pathData="M60,38h-12v10H38v12h10v10h12V60h10V48H60V38z"/>
+</vector>

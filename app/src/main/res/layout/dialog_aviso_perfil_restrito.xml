@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    app:cardBackgroundColor="@color/surface"
+    app:cardCornerRadius="28dp"
+    app:cardElevation="10dp"
+    app:strokeColor="@color/surface_variant"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Ícone em destaque com fundo circular suave -->
+        <FrameLayout
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/bg_circle_admin_badge">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/perfil_admin_titulo"
+                android:src="@drawable/ic_admin"
+                app:tint="@color/primary" />
+        </FrameLayout>
+
+        <!-- Badge de Perfil Atual -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_pill_cuidador"
+            android:paddingStart="12dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="4dp"
+            android:text="@string/aviso_modo_atual_cuidador"
+            android:textColor="@color/cuidador_color"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <!-- Título em Alto Contraste -->
+        <TextView
+            android:id="@+id/tv_dialog_titulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text="@string/aviso_acesso_restrito_titulo"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Mensagem explicativa clara e legível -->
+        <TextView
+            android:id="@+id/tv_dialog_mensagem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.25"
+            android:text="@string/aviso_acesso_restrito_msg"
+            android:textColor="@color/text_secondary"
+            android:textSize="15sp" />
+
+        <!-- Botão Principal: Alternar para ADM -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_alternar_adm"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/btn_alternar_para_adm"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/primary"
+            app:cornerRadius="16dp"
+            app:icon="@drawable/ic_switch_profile"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:iconTint="@color/white" />
+
+        <!-- Botão Secundário: Cancelar / Permanecer -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancelar_dialog"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="6dp"
+            android:text="@string/btn_permanecer_cuidador"
+            android:textAllCaps="false"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

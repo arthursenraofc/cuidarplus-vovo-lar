@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Top AppBar com Visual Moderno Material 3 -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        app:elevation="4dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_cadastro"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/white"
+            app:title="@string/titulo_cadastro_idoso"
+            app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Card de Captura e Visualização de Foto -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/iv_preview_foto"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:background="@color/primary_light"
+                        android:contentDescription="@string/desc_foto_idoso"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_person_placeholder"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                        app:strokeColor="@color/primary"
+                        app:strokeWidth="2.5dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/foto_perfil_residente"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <!-- Botões de Câmera e Galeria -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_tirar_foto_camera"
+                            android:layout_width="wrap_content"
+                            android:layout_height="44dp"
+                            android:backgroundTint="@color/primary"
+                            android:text="@string/btn_tirar_foto"
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            app:cornerRadius="22dp"
+                            app:icon="@drawable/ic_camera"
+                            app:iconTint="@color/white" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_escolher_foto_galeria"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="44dp"
+                            android:layout_marginStart="10dp"
+                            android:text="@string/btn_galeria_foto"
+                            android:textColor="@color/primary"
+                            android:textSize="13sp"
+                            app:cornerRadius="22dp"
+                            app:icon="@drawable/ic_gallery"
+                            app:iconTint="@color/primary"
+                            app:strokeColor="@color/primary" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card Formulário com Campos Clínicos e Cadastrais -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:text="@string/secao_info_pessoais_medicas"
+                        android:textColor="@color/primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <!-- Campo Nome Completo -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_nome"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:hint="@string/hint_nome"
+                        app:boxStrokeColor="@color/primary"
+                        app:hintTextColor="@color/primary">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_nome"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:importantForAutofill="no"
+                            android:inputType="textPersonName|textCapWords"
+                            android:textColor="@color/text_primary" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Campo Data de Nascimento -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_data_nascimento"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:hint="@string/hint_data_nascimento"
+                        app:boxStrokeColor="@color/primary"
+                        app:hintTextColor="@color/primary">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_data_nascimento"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:importantForAutofill="no"
+                            android:inputType="date"
+                            android:maxLength="10"
+                            android:textColor="@color/text_primary" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Campo Tipo Sanguíneo (Dropdown / Spinner Material) -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="@string/hint_tipo_sanguineo"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/sp_tipo_sanguineo"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/bg_search_box"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp" />
+
+                    <!-- Campo Alergias -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_alergias"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:hint="@string/hint_alergias"
+                        app:boxStrokeColor="@color/primary"
+                        app:hintTextColor="@color/primary">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_alergias"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:importantForAutofill="no"
+                            android:inputType="textMultiLine|textCapSentences"
+                            android:minLines="2"
+                            android:textColor="@color/text_primary" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Campo Restrições Médicas e Cuidados Especiais -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_restricoes"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:hint="@string/hint_restricoes"
+                        app:boxStrokeColor="@color/primary"
+                        app:hintTextColor="@color/primary">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_restricoes"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:importantForAutofill="no"
+                            android:inputType="textMultiLine|textCapSentences"
+                            android:minLines="2"
+                            android:textColor="@color/text_primary" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Campo Contato de Emergência -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_contato_emergencia"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_contato_emergencia"
+                        app:boxStrokeColor="@color/primary"
+                        app:hintTextColor="@color/primary">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_contato_emergencia"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:importantForAutofill="no"
+                            android:inputType="textPersonName"
+                            android:textColor="@color/text_primary" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Botões de Ação: Salvar e Cancelar -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_salvar_cadastro"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:backgroundTint="@color/primary"
+                android:text="@string/btn_salvar"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_check"
+                app:iconTint="@color/white" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancelar_cadastro"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/btn_cancelar"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

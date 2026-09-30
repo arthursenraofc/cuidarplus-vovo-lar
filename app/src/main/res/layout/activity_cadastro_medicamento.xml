@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Top AppBar Material 3 -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        app:elevation="4dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_close"
+            app:popupTheme="@style/ThemeOverlay.Material3.Light"
+            app:title="@string/titulo_cadastro_medicamento"
+            app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Conteúdo em Scroll com Formulário Completo -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Card de Cabeçalho / Informativo -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardBackgroundColor="@color/primary_light"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/primary_container"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="14dp"
+                        android:contentDescription="@string/desc_medicamento"
+                        android:src="@drawable/ic_medication"
+                        app:tint="@color/primary" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/btn_menu_medicamentos"
+                            android:textColor="@color/primary_dark"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/btn_menu_medicamentos_desc"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 1. Campo Seleção do Idoso (Spinner / Exposed Dropdown) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="@string/label_selecionar_idoso"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_idoso"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="@color/primary">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actv_selecionar_idoso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_selecionar_idoso"
+                    android:inputType="none"
+                    android:padding="16dp"
+                    android:textColor="@color/text_primary" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- 2. Nome do Medicamento -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_nome_medicamento"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="@color/primary"
+                app:startIconDrawable="@drawable/ic_medication"
+                app:startIconTint="@color/primary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_nome_medicamento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_nome_medicamento"
+                    android:inputType="textCapWords"
+                    android:maxLines="1"
+                    android:padding="16dp"
+                    android:textColor="@color/text_primary" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- 3. Tipo / Forma Farmacêutica (Comprimido, Gotas, Injeção, etc.) -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_tipo"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="@color/primary">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actv_tipo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_tipo_medicamento"
+                    android:inputType="none"
+                    android:padding="16dp"
+                    android:textColor="@color/text_primary" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- 4. Dosagem -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_dosagem"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="@color/primary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_dosagem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_dosagem"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:padding="16dp"
+                    android:textColor="@color/text_primary" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- 5. Horário Inicial (TimePicker nativo) -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_horario_inicial"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="@color/primary"
+                app:endIconDrawable="@drawable/ic_schedule"
+                app:endIconMode="custom"
+                app:endIconTint="@color/primary"
+                app:startIconDrawable="@drawable/ic_schedule"
+                app:startIconTint="@color/primary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_horario_inicial"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:cursorVisible="false"
+                    android:focusable="true"
+                    android:hint="@string/hint_horario_inicial"
+                    android:inputType="none"
+                    android:padding="16dp"
+                    android:textColor="@color/text_primary" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- 6. Frequência / Intervalo de Horas (Dropdown) -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_frequencia"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="@color/primary">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actv_frequencia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_frequencia_horas"
+                    android:inputType="none"
+                    android:padding="16dp"
+                    android:textColor="@color/text_primary" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- 7. Observações Médicas / Cuidados Especiais -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_observacao"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="28dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="@color/primary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_observacao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:hint="@string/hint_observacao_medica"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:lines="3"
+                    android:padding="16dp"
+                    android:textColor="@color/text_primary" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Botões de Ação -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_salvar_medicamento"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:backgroundTint="@color/primary"
+                android:text="@string/btn_salvar_medicamento"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_check"
+                app:iconGravity="textStart"
+                app:iconTint="@color/white" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancelar"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/btn_cancelar"
+                android:textColor="@color/text_secondary"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

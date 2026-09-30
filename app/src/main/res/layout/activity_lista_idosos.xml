@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Top AppBar com Visual Moderno Material 3 -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        app:elevation="4dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_lista"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/white"
+            app:title="@string/titulo_lista_idosos"
+            app:titleTextColor="@color/white" />
+
+        <!-- Faixa informativa com Perfil Ativo e Total de Residentes -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="12dp">
+
+            <TextView
+                android:id="@+id/tv_badge_perfil_atual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_search_box"
+                android:backgroundTint="@color/primary_container"
+                android:paddingStart="12dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="4dp"
+                android:text="@string/badge_perfil_admin"
+                android:textColor="@color/on_primary_container"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_total_residentes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="3 residentes"
+                android:textColor="@color/primary_light"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!-- Barra de Pesquisa em Tempo Real Dinâmica -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="14dp"
+            app:cardBackgroundColor="@color/surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:contentDescription="@string/desc_buscar"
+                    android:src="@drawable/ic_search"
+                    app:tint="@color/primary" />
+
+                <EditText
+                    android:id="@+id/et_campo_busca"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="@string/buscar_idoso_hint"
+                    android:imeOptions="actionSearch"
+                    android:importantForAutofill="no"
+                    android:inputType="textPersonName"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_muted"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/iv_limpar_busca"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:contentDescription="@string/desc_limpar"
+                    android:focusable="true"
+                    android:src="@drawable/ic_close"
+                    android:visibility="gone"
+                    app:tint="@color/text_muted" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Lista Recycler com Rolagem e Espaçamento Seguro -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_lista_idosos"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingStart="12dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="88dp"
+                tools:listitem="@layout/item_idoso" />
+
+            <!-- Estado Vazio / Nenhum Resultado Encontrado -->
+            <LinearLayout
+                android:id="@+id/layout_estado_vazio"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="32dp"
+                android:visibility="gone">
+
+                <FrameLayout
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:background="@drawable/bg_search_box"
+                    android:backgroundTint="@color/surface_variant">
+
+                    <ImageView
+                        android:id="@+id/iv_vazio_icone"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/desc_vazio"
+                        android:src="@drawable/ic_medical_folder"
+                        app:tint="@color/primary" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tv_vazio_titulo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/sem_idosos_titulo"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_vazio_subtitulo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="@string/sem_idosos_subtitulo"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- Botão Flutuante (FAB) para Cadastrar Novo Idoso -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_novo_idoso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"
+        android:backgroundTint="@color/primary"
+        android:contentDescription="@string/cadastrar_idoso"
+        android:text="@string/cadastrar_idoso"
+        android:textColor="@color/white"
+        app:elevation="6dp"
+        app:icon="@drawable/ic_person_add"
+        app:iconTint="@color/white" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

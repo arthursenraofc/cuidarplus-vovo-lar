@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Barra Superior / Toolbar com Navegação de Retorno -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_detalhes"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/white"
+            app:title="@string/titulo_detalhes_idoso"
+            app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Card Principal: Foto em Tamanho Maior e Dados Pessoais -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <!-- Foto em tamanho maior com corte circular -->
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/iv_detalhe_foto"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:background="@color/primary_light"
+                        android:contentDescription="@string/desc_foto_idoso"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_person_placeholder"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                        app:strokeColor="@color/primary"
+                        app:strokeWidth="3dp" />
+
+                    <!-- Nome Completo em Destaque -->
+                    <TextView
+                        android:id="@+id/tv_detalhe_nome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:gravity="center"
+                        tools:text="Nome Completo do Idoso"
+                        android:textColor="@color/text_primary"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <!-- Idade e Data de Nascimento -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_detalhe_idade"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="79 anos"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:text="@string/separador_ponto"
+                            android:textColor="@color/text_muted" />
+
+                        <TextView
+                            android:id="@+id/tv_detalhe_nascimento"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="Nasc: 15/04/1945"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
+                    <!-- Tipo Sanguíneo Badge Grande -->
+                    <TextView
+                        android:id="@+id/tv_detalhe_tipo_sanguineo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_badge_blood"
+                        android:paddingStart="14dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="14dp"
+                        android:paddingBottom="5dp"
+                        tools:text="Tipo Sanguíneo: O+"
+                        android:textColor="@color/on_primary_container"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card Seção Médica: Alergias e Restrições -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        app:drawableStartCompat="@drawable/ic_medical_folder"
+                        app:drawableTint="@color/primary"
+                        android:drawablePadding="8dp"
+                        android:text="@string/secao_medica"
+                        android:textColor="@color/primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <!-- Alergias -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/rotulo_alergias"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_detalhe_alergias"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/bg_badge_blood"
+                        android:backgroundTint="@color/danger_light"
+                        android:padding="10dp"
+                        tools:text="Nenhuma alergia relatada"
+                        android:textColor="@color/danger_text"
+                        android:textSize="14sp" />
+
+                    <!-- Restrições Médicas e Diagnósticos -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/rotulo_restricoes"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_detalhe_restricoes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/bg_badge_blood"
+                        android:backgroundTint="@color/surface_variant"
+                        android:padding="10dp"
+                        tools:text="Nenhuma restrição registrada"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card de Contato de Emergência com Ação Rápida de Ligação -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        app:drawableStartCompat="@drawable/ic_phone"
+                        app:drawableTint="@color/success_green"
+                        android:drawablePadding="8dp"
+                        android:text="@string/secao_emergencia"
+                        android:textColor="@color/success_green"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_detalhe_contato_emergencia"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        tools:text="Filho Carlos - (51) 99999-9999"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_ligar_contato"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="14dp"
+                        android:backgroundTint="@color/success_green"
+                        android:text="@string/btn_ligar_emergencia"
+                        android:textColor="@color/white"
+                        app:cornerRadius="10dp"
+                        app:icon="@drawable/ic_phone"
+                        app:iconTint="@color/white" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card de Ação Rápida para Medicamentos (Sprint 2) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_ver_medicamentos"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="@color/primary_light"
+                android:text="@string/titulo_lista_medicamentos"
+                android:textColor="@color/primary_dark"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_medication"
+                app:iconGravity="textStart"
+                app:iconTint="@color/primary" />
+
+            <!-- Botões de Ação Exclusivos do Administrador: Editar e Excluir -->
+            <LinearLayout
+                android:id="@+id/layout_acoes_admin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_editar_ficha"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@color/primary"
+                    android:text="@string/btn_editar"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_edit"
+                    app:iconTint="@color/white" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_excluir_ficha"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/btn_excluir"
+                    android:textColor="@color/danger_red"
+                    android:textSize="14sp"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_delete"
+                    app:iconTint="@color/danger_red"
+                    app:strokeColor="@color/danger_red" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

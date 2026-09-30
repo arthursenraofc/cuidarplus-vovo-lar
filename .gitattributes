@@ -1,0 +1,11 @@
+# GitHub Linguist - Oculta arquivos de marcação e relatórios para priorizar Java
+*.html linguist-detectable=false
+*.html linguist-documentation=true
+*.xml linguist-detectable=false
+*.xml linguist-vendored=true
+*.json linguist-detectable=false
+*.md linguist-detectable=false
+
+# Garante que todo o código Java seja 100% detectado como a linguagem principal
+*.java linguist-detectable=true
+*.kt linguist-detectable=true

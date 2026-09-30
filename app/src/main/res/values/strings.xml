@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CuidarPlus</string>
+    <string name="app_subname">Sistema de Gestão &amp; Fichas para ILPI</string>
+    
+    <!-- Dashboard / Menu Principal -->
+    <string name="dashboard_boas_vindas">Painel Principal</string>
+    <string name="dashboard_subtitulo">Selecione uma das opções abaixo para gerenciar os residentes.</string>
+    <string name="btn_menu_cadastrar">Cadastrar Novo Idoso</string>
+    <string name="btn_menu_cadastrar_desc">Registrar nova ficha com dados médicos e foto</string>
+    <string name="btn_menu_fichas">Ver Fichas dos Idosos</string>
+    <string name="btn_menu_fichas_desc">Consultar prontuários, alergias e contatos de emergência</string>
+    <string name="btn_menu_perfil">Seleção de Perfil</string>
+    
+    <!-- Perfil / Login -->
+    <string name="titulo_selecionar_perfil">Perfil Ativo no Sistema</string>
+    <string name="perfil_admin_titulo">Administrador (ADM)</string>
+    <string name="perfil_cuidador_titulo">Cuidador / Enfermagem</string>
+    <string name="msg_perfil_admin_ativado">Modo Administrador (ADM) ativado com sucesso.</string>
+    <string name="msg_perfil_cuidador_ativado">Modo Cuidador ativado com sucesso.</string>
+
+    <string name="badge_perfil_admin">Perfil: Administrador (ADM)</string>
+    <string name="badge_perfil_admin_lista">Perfil: Administrador (Acesso Total)</string>
+    <string name="badge_perfil_cuidador">Perfil: Cuidador (Consulta)</string>
+    <string name="badge_perfil_cuidador_lista">Perfil: Cuidador (Modo Consulta)</string>
+    <string name="ativo_admin_desc">Ativo: Administrador (Controle Total)</string>
+    <string name="ativo_admin_clique">Ativo: Administrador (Toque para alternar)</string>
+    <string name="ativo_cuidador_desc">Ativo: Cuidador / Enfermagem (Modo Leitura)</string>
+    <string name="contador_residentes_singular" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d Residente</string>
+    <string name="contador_residentes_plural" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d Residentes</string>
+    <string name="rodape_sistema">CuidarPlus • Sistema Offline Local SQLite (Sprint 1)</string>
+
+    <!-- Lista de Idosos -->
+    <string name="titulo_lista_idosos">Fichas dos Idosos</string>
+    <string name="buscar_idoso_hint">Buscar por nome ou restrição médica&#8230;</string>
+    <string name="cadastrar_idoso">Novo Cadastro</string>
+    <string name="sem_idosos_titulo">Nenhum idoso cadastrado ainda</string>
+    <string name="sem_idosos_subtitulo">Toque em [Cadastrar Novo Idoso] para registrar o primeiro residente.</string>
+    <string name="total_residentes_singular" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d residente</string>
+    <string name="total_residentes_plural" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d residentes</string>
+    <string name="busca_sem_resultado">Nenhum resultado para \"%1$s\"</string>
+    <string name="busca_sem_resultado_sub">Tente buscar por outro termo ou nome.</string>
+    <string name="btn_ver_ficha_completa">Ver Ficha Completa</string>
+    <string name="desc_buscar">Buscar</string>
+    <string name="desc_limpar">Limpar</string>
+    <string name="desc_vazio">Vazio</string>
+    <string name="desc_ir">Ir</string>
+    <string name="desc_alerta">Alerta</string>
+
+    <!-- Formulário Cadastro / Edição -->
+    <string name="titulo_cadastro_idoso">Cadastrar Novo Idoso</string>
+    <string name="titulo_editar_idoso">Editar Ficha do Idoso</string>
+    <string name="hint_nome">Nome Completo *</string>
+    <string name="hint_data_nascimento">Data de Nascimento (DD/MM/AAAA) *</string>
+    <string name="hint_tipo_sanguineo">Tipo Sanguíneo *</string>
+    <string name="hint_alergias">Alergias (Ex: Penicilina, Dipirona, Glúten&#8230;)</string>
+    <string name="hint_restricoes">Restrições Médicas / Diagnósticos (Ex: Diabético, Hipertenso&#8230;)</string>
+    <string name="hint_contato_emergencia" xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">Contato de Emergência (Ex: Filho Carlos - (51) 99999-9999) *</string>
+    <string name="btn_tirar_foto">Câmera</string>
+    <string name="btn_galeria_foto">Galeria</string>
+    <string name="btn_salvar">Salvar Cadastro</string>
+    <string name="btn_atualizar">Atualizar Ficha</string>
+    <string name="btn_cancelar">Cancelar</string>
+    <string name="foto_perfil_residente">Foto de Perfil do Residente</string>
+    <string name="secao_info_pessoais_medicas">Informações Pessoais &amp; Médicas</string>
+    <string name="desc_foto_idoso">Foto do Idoso</string>
+
+    <!-- Detalhes / Ficha -->
+    <string name="titulo_detalhes_idoso">Prontuário &amp; Ficha do Residente</string>
+    <string name="idade_calculada" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d anos</string>
+    <string name="idade_nao_informada">Idade não informada</string>
+    <string name="formato_nascimento">Nasc: %1$s</string>
+    <string name="formato_tipo_sanguineo">Tipo Sanguíneo: %1$s</string>
+    <string name="nenhuma_alergia">Nenhuma alergia conhecida ou relatada.</string>
+    <string name="nenhuma_restricao" xmlns:tools="http://schemas.android.com/tools" tools:ignore="Typos">Sem restrições médicas registradas no momento.</string>
+    <string name="nenhum_contato">Nenhum contato de emergência cadastrado.</string>
+    <string name="separador_ponto">•</string>
+    <string name="secao_medica">Atenção Médica e Alergias</string>
+    <string name="secao_emergencia">Contato de Emergência</string>
+    <string name="btn_ligar_emergencia">Ligar para Emergência</string>
+    <string name="btn_editar">Editar Ficha</string>
+    <string name="btn_excluir">Excluir Registro</string>
+    <string name="rotulo_alergias">Alergias Conhecidas:</string>
+    <string name="rotulo_restricoes">Restrições Médicas / Diagnósticos:</string>
+
+    <!-- Item Idoso -->
+    <string name="idade_e_nascimento" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d anos • Nasc: %2$s</string>
+    <string name="formato_emergencia">Emergência: %1$s</string>
+
+    <!-- Diálogo Restrito -->
+    <string name="aviso_modo_atual_cuidador">MODO ATUAL: CUIDADOR</string>
+    <string name="aviso_acesso_restrito_titulo">Acesso Restrito ao Administrador</string>
+    <string name="aviso_acesso_restrito_msg">Apenas o perfil Administrador pode cadastrar novos residentes. Deseja alternar para Administrador agora?</string>
+    <string name="btn_alternar_para_adm">Alternar para ADM</string>
+    <string name="btn_permanecer_cuidador">Permanecer como Cuidador</string>
+    
+    <!-- Mensagens e Diálogos -->
+    <string name="confirmar_exclusao_titulo">Excluir Residente?</string>
+    <string name="confirmar_exclusao_msg">Tem certeza de que deseja excluir permanentemente o cadastro de %1$s? Esta ação não pode ser desfeita.</string>
+    <string name="excluir">Excluir</string>
+    <string name="sucesso_salvo">Idoso cadastrado com sucesso!</string>
+    <string name="sucesso_atualizado">Ficha atualizada com sucesso!</string>
+    <string name="sucesso_excluido">Cadastro removido com sucesso!</string>
+
+    <!-- Sprint 2: Medicamentos e Alarmes -->
+    <string name="titulo_lista_medicamentos">Medicamentos Prescritos</string>
+    <string name="titulo_cadastro_medicamento">Novo Medicamento</string>
+    <string name="btn_menu_medicamentos">Controle de Medicamentos</string>
+    <string name="btn_menu_medicamentos_desc">Prescrições, alarmes e registro de doses administradas</string>
+    <string name="btn_novo_medicamento">Novo Medicamento</string>
+    <string name="label_selecionar_idoso">Residente *</string>
+    <string name="hint_selecionar_idoso">Selecione o Idoso</string>
+    <string name="hint_nome_medicamento">Nome do Medicamento *</string>
+    <string name="hint_dosagem">Dosagem (Ex: 50mg, 1 comprimido, 20 gotas) *</string>
+    <string name="hint_horario_inicial">Horário da 1ª Dose (HH:mm) *</string>
+    <string name="hint_frequencia_horas">Intervalo / Frequência *</string>
+    <string name="btn_salvar_medicamento">Salvar Medicamento</string>
+    <string name="btn_administrar_dose">Marcar como Administrado</string>
+    <string name="formato_intervalo_horas" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">A cada %1$d horas</string>
+    <string name="formato_primeiro_horario">1ª Dose: %1$s</string>
+    <string name="formato_dosagem_rotulo">Dose: %1$s</string>
+    <string name="status_ativo">Ativo</string>
+    <string name="status_inativo">Inativo</string>
+    <string name="sem_medicamentos_titulo">Nenhum medicamento cadastrado</string>
+    <string name="sem_medicamentos_desc">Toque em [Novo Medicamento] para registrar a primeira prescrição.</string>
+    <string name="sucesso_medicamento_salvo">Medicamento e alarme cadastrados com sucesso!</string>
+    <string name="sucesso_dose_administrada">Dose de %1$s registrada no histórico como administrada!</string>
+    <string name="confirmar_administracao_titulo">Confirmar Administração</string>
+    <string name="confirmar_administracao_msg">Confirma a administração de %1$s (%2$s) para o residente %3$s?</string>
+    <string name="btn_confirmar_administrado">Confirmar</string>
+    <string name="total_medicamentos_zero">0 medicamentos cadastrados</string>
+    <string name="total_medicamentos_singular" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d medicamento</string>
+    <string name="total_medicamentos_plural" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d medicamentos</string>
+    <string name="desc_medicamento">Ícone de Medicamento</string>
+    <string name="frequencia_4h">A cada 4 horas (6x ao dia)</string>
+    <string name="frequencia_6h">A cada 6 horas (4x ao dia)</string>
+    <string name="frequencia_8h">A cada 8 horas (3x ao dia)</string>
+    <string name="frequencia_12h">A cada 12 horas (2x ao dia)</string>
+    <string name="frequencia_24h">A cada 24 horas (1x ao dia)</string>
+
+    <!-- Sprint 2 Avançado: Tipos e Observações -->
+    <string name="hint_tipo_medicamento">Forma Farmacêutica / Tipo *</string>
+    <string name="tipo_comprimido">Comprimido</string>
+    <string name="tipo_gotas">Gotas</string>
+    <string name="tipo_injecao">Injeção</string>
+    <string name="tipo_pomada">Pomada / Tópico</string>
+    <string name="tipo_xarope">Xarope / Solução</string>
+    <string name="hint_observacao_medica">Observação Médica / Cuidados Especiais (Opcional)</string>
+
+    <!-- Badges de Status Avançados -->
+    <string name="badge_status_no_horario">No Horário</string>
+    <string name="badge_status_atrasado">Atrasado</string>
+    <string name="badge_status_concluido">Concluído</string>
+    <string name="btn_dar_baixa_agora">Dar Baixa Agora</string>
+
+    <!-- Permissões e Configurações de Sistema -->
+    <string name="dialog_permissao_alarme_titulo">Permissão de Alarme Exato</string>
+    <string name="dialog_permissao_alarme_msg">Para que os alarmes de medicação toquem rigorosamente no horário mesmo com a tela apagada ou modo economia, é necessário habilitar a permissão de Alarmes e Lembretes nas configurações do sistema.</string>
+    <string name="btn_abrir_configuracoes">Abrir Configurações</string>
+    <string name="dialog_permissao_notificacao_titulo">Permissão de Notificações</string>
+    <string name="dialog_permissao_notificacao_msg">Para alertar os cuidadores nos horários prescritos, o CuidarPlus precisa de autorização para exibir notificações de alta prioridade.</string>
+    <string name="btn_autorizar">Autorizar</string>
+
+    <!-- Ação Direta na Notificação -->
+    <string name="notif_action_administrado">Marcar como Administrado</string>
+    <string name="notif_dose_administrada_sucesso">Dose de %1$s administrada com sucesso!</string>
+    <string name="label_observacao_formato">Obs: %1$s</string>
+</resources>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/surface"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeColor="@color/divider"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Linha Superior: Ícone + Nome do Remédio + Badge Visual de Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="@string/desc_medicamento"
+                android:src="@drawable/ic_medication"
+                app:tint="@color/primary" />
+
+            <TextView
+                android:id="@+id/tv_nome_medicamento"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/text_primary"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                tools:text="Losartana Potássica" />
+
+            <!-- Badge Visual: Verde (No Horário), Vermelho (Atrasado) ou Cinza (Concluído) -->
+            <TextView
+                android:id="@+id/tv_badge_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_badge_no_horario"
+                android:paddingStart="10dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="4dp"
+                android:text="@string/badge_status_no_horario"
+                android:textColor="@color/success_green"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="No Horário" />
+        </LinearLayout>
+
+        <!-- Detalhes: Dosagem e Forma Farmacêutica -->
+        <TextView
+            android:id="@+id/tv_dosagem_tipo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="38dp"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            tools:text="Dose: 50mg • Comprimido" />
+
+        <!-- Linha de Agendamento: Horário Previsto e Frequência -->
+        <TextView
+            android:id="@+id/tv_horario_e_frequencia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="38dp"
+            android:layout_marginTop="8dp"
+            android:drawablePadding="6dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/primary_dark"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:drawableStartCompat="@drawable/ic_schedule"
+            app:drawableTint="@color/primary"
+            tools:text="Horário: 08:00 • A cada 12 horas" />
+
+        <!-- Observação Médica Opcional -->
+        <TextView
+            android:id="@+id/tv_observacao_medica"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="38dp"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/text_muted"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:visibility="gone"
+            tools:text="Obs: Tomar com água após o café"
+            tools:visibility="visible" />
+
+        <!-- Divisor sutil -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/surface_variant" />
+
+        <!-- Botão de Ação Rápida: Dar Baixa Agora -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_dar_baixa_agora"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/primary"
+            android:text="@string/btn_dar_baixa_agora"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:cornerRadius="10dp"
+            app:icon="@drawable/ic_check"
+            app:iconGravity="textStart"
+            app:iconTint="@color/white" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_item_idoso"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="4dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginBottom="6dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/surface"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:rippleColor="@color/primary_light"
+    app:strokeColor="@color/divider"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <!-- Linha Superior: Foto, Dados Pessoais e Badge Sanguíneo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Foto do Idoso com formato circular perfeito -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_foto_idoso"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@color/primary_light"
+                android:contentDescription="@string/desc_foto_idoso"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_person_placeholder"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                app:strokeColor="@color/primary"
+                app:strokeWidth="2dp" />
+
+            <!-- Dados Principais (Nome, Idade e Contato de Emergência) -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_nome_idoso"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        tools:text="Nome do Residente"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Badge do Tipo Sanguíneo -->
+                    <TextView
+                        android:id="@+id/tv_badge_tipo_sanguineo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:background="@drawable/bg_badge_blood"
+                        android:paddingStart="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="2dp"
+                        tools:text="O+"
+                        android:textColor="@color/on_primary_container"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Idade e Data de Nascimento -->
+                <TextView
+                    android:id="@+id/tv_idade_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    tools:text="79 anos (Nasc: 15/04/1945)"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
+                <!-- Contato Emergência Resumido -->
+                <TextView
+                    android:id="@+id/tv_contato_resumo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    app:drawableStartCompat="@drawable/ic_phone"
+                    android:drawablePadding="4dp"
+                    app:drawableTint="@color/primary"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    tools:text="Emergência: (51) 98765-4321"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Faixa de Alerta / Restrição Médica -->
+        <LinearLayout
+            android:id="@+id/layout_alerta_medico"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_badge_blood"
+            android:backgroundTint="@color/danger_light"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="5dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:contentDescription="@string/desc_alerta"
+                android:src="@drawable/ic_warning"
+                app:tint="@color/danger_red" />
+
+            <TextView
+                android:id="@+id/tv_resumo_alergias_restricoes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                tools:text="Alergia a Penicilina | Diabético"
+                android:textColor="@color/danger_text"
+                android:textSize="11.5sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Botão Discreto de "Ver Ficha Completa" -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btn_ver_ficha_completa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                app:drawableEndCompat="@drawable/ic_arrow_back"
+                android:drawablePadding="4dp"
+                app:drawableTint="@color/primary"
+                android:text="@string/btn_ver_ficha_completa"
+                android:textColor="@color/primary"
+                android:textSize="12.5sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

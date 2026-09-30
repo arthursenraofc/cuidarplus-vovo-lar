@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Top AppBar com Visual Moderno Material 3 -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        app:elevation="4dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_main"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/app_name"
+            app:titleTextColor="@color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="18dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_subname"
+                android:textColor="@color/primary_light"
+                android:textSize="13sp" />
+
+            <!-- Card de Perfil Ativo e Contador de Idosos -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_status_topo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardBackgroundColor="@color/primary_dark"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/accent"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="14dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/tv_perfil_atual_badge"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:drawableStartCompat="@drawable/ic_admin"
+                        android:drawablePadding="8dp"
+                        app:drawableTint="@color/accent"
+                        android:gravity="center_vertical"
+                        android:text="@string/badge_perfil_admin"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_contador_dashboard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_badge_blood"
+                        android:backgroundTint="@color/primary_container"
+                        android:paddingStart="10dp"
+                        android:paddingTop="3dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="3dp"
+                        android:text="@string/contador_residentes_plural"
+                        android:textColor="@color/on_primary_container"
+                        android:textSize="11.5sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Conteúdo Scrollável com 3 Ações Principais -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/dashboard_boas_vindas"
+                android:textColor="@color/text_primary"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/dashboard_subtitulo"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+
+            <!-- CARD 1: Cadastrar Novo Idoso -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_menu_cadastrar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="2dp"
+                app:rippleColor="@color/primary_light"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+
+                    <FrameLayout
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_search_box"
+                        android:backgroundTint="@color/primary_container">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/btn_menu_cadastrar"
+                            android:src="@drawable/ic_person_add"
+                            app:tint="@color/primary" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/btn_menu_cadastrar"
+                            android:textColor="@color/text_primary"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/btn_menu_cadastrar_desc"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
+
+                        <!-- Tag indicativa de restrição ao Cuidador -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/bg_badge_blood"
+                            android:backgroundTint="@color/admin_light"
+                            android:paddingStart="8dp"
+                            android:paddingTop="2dp"
+                            android:paddingEnd="8dp"
+                            android:paddingBottom="2dp"
+                            android:text="@string/perfil_admin_titulo"
+                            android:textColor="@color/admin_color"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="@string/desc_ir"
+                        android:src="@drawable/ic_arrow_back"
+                        android:rotation="180"
+                        app:tint="@color/text_muted" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CARD 2: Consultar Fichas dos Idosos (Lista e Prontuários) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_menu_fichas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="2dp"
+                app:rippleColor="@color/primary_light"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+
+                    <FrameLayout
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_search_box"
+                        android:backgroundTint="@color/surface_variant">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/btn_menu_fichas"
+                            android:src="@drawable/ic_medical_folder"
+                            app:tint="@color/primary" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/btn_menu_fichas"
+                            android:textColor="@color/text_primary"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/btn_menu_fichas_desc"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
+
+                        <!-- Tag de acesso livre para ambos perfis -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/bg_badge_blood"
+                            android:backgroundTint="@color/primary_light"
+                            android:paddingStart="8dp"
+                            android:paddingTop="2dp"
+                            android:paddingEnd="8dp"
+                            android:paddingBottom="2dp"
+                            android:text="@string/perfil_cuidador_titulo"
+                            android:textColor="@color/primary_dark"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="@string/desc_ir"
+                        android:src="@drawable/ic_arrow_back"
+                        android:rotation="180"
+                        app:tint="@color/text_muted" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CARD SPRINT 2: Controle de Medicamentos & Alarmes -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_menu_medicamentos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="2dp"
+                app:rippleColor="@color/primary_light"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+
+                    <FrameLayout
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_search_box"
+                        android:backgroundTint="@color/primary_light">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/btn_menu_medicamentos"
+                            android:src="@drawable/ic_medication"
+                            app:tint="@color/primary" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/btn_menu_medicamentos"
+                            android:textColor="@color/text_primary"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/btn_menu_medicamentos_desc"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/bg_badge_blood"
+                            android:backgroundTint="@color/primary_light"
+                            android:paddingStart="8dp"
+                            android:paddingTop="2dp"
+                            android:paddingEnd="8dp"
+                            android:paddingBottom="2dp"
+                            android:text="@string/titulo_lista_medicamentos"
+                            android:textColor="@color/primary_dark"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="@string/desc_ir"
+                        android:src="@drawable/ic_arrow_back"
+                        android:rotation="180"
+                        app:tint="@color/text_muted" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CARD 3: Alternar Perfil (ADM / Cuidador) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_menu_perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="2dp"
+                app:rippleColor="@color/primary_light"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+
+                    <FrameLayout
+                        android:layout_width="56dp"
+                        android:layout_height="56dp">
+
+                        <ImageView
+                            android:id="@+id/iv_icone_menu_perfil"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:background="@drawable/bg_circle_admin_badge"
+                            android:contentDescription="@string/btn_menu_perfil"
+                            android:padding="12dp"
+                            android:src="@drawable/ic_switch_profile"
+                            app:tint="@color/admin_color" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/btn_menu_perfil"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_descricao_perfil_atual"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/ativo_admin_clique"
+                            android:textColor="@color/primary"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="@string/desc_ir"
+                        android:src="@drawable/ic_arrow_back"
+                        android:rotation="180"
+                        app:tint="@color/text_muted" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Rodapé Informativo -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="12dp"
+                android:paddingBottom="24dp"
+                android:text="@string/rodape_sistema"
+                android:textColor="@color/text_muted"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
