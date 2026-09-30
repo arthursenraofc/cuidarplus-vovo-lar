@@ -1,22 +1,38 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# CuidarPlus — Sistema de Gestão de ILPI (Lar Vovô Lar)
 
-# Run and deploy your AI Studio app
+**Status do Projeto:** Sprint 1 Concluída (Versão 1.0)  
+**Arquitetura:** Local-First (Offline)  
+**Plataforma:** Android Nativo (Java)  
 
-This contains everything you need to run your app locally.
+---
 
-View your app in AI Studio: https://ai.studio/apps/4fcd8b96-820a-430a-90c3-bb9371868392
+## 1. Introdução
 
-## Run Locally
+O **CuidarPlus** é uma solução mobile desenvolvida para otimizar os processos de acompanhamento e gestão clínica na Instituição de Longa Permanência para Idosos (ILPI) **Vovô Lar**. O sistema foi projetado sob a premissa *Local-First*, permitindo operação 100% offline, sem custos recorrentes de servidores ou infraestrutura de nuvem.
 
-**Prerequisites:**  [Android Studio](https://developer.android.com/studio)
+---
 
+## 2. Funcionalidades Principais
 
-1. Open Android Studio
-2. Select **Open** and choose the directory containing this project
-3. Allow Android Studio to fix any incompatibilities as it imports the project.
-4. Create a file named `.env` in the project directory and set `GEMINI_API_KEY` in that file to your Gemini API key (see `.env.example` for an example)
-5. Remove this line from the app's `build.gradle.kts` file: `signingConfig = signingConfigs.getByName("debugConfig")`
-6. Run the app on an emulator or physical device
-7. If you have already published your app in AI Studio, please [request upload key reset](https://support.google.com/googleplay/android-developer/answer/9842756#zippy=%2Crequest-an-upload-key-reset) in Google Play Console.
+* **Gestão de Idosos:** Cadastro completo de residentes, consulta de fichas e prontuários individuais.
+* **Controlo de Medicação:** Registo de medicamentos, horários de administração e doses prescritas.
+* **Alertas e Notificações:** Notificações locais agendadas para garantir o cumprimento dos horários de medicação.
+* **Operação Offline:** Armazenamento local seguro através de SQLite, garantindo alta disponibilidade sem dependência de internet.
+
+---
+
+## 3. Tecnologias Utilizadas
+
+* **Linguagem Principal:** Java (Android Nativo)
+* **Interface:** XML / Material Design
+* **Base de Dados Local:** SQLite (`DatabaseHelper`, DAOs)
+* **Gestão de Alertas:** `AlarmManager` e `BroadcastReceiver`
+* **Build System:** Gradle (Versão 9.3.1)
+
+---
+
+## 4. Como Executar o Projeto
+
+1. Clone o repositório:
+   ```bash
+   git clone [https://github.com/arthursenraofc/cuidarplus-vovo-lar.git](https://github.com/arthursenraofc/cuidarplus-vovo-lar.git)
