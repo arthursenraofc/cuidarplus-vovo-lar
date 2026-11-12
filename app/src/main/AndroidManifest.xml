@@ -14,8 +14,37 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <!-- Queries para resolução de Intents da Câmera, WhatsApp, SMS e leitores/compartilhadores de PDF no Android 11+ -->
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <package android:name="com.whatsapp" />
+        <package android:name="com.whatsapp.w4b" />
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="smsto" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="text/plain" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="application/pdf" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="application/pdf" />
+        </intent>
+    </queries>
+
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -24,7 +53,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LarIdosos">
 
-        <!-- FileProvider para prover URIs seguras da câmera sem FileUriExposedException -->
+        <!-- FileProvider para prover URIs seguras da câmera e documentos PDF sem FileUriExposedException -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -35,15 +64,25 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- 1. Tela Principal / Dashboard (Menu e Seleção de Perfil) -->
+        <!-- 1. ÚNICA Activity de Inicialização (MAIN / LAUNCHER): Módulos e Operação Diária (Sprint 3) -->
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:clearTaskOnLaunch="true"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 1b. Tela Dedicada de Dashboard & Indicadores da Instituição (Material Design 3) -->
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="false"
+            android:label="@string/titulo_dashboard_instituicao"
+            android:parentActivityName=".MainActivity" />
 
         <!-- 2. Lista e Fichas dos Idosos com busca -->
         <activity
@@ -65,9 +104,22 @@
             android:exported="false"
             android:label="@string/titulo_detalhes_idoso" />
 
+        <!-- 4b. Visualizador Nativo de Resumo PDF Salvo Offline -->
+        <activity
+            android:name=".VisualizadorPdfOfflineActivity"
+            android:exported="false"
+            android:label="@string/titulo_visualizador_pdf_offline" />
+
         <!-- 5. Lista de Medicamentos do Residente (Sprint 2) -->
         <activity
             android:name=".ListaMedicamentosActivity"
+            android:exported="false"
+            android:label="@string/titulo_lista_medicamentos"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- 5b. Gestão de Medicamentos com RBAC (MedicamentoActivity) -->
+        <activity
+            android:name=".MedicamentoActivity"
             android:exported="false"
             android:label="@string/titulo_lista_medicamentos"
             android:parentActivityName=".MainActivity" />
@@ -79,7 +131,31 @@
             android:label="@string/titulo_cadastro_medicamento"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- BroadcastReceiver para Alarmes e Ações Rápidas de Notificação (Sprint 2) -->
+        <!-- 7. Edição e Refinamento de Medicamento (Sprint 2 Avançado) -->
+        <activity
+            android:name=".EditarMedicamentoActivity"
+            android:exported="false"
+            android:label="@string/titulo_editar_medicamento"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- 8. Controle Geral de Estoque de Medicamentos e Relatórios PDF -->
+        <activity
+            android:name=".EstoqueActivity"
+            android:exported="false"
+            android:label="@string/titulo_estoque"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- 1. BroadcastReceiver para Alarmes e Notificações de Medicamento (MedicamentoReceiver) -->
+        <receiver
+            android:name=".receiver.MedicamentoReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.cuidarplus.ACTION_DISPARAR_ALARME" />
+                <action android:name="com.example.cuidarplus.ACTION_MARCAR_ADMINISTRADO" />
+            </intent-filter>
+        </receiver>
+
+        <!-- BroadcastReceiver legado para compatibilidade retroativa -->
         <receiver
             android:name=".receiver.NotificationReceiver"
             android:exported="false">
@@ -88,7 +164,7 @@
             </intent-filter>
         </receiver>
 
-        <!-- BroadcastReceiver para Restauração Automática de Alarmes no Boot (Sprint 2) -->
+        <!-- 2. BroadcastReceiver para Restauração Automática de Alarmes no Boot (BootReceiver) -->
         <receiver
             android:name=".receiver.BootReceiver"
             android:enabled="true"
@@ -96,6 +172,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>

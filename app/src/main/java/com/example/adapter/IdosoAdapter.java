@@ -42,6 +42,11 @@ public class IdosoAdapter extends RecyclerView.Adapter<IdosoAdapter.IdosoViewHol
         notifyDataSetChanged();
     }
 
+    @SuppressWarnings("NotifyDataSetChanged")
+    public void atualizarLista(List<Idoso> novaLista) {
+        setLista(novaLista);
+    }
+
     @NonNull
     @Override
     public IdosoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -70,6 +75,7 @@ public class IdosoAdapter extends RecyclerView.Adapter<IdosoAdapter.IdosoViewHol
         private final View layoutAlertaMedico;
         private final TextView tvResumoAlergiasRestricoes;
         private final TextView btnVerFichaCompleta;
+        private final View btnItemWhatsapp;
 
         public IdosoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -81,6 +87,7 @@ public class IdosoAdapter extends RecyclerView.Adapter<IdosoAdapter.IdosoViewHol
             layoutAlertaMedico = itemView.findViewById(R.id.layout_alerta_medico);
             tvResumoAlergiasRestricoes = itemView.findViewById(R.id.tv_resumo_alergias_restricoes);
             btnVerFichaCompleta = itemView.findViewById(R.id.btn_ver_ficha_completa);
+            btnItemWhatsapp = itemView.findViewById(R.id.btn_item_whatsapp);
         }
 
         public void bind(final Idoso idoso, final OnIdosoClickListener listener) {
@@ -114,6 +121,19 @@ public class IdosoAdapter extends RecyclerView.Adapter<IdosoAdapter.IdosoViewHol
                 tvContatoResumo.setText(context.getString(R.string.formato_emergencia, idoso.getContatoEmergencia()));
             } else {
                 tvContatoResumo.setVisibility(View.GONE);
+            }
+
+            // Botão rápido de WhatsApp no Card
+            if (btnItemWhatsapp != null) {
+                if (idoso.getContatoEmergencia() != null && !idoso.getContatoEmergencia().trim().isEmpty()) {
+                    btnItemWhatsapp.setVisibility(View.VISIBLE);
+                    btnItemWhatsapp.setOnClickListener(v -> {
+                        String msg = com.example.util.WhatsAppUtils.gerarMensagemUrgente(idoso.getNome());
+                        com.example.util.WhatsAppUtils.abrirConversaFamiliar(context, idoso.getContatoEmergencia(), msg);
+                    });
+                } else {
+                    btnItemWhatsapp.setVisibility(View.GONE);
+                }
             }
 
             // Foto Circular do Idoso (com fallback seguro para placeholder)

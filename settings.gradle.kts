@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "Lar dos Idosos"
+rootProject.name = "CuidarPlus"
 
 include(":app")

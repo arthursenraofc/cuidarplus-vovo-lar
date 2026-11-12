@@ -103,6 +103,19 @@
             tools:text="Obs: Tomar com água após o café"
             tools:visibility="visible" />
 
+        <!-- Estoque Disponível Opcional -->
+        <TextView
+            android:id="@+id/tv_estoque_medicamento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="38dp"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:visibility="gone"
+            tools:text="Estoque: 30 comprimidos"
+            tools:visibility="visible" />
+
         <!-- Divisor sutil -->
         <View
             android:layout_width="match_parent"
@@ -111,7 +124,51 @@
             android:layout_marginBottom="12dp"
             android:background="@color/surface_variant" />
 
-        <!-- Botão de Ação Rápida: Dar Baixa Agora -->
+        <!-- Painel de Gestão (Apenas Administrador e Enfermeiro) -->
+        <LinearLayout
+            android:id="@+id/layout_acoes_gestao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_editar_medicamento"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:text="@string/btn_editar"
+                android:textColor="@color/primary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:cornerRadius="10dp"
+                app:icon="@drawable/ic_edit"
+                app:iconGravity="textStart"
+                app:iconTint="@color/primary"
+                app:strokeColor="@color/primary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_excluir_medicamento"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="48dp"
+                android:layout_height="44dp"
+                android:contentDescription="@string/btn_excluir_medicamento"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:cornerRadius="10dp"
+                app:icon="@drawable/ic_delete"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconTint="@color/danger_red"
+                app:strokeColor="@color/danger_red" />
+        </LinearLayout>
+
+        <!-- Botão de Ação Rápida: Dar Baixa Agora (Disponível para Cuidador, Enfermeiro e ADM) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_dar_baixa_agora"
             android:layout_width="match_parent"
@@ -123,6 +180,23 @@
             android:textStyle="bold"
             app:cornerRadius="10dp"
             app:icon="@drawable/ic_check"
+            app:iconGravity="textStart"
+            app:iconTint="@color/white" />
+
+        <!-- Botão WhatsApp: Solicitar Reposição de Estoque ao Familiar -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_whatsapp_reposicao"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/whatsapp_green"
+            android:text="@string/btn_whatsapp_pedir_remedio"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_whatsapp"
             app:iconGravity="textStart"
             app:iconTint="@color/white" />
 

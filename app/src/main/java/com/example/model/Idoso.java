@@ -22,6 +22,12 @@ public class Idoso implements Serializable {
     private String contatoEmergencia;    // Nome e Telefone do responsável
     private String caminhoFoto;          // Caminho absoluto local do arquivo da foto
 
+    // Campos institucionais complementares do prontuário (opcionais / retrocompatíveis)
+    private String cpf;                  // Ex: 123.456.789-00
+    private String leitoQuarto;          // Ex: Quarto 02 - Leito A
+    private String nomeFamiliar;         // Ex: Mariana de Souza
+    private String grauParentesco;       // Ex: Filha
+
     // Construtor vazio (padrão)
     public Idoso() {
     }
@@ -114,6 +120,38 @@ public class Idoso implements Serializable {
 
     public void setCaminhoFoto(String caminhoFoto) {
         this.caminhoFoto = caminhoFoto;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getLeitoQuarto() {
+        return leitoQuarto;
+    }
+
+    public void setLeitoQuarto(String leitoQuarto) {
+        this.leitoQuarto = leitoQuarto;
+    }
+
+    public String getNomeFamiliar() {
+        return nomeFamiliar;
+    }
+
+    public void setNomeFamiliar(String nomeFamiliar) {
+        this.nomeFamiliar = nomeFamiliar;
+    }
+
+    public String getGrauParentesco() {
+        return grauParentesco;
+    }
+
+    public void setGrauParentesco(String grauParentesco) {
+        this.grauParentesco = grauParentesco;
     }
 
     /**

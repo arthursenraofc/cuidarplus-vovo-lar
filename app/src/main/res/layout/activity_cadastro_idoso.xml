@@ -53,12 +53,14 @@
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/iv_preview_foto"
-                        android:layout_width="110dp"
-                        android:layout_height="110dp"
+                        android:layout_width="116dp"
+                        android:layout_height="116dp"
                         android:background="@color/primary_light"
+                        android:clickable="true"
                         android:contentDescription="@string/desc_foto_idoso"
+                        android:focusable="true"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/ic_person_placeholder"
+                        android:src="@drawable/img_resident_placeholder"
                         app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
                         app:strokeColor="@color/primary"
                         app:strokeWidth="2.5dp" />
@@ -72,7 +74,7 @@
                         android:textSize="13sp"
                         android:textStyle="bold" />
 
-                    <!-- Botões de Câmera e Galeria -->
+                    <!-- Botões de Câmera e Galeria (mínimo 48dp de área de toque M3) -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -83,12 +85,12 @@
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_tirar_foto_camera"
                             android:layout_width="wrap_content"
-                            android:layout_height="44dp"
+                            android:layout_height="48dp"
                             android:backgroundTint="@color/primary"
                             android:text="@string/btn_tirar_foto"
                             android:textColor="@color/white"
                             android:textSize="13sp"
-                            app:cornerRadius="22dp"
+                            app:cornerRadius="24dp"
                             app:icon="@drawable/ic_camera"
                             app:iconTint="@color/white" />
 
@@ -96,12 +98,12 @@
                             android:id="@+id/btn_escolher_foto_galeria"
                             style="@style/Widget.Material3.Button.OutlinedButton"
                             android:layout_width="wrap_content"
-                            android:layout_height="44dp"
+                            android:layout_height="48dp"
                             android:layout_marginStart="10dp"
                             android:text="@string/btn_galeria_foto"
                             android:textColor="@color/primary"
                             android:textSize="13sp"
-                            app:cornerRadius="22dp"
+                            app:cornerRadius="24dp"
                             app:icon="@drawable/ic_gallery"
                             app:iconTint="@color/primary"
                             app:strokeColor="@color/primary" />
@@ -110,7 +112,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card Formulário com Campos Clínicos e Cadastrais -->
+            <!-- Card Formulário com Campos Clínicos e Cadastrais em Material Design 3 -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -136,44 +138,63 @@
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
-                    <!-- Campo Nome Completo -->
+                    <!-- Campo Nome Completo (Material Design 3 OutlinedBox) -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_nome"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         android:hint="@string/hint_nome"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
                         app:boxStrokeColor="@color/primary"
+                        app:errorEnabled="true"
                         app:hintTextColor="@color/primary">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_nome"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
                             android:importantForAutofill="no"
                             android:inputType="textPersonName|textCapWords"
+                            android:singleLine="true"
                             android:textColor="@color/text_primary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Campo Data de Nascimento -->
+                    <!-- Campo Data de Nascimento (Material Design 3 + Teclado Numérico + Máscara DD/MM/AAAA) -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_data_nascimento"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         android:hint="@string/hint_data_nascimento"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
                         app:boxStrokeColor="@color/primary"
+                        app:endIconContentDescription="@string/desc_selecionar_data"
+                        app:endIconDrawable="@drawable/ic_calendar"
+                        app:endIconMode="custom"
+                        app:endIconTint="@color/primary"
+                        app:errorEnabled="true"
+                        app:helperText="@string/helper_data_nascimento"
                         app:hintTextColor="@color/primary">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_data_nascimento"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
                             android:importantForAutofill="no"
-                            android:inputType="date"
+                            android:inputType="number"
                             android:maxLength="10"
+                            android:singleLine="true"
                             android:textColor="@color/text_primary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -199,11 +220,15 @@
                     <!-- Campo Alergias -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_alergias"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         android:hint="@string/hint_alergias"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
                         app:boxStrokeColor="@color/primary"
                         app:hintTextColor="@color/primary">
 
@@ -221,11 +246,15 @@
                     <!-- Campo Restrições Médicas e Cuidados Especiais -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_restricoes"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         android:hint="@string/hint_restricoes"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
                         app:boxStrokeColor="@color/primary"
                         app:hintTextColor="@color/primary">
 
@@ -240,22 +269,33 @@
                             android:textColor="@color/text_primary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Campo Contato de Emergência -->
+                    <!-- Campo Telefone do Familiar / Emergência (Material Design 3 + Teclado Phone + Máscara Dinâmica BR) -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_contato_emergencia"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_contato_emergencia"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
                         app:boxStrokeColor="@color/primary"
-                        app:hintTextColor="@color/primary">
+                        app:errorEnabled="true"
+                        app:helperText="@string/helper_contato_emergencia"
+                        app:hintTextColor="@color/primary"
+                        app:startIconDrawable="@drawable/ic_phone"
+                        app:startIconTint="@color/primary">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_contato_emergencia"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:imeOptions="actionDone"
                             android:importantForAutofill="no"
-                            android:inputType="textPersonName"
+                            android:inputType="phone"
+                            android:maxLength="15"
+                            android:singleLine="true"
                             android:textColor="@color/text_primary" />
                     </com.google.android.material.textfield.TextInputLayout>
 

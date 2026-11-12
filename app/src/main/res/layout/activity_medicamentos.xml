@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Tela: Medicamentos Prescritos (CuidarPlus - ILPI Vovô Lar)
+    Arquitetura: ConstraintLayout raiz em Material Design 3
+    Destaques:
+      1. Toolbar fixa no topo com botão de fechar (ic_close) e título "Medicamentos Prescritos".
+      2. MaterialCardView superior (@id/cardAcoes) com height="wrap_content" estrito.
+      3. Card de Estoque (@id/cardEstoque) integrado com ícone de notificação (@id/ivIconeAlertaEstoque),
+         badge dinâmico (@id/tvBadgeAlertaEstoque) que muda para vermelho quando algum medicamento está
+         abaixo do limite mínimo configurável, e botão (@id/btnConfigurarLimiteEstoque) para ajustar o limite.
+      4. Botões "Estoque" e "Novo Medicamento" alinhados horizontalmente com toque mínimo de 48dp.
+      5. RecyclerView (@id/rvMedicamentos) com height="0dp" (match constraint) ocupando todo o espaço livre.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootMedicamentos"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    tools:context=".MedicamentoActivity">
+
+    <!-- 1. TOPO FIXO: AppBarLayout + MaterialToolbar com ícone fechar (ic_close) -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        app:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationContentDescription="@string/desc_fechar_medicamentos"
+            app:navigationIcon="@drawable/ic_close"
+            app:navigationIconTint="@color/white"
+            app:popupTheme="@style/ThemeOverlay.Material3.Light"
+            app:title="@string/titulo_lista_medicamentos"
+            app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- 2. CARD SUPERIOR DE AÇÕES & MONITORAMENTO DE ESTOQUE: layout_height="wrap_content" -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardAcoes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        app:cardBackgroundColor="@color/m3_surface_container_low"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+        app:strokeColor="@color/primary_container"
+        app:strokeWidth="1dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="12dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="10dp">
+
+            <!-- Ícone em container tonal Material 3 -->
+            <FrameLayout
+                android:id="@+id/containerIconeMed"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="@drawable/bg_search_box"
+                android:backgroundTint="@color/primary_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/desc_medicamento"
+                    android:src="@drawable/ic_medication"
+                    app:tint="@color/primary" />
+            </FrameLayout>
+
+            <!-- Informações do Residente e Contador de Prescrições -->
+            <TextView
+                android:id="@+id/tvNomeResidente"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/containerIconeMed"
+                app:layout_constraintTop_toTopOf="@id/containerIconeMed"
+                tools:text="Dona Francisca de Souza" />
+
+            <TextView
+                android:id="@+id/tvTotalMedicamentos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/containerIconeMed"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/containerIconeMed"
+                app:layout_constraintTop_toBottomOf="@id/tvNomeResidente"
+                tools:text="2 medicamentos cadastrados" />
+
+            <!-- CARD DE ESTOQUE COM ÍCONE DE NOTIFICAÇÃO E BADGE DINÂMICO (Muda para vermelho se < limite mínimo) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardEstoque"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:minHeight="48dp"
+                app:cardBackgroundColor="@color/estoque_ok_card_bg"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/containerIconeMed"
+                app:strokeColor="@color/estoque_ok_stroke"
+                app:strokeWidth="1dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:paddingStart="10dp"
+                    android:paddingTop="0dp"
+                    android:paddingEnd="2dp"
+                    android:paddingBottom="0dp">
+
+                    <!-- Container + Ícone de Notificação de Estoque (muda de cor conforme limite mínimo) -->
+                    <FrameLayout
+                        android:id="@+id/containerIconeAlertaEstoque"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_search_box"
+                        android:backgroundTint="@color/estoque_ok_icon_bg"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/ivIconeAlertaEstoque"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/desc_icone_notificacao_estoque"
+                            android:src="@drawable/ic_notifications"
+                            app:tint="@color/estoque_ok_fg" />
+                    </FrameLayout>
+
+                    <!-- Textos do Card de Estoque -->
+                    <TextView
+                        android:id="@+id/tvTituloCardEstoque"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="6dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@string/card_estoque_regular_titulo"
+                        android:textColor="@color/estoque_ok_fg"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/tvSubtituloCardEstoque"
+                        app:layout_constraintEnd_toStartOf="@id/tvBadgeAlertaEstoque"
+                        app:layout_constraintStart_toEndOf="@id/containerIconeAlertaEstoque"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        tools:text="Alerta de Estoque Baixo" />
+
+                    <TextView
+                        android:id="@+id/tvSubtituloCardEstoque"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="6dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/tvBadgeAlertaEstoque"
+                        app:layout_constraintStart_toEndOf="@id/containerIconeAlertaEstoque"
+                        app:layout_constraintTop_toBottomOf="@id/tvTituloCardEstoque"
+                        tools:text="1 item abaixo do mín. (10 un.)" />
+
+                    <!-- Badge Dinâmico: Vermelho quando qtd < limite mínimo, Verde quando OK -->
+                    <TextView
+                        android:id="@+id/tvBadgeAlertaEstoque"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="2dp"
+                        android:background="@drawable/bg_badge_pill_status"
+                        android:paddingStart="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="3dp"
+                        android:text="@string/badge_estoque_ok"
+                        android:textColor="@color/white"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/btnConfigurarLimiteEstoque"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="! 1" />
+
+                    <!-- Botão Acessível (48x48dp) para Configurar o Limite Mínimo de Estoque -->
+                    <ImageButton
+                        android:id="@+id/btnConfigurarLimiteEstoque"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/desc_configurar_limite_estoque"
+                        android:minWidth="48dp"
+                        android:minHeight="48dp"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_tune"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/text_secondary" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Divisor oculto mantido para compatibilidade estrutural -->
+            <View
+                android:id="@+id/dividerCardAcoes"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardEstoque" />
+
+            <!-- 3. BARRA DE BOTÕES M3: Alinhamento horizontal elegante e responsivo -->
+            <LinearLayout
+                android:id="@+id/layoutBotoesAcao"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardEstoque">
+
+                <!-- Ação Secundária: Estoque / Relatório PDF (OutlinedButton M3) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnExportarEstoquePdf"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:maxLines="1"
+                    android:minHeight="48dp"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:text="@string/btn_estoque_curto"
+                    android:textColor="@color/primary"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/surface"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_picture_as_pdf"
+                    app:iconGravity="textStart"
+                    app:iconPadding="6dp"
+                    app:iconSize="18dp"
+                    app:iconTint="@color/primary"
+                    app:strokeColor="@color/primary"
+                    app:strokeWidth="1dp" />
+
+                <!-- Ação Primária: Novo Medicamento (Filled Button M3) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNovoMedicamento"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:maxLines="1"
+                    android:minHeight="48dp"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:text="@string/btn_novo_medicamento"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/primary"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_add"
+                    app:iconGravity="textStart"
+                    app:iconPadding="6dp"
+                    app:iconSize="18dp"
+                    app:iconTint="@color/white" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- 4. LISTA DE MEDICAMENTOS: layout_height="0dp" (match constraint) ocupando todo o espaço restante -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMedicamentos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:clipToPadding="false"
+        android:paddingTop="4dp"
+        android:paddingBottom="24dp"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardAcoes"
+        tools:listitem="@layout/item_medicamento" />
+
+    <!-- Estado Vazio: Exibido apenas quando não há prescrições cadastradas para o residente -->
+    <LinearLayout
+        android:id="@+id/layoutVazio"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardAcoes"
+        tools:visibility="gone">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginBottom="16dp"
+            android:alpha="0.4"
+            android:contentDescription="@string/desc_vazio"
+            android:src="@drawable/ic_medication"
+            app:tint="@color/primary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/sem_medicamentos_titulo"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:text="@string/sem_medicamentos_desc"
+            android:textColor="@color/text_muted"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

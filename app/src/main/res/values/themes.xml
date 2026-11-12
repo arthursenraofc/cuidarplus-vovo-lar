@@ -4,11 +4,21 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/accent</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
+        <item name="colorSecondary">@color/md3_secondary</item>
+        <item name="colorOnSecondary">@color/md3_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/md3_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/md3_on_secondary_container</item>
+        <item name="colorError">@color/danger_red</item>
+        <item name="colorErrorContainer">@color/md3_allergy_container</item>
+        <item name="colorOnErrorContainer">@color/md3_on_allergy_container</item>
         <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/text_primary</item>
         <item name="colorSurfaceVariant">@color/surface_variant</item>
         <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <item name="colorOutline">@color/text_muted</item>
+        <item name="colorOutlineVariant">@color/m3_outline_variant</item>
         <item name="android:statusBarColor">@color/primary_dark</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowBackground">@color/bg_main</item>
@@ -21,5 +31,11 @@
         <item name="colorOnSurfaceVariant">@color/text_secondary</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>
+    </style>
+
+    <!-- Material Design 3 Pill Shape Overlay (28dp) for Search Input -->
+    <style name="ShapeAppearance.CuidarPlus.SearchPill" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/md3_corner_pill</item>
     </style>
 </resources>

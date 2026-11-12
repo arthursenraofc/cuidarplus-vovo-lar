@@ -2,45 +2,56 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_detalhes_idoso"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_main">
 
-    <!-- Barra Superior / Toolbar com Navegação de Retorno -->
+    <!-- Barra Superior Material Design 3 -->
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar_detalhes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primary">
+        android:background="@color/primary"
+        app:elevation="2dp">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar_detalhes"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:navigationIconTint="@color/white"
             app:title="@string/titulo_detalhes_idoso"
+            app:titleTextAppearance="?attr/textAppearanceTitleLarge"
             app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_detalhes_idoso"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/container_conteudo_detalhes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingStart="@dimen/md3_screen_padding_horizontal"
+            android:paddingTop="18dp"
+            android:paddingEnd="@dimen/md3_screen_padding_horizontal"
+            android:paddingBottom="32dp">
 
-            <!-- Card Principal: Foto em Tamanho Maior e Dados Pessoais -->
+            <!-- Card 1: Cabeçalho de Identificação e Foto de Perfil Unificada -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:cardBackgroundColor="@color/surface"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="1dp"
+                app:cardCornerRadius="@dimen/md3_corner_extra_large"
+                app:cardElevation="@dimen/md3_card_elevation_flat"
                 app:strokeColor="@color/divider"
                 app:strokeWidth="1dp">
 
@@ -49,49 +60,84 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:padding="@dimen/md3_card_padding_generous">
 
-                    <!-- Foto em tamanho maior com corte circular -->
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/iv_detalhe_foto"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:background="@color/primary_light"
-                        android:contentDescription="@string/desc_foto_idoso"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_person_placeholder"
-                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-                        app:strokeColor="@color/primary"
-                        app:strokeWidth="3dp" />
+                    <!-- Avatar Circular com Ação Única Sobreposta (FAB de Câmera 48dp + Toque na Foto) -->
+                    <FrameLayout
+                        android:id="@+id/container_foto_perfil"
+                        android:layout_width="136dp"
+                        android:layout_height="136dp">
 
-                    <!-- Nome Completo em Destaque -->
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/iv_detalhe_foto"
+                            android:layout_width="124dp"
+                            android:layout_height="124dp"
+                            android:layout_gravity="center"
+                            android:background="@color/primary_light"
+                            android:clickable="true"
+                            android:contentDescription="@string/desc_foto_idoso"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackgroundBorderless"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/img_resident_placeholder"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                            app:strokeColor="@color/primary_container"
+                            app:strokeWidth="3dp" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/btn_camera_badge_detalhe"
+                            android:layout_width="@dimen/md3_touch_target_min"
+                            android:layout_height="@dimen/md3_touch_target_min"
+                            android:layout_gravity="bottom|end"
+                            android:clickable="true"
+                            android:contentDescription="@string/btn_capturar_foto_perfil"
+                            android:focusable="true"
+                            android:tag="btn_camera_badge_detalhe"
+                            app:cardBackgroundColor="@color/primary"
+                            app:cardCornerRadius="24dp"
+                            app:cardElevation="3dp"
+                            app:rippleColor="@color/primary_light"
+                            app:strokeColor="@color/surface"
+                            app:strokeWidth="3dp">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:layout_gravity="center"
+                                android:importantForAccessibility="no"
+                                android:src="@drawable/ic_camera"
+                                app:tint="@color/white" />
+                        </com.google.android.material.card.MaterialCardView>
+                    </FrameLayout>
+
+                    <!-- Nome Completo em Destaque (MD3 TitleLarge) -->
                     <TextView
                         android:id="@+id/tv_detalhe_nome"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:gravity="center"
-                        tools:text="Nome Completo do Idoso"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
                         android:textColor="@color/text_primary"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="Dona Francisca de Souza" />
 
                     <!-- Idade e Data de Nascimento -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:gravity="center"
+                        android:gravity="center_vertical"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/tv_detalhe_idade"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="79 anos"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:textColor="@color/text_secondary"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:text="81 anos" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -105,38 +151,39 @@
                             android:id="@+id/tv_detalhe_nascimento"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="Nasc: 15/04/1945"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:textColor="@color/text_secondary"
-                            android:textSize="13sp" />
+                            tools:text="Nasc: 15/04/1945" />
                     </LinearLayout>
 
-                    <!-- Tipo Sanguíneo Badge Grande -->
+                    <!-- Badge de Tipo Sanguíneo (MD3 PrimaryContainer / OnPrimaryContainer) -->
                     <TextView
                         android:id="@+id/tv_detalhe_tipo_sanguineo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="12dp"
                         android:background="@drawable/bg_badge_blood"
-                        android:paddingStart="14dp"
-                        android:paddingTop="5dp"
-                        android:paddingEnd="14dp"
-                        android:paddingBottom="5dp"
-                        tools:text="Tipo Sanguíneo: O+"
-                        android:textColor="@color/on_primary_container"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:backgroundTint="@color/md3_blood_container"
+                        android:paddingStart="16dp"
+                        android:paddingTop="6dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="6dp"
+                        android:textAppearance="?attr/textAppearanceLabelLarge"
+                        android:textColor="@color/md3_on_blood_container"
+                        android:textStyle="bold"
+                        tools:text="Tipo Sanguíneo: O+" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card Seção Médica: Alergias e Restrições -->
+            <!-- Card 2: Atenção Médica, Alergias e Restrições (MD3 Semantic Containers) -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:cardBackgroundColor="@color/surface"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="1dp"
+                app:cardCornerRadius="@dimen/md3_corner_extra_large"
+                app:cardElevation="@dimen/md3_card_elevation_flat"
                 app:strokeColor="@color/divider"
                 app:strokeWidth="1dp">
 
@@ -144,75 +191,83 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="@dimen/md3_card_padding_generous">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:drawablePadding="10dp"
                         android:gravity="center_vertical"
-                        app:drawableStartCompat="@drawable/ic_medical_folder"
-                        app:drawableTint="@color/primary"
-                        android:drawablePadding="8dp"
                         android:text="@string/secao_medica"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
                         android:textColor="@color/primary"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_medical_folder"
+                        app:drawableTint="@color/primary" />
 
-                    <!-- Alergias -->
+                    <!-- Alergias Conhecidas (MD3 ErrorContainer / OnErrorContainer) -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="16dp"
                         android:text="@string/rotulo_alergias"
+                        android:textAppearance="?attr/textAppearanceLabelLarge"
                         android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_detalhe_alergias"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:background="@drawable/bg_badge_blood"
-                        android:backgroundTint="@color/danger_light"
-                        android:padding="10dp"
-                        tools:text="Nenhuma alergia relatada"
-                        android:textColor="@color/danger_text"
-                        android:textSize="14sp" />
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_md3_container_rounded"
+                        android:backgroundTint="@color/md3_allergy_container"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical"
+                        android:lineSpacingExtra="2dp"
+                        android:padding="@dimen/md3_alert_box_padding"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="@color/md3_on_allergy_container"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_warning"
+                        app:drawableTint="@color/md3_allergy_icon"
+                        tools:text="Alergia a Penicilina" />
 
-                    <!-- Restrições Médicas e Diagnósticos -->
+                    <!-- Restrições Médicas e Diagnósticos (MD3 Secondary/Clinical Container) -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="16dp"
                         android:text="@string/rotulo_restricoes"
+                        android:textAppearance="?attr/textAppearanceLabelLarge"
                         android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_detalhe_restricoes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:background="@drawable/bg_badge_blood"
-                        android:backgroundTint="@color/surface_variant"
-                        android:padding="10dp"
-                        tools:text="Nenhuma restrição registrada"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp" />
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_md3_container_rounded"
+                        android:backgroundTint="@color/md3_clinical_container"
+                        android:lineSpacingExtra="2dp"
+                        android:padding="@dimen/md3_alert_box_padding"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="@color/md3_on_clinical_container"
+                        android:textStyle="bold"
+                        tools:text="Hipertensão arterial controlada" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card de Contato de Emergência com Ação Rápida de Ligação -->
+            <!-- Card 3: Contato de Emergência com Hierarquia Visual Clara (Primário vs WhatsApp) -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="20dp"
                 app:cardBackgroundColor="@color/surface"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="1dp"
+                app:cardCornerRadius="@dimen/md3_corner_extra_large"
+                app:cardElevation="@dimen/md3_card_elevation_flat"
                 app:strokeColor="@color/divider"
                 app:strokeWidth="1dp">
 
@@ -220,60 +275,264 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="@dimen/md3_card_padding_generous">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:drawablePadding="10dp"
                         android:gravity="center_vertical"
-                        app:drawableStartCompat="@drawable/ic_phone"
-                        app:drawableTint="@color/success_green"
-                        android:drawablePadding="8dp"
                         android:text="@string/secao_emergencia"
-                        android:textColor="@color/success_green"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="@color/primary"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_phone"
+                        app:drawableTint="@color/primary" />
 
                     <TextView
                         android:id="@+id/tv_detalhe_contato_emergencia"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        tools:text="Filho Carlos - (51) 99999-9999"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_md3_container_rounded"
+                        android:backgroundTint="@color/m3_surface_container_low"
+                        android:padding="@dimen/md3_alert_box_padding"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
                         android:textColor="@color/text_primary"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="Filha Mariana - (51) 98765-4321" />
 
+                    <!-- Ação Primária de Alta Prioridade: Ligar para Emergência (Preenchido em Cor Primária) -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_ligar_contato"
+                        style="@style/Widget.Material3.Button"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="14dp"
-                        android:backgroundTint="@color/success_green"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:minHeight="@dimen/md3_button_height_primary"
                         android:text="@string/btn_ligar_emergencia"
                         android:textColor="@color/white"
-                        app:cornerRadius="10dp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/primary"
+                        app:cornerRadius="@dimen/md3_corner_medium"
                         app:icon="@drawable/ic_phone"
+                        app:iconGravity="textStart"
+                        app:iconPadding="10dp"
                         app:iconTint="@color/white" />
+
+                    <!-- Ação Secundária Distinta: Contatar Familiar via WhatsApp (Verde Oficial + Branco Puro) -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_whatsapp_contato"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:contentDescription="@string/btn_whatsapp_familiar"
+                        android:minHeight="@dimen/md3_button_height_primary"
+                        android:tag="btn_whatsapp_contato"
+                        android:text="@string/btn_whatsapp_familiar"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/whatsapp_green"
+                        app:cornerRadius="@dimen/md3_corner_medium"
+                        app:icon="@drawable/ic_whatsapp"
+                        app:iconGravity="textStart"
+                        app:iconPadding="10dp"
+                        app:iconTint="@color/white"
+                        app:strokeColor="@color/whatsapp_green_dark"
+                        app:strokeWidth="1dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card de Ação Rápida para Medicamentos (Sprint 2) -->
+            <!-- Ação Rápida para Medicamentos Prescritos -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_ver_medicamentos"
                 style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginBottom="20dp"
-                android:backgroundTint="@color/primary_light"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:minHeight="@dimen/md3_button_height_primary"
                 android:text="@string/titulo_lista_medicamentos"
-                android:textColor="@color/primary_dark"
+                android:textColor="@color/md3_on_secondary_container"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                app:cornerRadius="12dp"
+                app:backgroundTint="@color/md3_secondary_container"
+                app:cornerRadius="@dimen/md3_corner_large"
                 app:icon="@drawable/ic_medication"
                 app:iconGravity="textStart"
-                app:iconTint="@color/primary" />
+                app:iconPadding="10dp"
+                app:iconTint="@color/md3_secondary" />
+
+            <!-- Card 4: Resumo do Prontuário em PDF para Consulta Offline no Armazenamento Local -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_resumo_pdf_offline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/md3_corner_extra_large"
+                app:cardElevation="@dimen/md3_card_elevation_flat"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/md3_card_padding_generous">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/secao_resumo_pdf_offline"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="@color/primary"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_folder_offline"
+                        app:drawableTint="@color/primary" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:lineSpacingExtra="2dp"
+                        android:text="@string/desc_resumo_pdf_offline"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="@color/text_secondary" />
+
+                    <!-- Indicador de Status do Arquivo no Armazenamento Local -->
+                    <TextView
+                        android:id="@+id/tv_status_resumo_offline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_md3_container_rounded"
+                        android:backgroundTint="@color/m3_surface_container_low"
+                        android:padding="12dp"
+                        android:text="@string/status_resumo_nao_salvo"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                        android:textColor="@color/text_secondary"
+                        android:textStyle="bold" />
+
+                    <!-- Ação Principal: Gerar e Salvar Resumo em PDF Localmente -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_gerar_resumo_pdf"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:contentDescription="@string/btn_gerar_resumo_pdf"
+                        android:minHeight="@dimen/md3_button_height_primary"
+                        android:tag="btn_gerar_resumo_pdf"
+                        android:text="@string/btn_gerar_resumo_pdf"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/primary"
+                        app:cornerRadius="@dimen/md3_corner_medium"
+                        app:icon="@drawable/ic_download"
+                        app:iconGravity="textStart"
+                        app:iconPadding="10dp"
+                        app:iconTint="@color/white" />
+
+                    <!-- Ação Rápida Offline: Abrir Resumo Já Salvo sem Regerar -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_abrir_resumo_offline"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/btn_abrir_resumo_offline"
+                        android:minHeight="@dimen/md3_touch_target_min"
+                        android:tag="btn_abrir_resumo_offline"
+                        android:text="@string/btn_abrir_resumo_offline"
+                        android:textColor="@color/md3_on_safe_container"
+                        android:textSize="13.5sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        app:backgroundTint="@color/md3_safe_container"
+                        app:cornerRadius="@dimen/md3_corner_medium"
+                        app:icon="@drawable/ic_folder_offline"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        app:iconTint="@color/md3_on_safe_container" />
+
+                    <!-- Ação Opcional: Escolher Pasta Local (SAF) para Salvar Cópia -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_salvar_pasta_resumo_pdf"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/btn_salvar_pasta_resumo_pdf"
+                        android:minHeight="@dimen/md3_touch_target_min"
+                        android:tag="btn_salvar_pasta_resumo_pdf"
+                        android:text="@string/btn_salvar_pasta_resumo_pdf"
+                        android:textColor="@color/primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        app:cornerRadius="@dimen/md3_corner_medium"
+                        app:icon="@drawable/ic_download"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        app:iconTint="@color/primary"
+                        app:strokeColor="@color/primary" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Ações de Emissão e Compartilhamento da Ficha / Prontuário em PDF (100% Offline) -->
+            <LinearLayout
+                android:id="@+id/layout_acoes_pdf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_exportar_pdf"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/btn_exportar_ficha_pdf"
+                    android:minHeight="@dimen/md3_button_height_primary"
+                    android:tag="btn_exportar_pdf"
+                    android:text="@string/btn_exportar_ficha_pdf"
+                    android:textColor="@color/on_primary_container"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/primary_container"
+                    app:cornerRadius="@dimen/md3_corner_large"
+                    app:icon="@drawable/ic_picture_as_pdf"
+                    app:iconGravity="textStart"
+                    app:iconPadding="10dp"
+                    app:iconTint="@color/on_primary_container" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_compartilhar_pdf"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:contentDescription="@string/btn_compartilhar_ficha_pdf"
+                    android:minHeight="@dimen/md3_touch_target_min"
+                    android:tag="btn_compartilhar_pdf"
+                    android:text="@string/btn_compartilhar_ficha_pdf"
+                    android:textColor="@color/primary"
+                    android:textSize="13.5sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="@dimen/md3_corner_large"
+                    app:icon="@drawable/ic_picture_as_pdf"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    app:iconTint="@color/primary"
+                    app:strokeColor="@color/primary" />
+            </LinearLayout>
 
             <!-- Botões de Ação Exclusivos do Administrador: Editar e Excluir -->
             <LinearLayout
@@ -285,27 +544,36 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_editar_ficha"
+                    style="@style/Widget.Material3.Button"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:backgroundTint="@color/primary"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/md3_touch_target_min"
                     android:text="@string/btn_editar"
                     android:textColor="@color/white"
                     android:textSize="14sp"
-                    app:cornerRadius="12dp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/primary"
+                    app:cornerRadius="@dimen/md3_corner_large"
                     app:icon="@drawable/ic_edit"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
                     app:iconTint="@color/white" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_excluir_ficha"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:minHeight="@dimen/md3_touch_target_min"
                     android:text="@string/btn_excluir"
                     android:textColor="@color/danger_red"
                     android:textSize="14sp"
-                    app:cornerRadius="12dp"
+                    android:textStyle="bold"
+                    app:cornerRadius="@dimen/md3_corner_large"
                     app:icon="@drawable/ic_delete"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
                     app:iconTint="@color/danger_red"
                     app:strokeColor="@color/danger_red" />
             </LinearLayout>

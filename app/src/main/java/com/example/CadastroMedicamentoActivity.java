@@ -52,6 +52,15 @@ public class CadastroMedicamentoActivity extends AppCompatActivity {
         dbHelper = DatabaseHelper.getInstance(this);
         idosoDAO = new IdosoDAO(this);
 
+        if (!com.example.util.PerfilManager.podeEditarExcluir(this)) {
+            com.example.util.PerfilManager.exibirDialogAcessoRestrito(
+                    this,
+                    getString(R.string.aviso_perfil_restrito_med_msg),
+                    this::recreate
+            );
+            return;
+        }
+
         configurarToolbar();
         carregarIdosos();
         configurarCampos();
@@ -175,6 +184,8 @@ public class CadastroMedicamentoActivity extends AppCompatActivity {
                 ? binding.etNomeMedicamento.getText().toString().trim() : "";
         String dosagem = binding.etDosagem.getText() != null
                 ? binding.etDosagem.getText().toString().trim() : "";
+        String estoque = binding.etEstoque.getText() != null
+                ? binding.etEstoque.getText().toString().trim() : "";
         String horario = binding.etHorarioInicial.getText() != null
                 ? binding.etHorarioInicial.getText().toString().trim() : "";
         String observacao = binding.etObservacao.getText() != null
@@ -219,6 +230,7 @@ public class CadastroMedicamentoActivity extends AppCompatActivity {
         med.setIdIdoso(selectedIdosoId);
         med.setNomeMedicamento(nomeMed);
         med.setDosagem(dosagem);
+        med.setEstoque(estoque);
         med.setTipo(selectedTipo);
         med.setHorarioInicial(horario);
         med.setFrequenciaHoras(selectedFrequenciaHoras);
@@ -230,16 +242,17 @@ public class CadastroMedicamentoActivity extends AppCompatActivity {
             med.setNomeIdoso(idoso.getNome());
         }
 
-        long idGerado = dbHelper.cadastrarMedicamento(med);
-        if (idGerado != -1) {
-            med.setId((int) idGerado);
-            // Agendar alarme nativo com AlarmManager
-            AlarmScheduler.agendarMedicamento(this, med);
-
-            Toast.makeText(this, R.string.sucesso_medicamento_salvo, Toast.LENGTH_LONG).show();
-            finish();
-        } else {
-            Toast.makeText(this, "Erro ao salvar medicamento no SQLite.", Toast.LENGTH_SHORT).show();
+        try {
+            com.example.database.MedicamentoDAO medDAO = new com.example.database.MedicamentoDAO(this);
+            long idGerado = medDAO.inserir(med);
+            if (idGerado != -1) {
+                Toast.makeText(this, R.string.sucesso_medicamento_salvo, Toast.LENGTH_LONG).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Erro ao salvar medicamento no SQLite.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (com.example.database.AcessoNaoAutorizadoException ex) {
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 

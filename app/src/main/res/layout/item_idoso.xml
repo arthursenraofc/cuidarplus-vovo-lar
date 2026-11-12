@@ -6,14 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="4dp"
-    android:layout_marginTop="6dp"
+    android:layout_marginTop="7dp"
     android:layout_marginEnd="4dp"
-    android:layout_marginBottom="6dp"
+    android:layout_marginBottom="7dp"
     android:clickable="true"
     android:focusable="true"
     app:cardBackgroundColor="@color/surface"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
+    app:cardCornerRadius="@dimen/md3_corner_extra_large"
+    app:cardElevation="@dimen/md3_card_elevation_flat"
     app:rippleColor="@color/primary_light"
     app:strokeColor="@color/divider"
     app:strokeWidth="1dp">
@@ -22,16 +22,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="14dp">
+        android:padding="@dimen/md3_card_padding_standard">
 
-        <!-- Linha Superior: Foto, Dados Pessoais e Badge Sanguíneo -->
+        <!-- Linha Superior: Avatar Circular, Dados Pessoais e Badge Sanguíneo -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <!-- Foto do Idoso com formato circular perfeito -->
+            <!-- Foto do Residente em formato circular -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_foto_idoso"
                 android:layout_width="64dp"
@@ -39,16 +39,16 @@
                 android:background="@color/primary_light"
                 android:contentDescription="@string/desc_foto_idoso"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_person_placeholder"
+                android:src="@drawable/img_resident_placeholder"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-                app:strokeColor="@color/primary"
+                app:strokeColor="@color/primary_container"
                 app:strokeWidth="2dp" />
 
             <!-- Dados Principais (Nome, Idade e Contato de Emergência) -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
+                android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -65,26 +65,27 @@
                         android:layout_weight="1"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        tools:text="Nome do Residente"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
                         android:textColor="@color/text_primary"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="Dona Francisca de Souza" />
 
-                    <!-- Badge do Tipo Sanguíneo -->
+                    <!-- Badge do Tipo Sanguíneo (MD3 colorContainer / onColorContainer) -->
                     <TextView
                         android:id="@+id/tv_badge_tipo_sanguineo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
+                        android:layout_marginStart="8dp"
                         android:background="@drawable/bg_badge_blood"
-                        android:paddingStart="8dp"
-                        android:paddingTop="2dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="2dp"
-                        tools:text="O+"
-                        android:textColor="@color/on_primary_container"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
+                        android:backgroundTint="@color/md3_blood_container"
+                        android:paddingStart="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="4dp"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                        android:textColor="@color/md3_on_blood_container"
+                        android:textStyle="bold"
+                        tools:text="O+" />
                 </LinearLayout>
 
                 <!-- Idade e Data de Nascimento -->
@@ -92,84 +93,123 @@
                     android:id="@+id/tv_idade_data"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    tools:text="79 anos (Nasc: 15/04/1945)"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="@color/text_secondary"
-                    android:textSize="13sp" />
+                    tools:text="79 anos • Nasc: 15/04/1945" />
 
-                <!-- Contato Emergência Resumido -->
+                <!-- Contato de Emergência Resumido -->
                 <TextView
                     android:id="@+id/tv_contato_resumo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    app:drawableStartCompat="@drawable/ic_phone"
-                    android:drawablePadding="4dp"
-                    app:drawableTint="@color/primary"
+                    android:layout_marginTop="4dp"
+                    android:drawablePadding="6dp"
                     android:ellipsize="end"
+                    android:gravity="center_vertical"
                     android:maxLines="1"
-                    tools:text="Emergência: (51) 98765-4321"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    app:drawableStartCompat="@drawable/ic_phone"
+                    app:drawableTint="@color/primary"
+                    tools:text="Emergência: (51) 98765-4321" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Faixa de Alerta / Restrição Médica -->
+        <!-- Caixa de Alerta / Restrição Médica (MD3 ErrorContainer / OnErrorContainer) -->
         <LinearLayout
             android:id="@+id/layout_alerta_medico"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_badge_blood"
-            android:backgroundTint="@color/danger_light"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_md3_container_rounded"
+            android:backgroundTint="@color/md3_allergy_container"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="10dp"
-            android:paddingTop="5dp"
-            android:paddingEnd="10dp"
-            android:paddingBottom="5dp">
+            android:paddingStart="12dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="8dp">
 
             <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:contentDescription="@string/desc_alerta"
                 android:src="@drawable/ic_warning"
-                app:tint="@color/danger_red" />
+                app:tint="@color/md3_allergy_icon" />
 
             <TextView
                 android:id="@+id/tv_resumo_alergias_restricoes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:maxLines="1"
-                tools:text="Alergia a Penicilina | Diabético"
-                android:textColor="@color/danger_text"
-                android:textSize="11.5sp"
-                android:textStyle="bold" />
+                android:maxLines="2"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="@color/md3_on_allergy_container"
+                android:textStyle="bold"
+                tools:text="Alergia a Penicilina | Hipertensão" />
         </LinearLayout>
 
-        <!-- Botão Discreto de "Ver Ficha Completa" -->
+        <!-- Divisor Suave antes da Barra de Ações do Card -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/m3_surface_container_high" />
+
+        <!-- Ações do Card: WhatsApp Secundário Tonal e "Ver Ficha Completa ->" -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:gravity="end"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_item_whatsapp"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/md3_touch_target_min"
+                android:paddingStart="12dp"
+                android:paddingEnd="14dp"
+                android:text="@string/btn_whatsapp_aviso_rapido"
+                android:textColor="@color/on_whatsapp_container"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/whatsapp_container"
+                app:cornerRadius="@dimen/md3_corner_medium"
+                app:icon="@drawable/ic_whatsapp"
+                app:iconPadding="6dp"
+                app:iconSize="16dp"
+                app:iconTint="@color/on_whatsapp_container"
+                app:strokeColor="@color/whatsapp_green_dark"
+                app:strokeWidth="1dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <!-- Seta corrigida apontando para a direita (ic_arrow_forward) -->
             <TextView
                 android:id="@+id/btn_ver_ficha_completa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:drawablePadding="6dp"
                 android:gravity="center_vertical"
-                app:drawableEndCompat="@drawable/ic_arrow_back"
-                android:drawablePadding="4dp"
-                app:drawableTint="@color/primary"
+                android:minHeight="@dimen/md3_touch_target_min"
+                android:paddingStart="8dp"
+                android:paddingEnd="4dp"
                 android:text="@string/btn_ver_ficha_completa"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
                 android:textColor="@color/primary"
-                android:textSize="12.5sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/ic_arrow_forward"
+                app:drawableTint="@color/primary" />
         </LinearLayout>
 
     </LinearLayout>

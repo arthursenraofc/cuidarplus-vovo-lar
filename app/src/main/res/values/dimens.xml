@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material Design 3 Spacing Grid (8dp baseline) -->
+    <dimen name="md3_screen_padding_horizontal">16dp</dimen>
+    <dimen name="md3_screen_padding_vertical">16dp</dimen>
+    <dimen name="md3_card_padding_standard">18dp</dimen>
+    <dimen name="md3_card_padding_generous">20dp</dimen>
+    <dimen name="md3_card_spacing_vertical">14dp</dimen>
+    <dimen name="md3_badge_padding_horizontal">12dp</dimen>
+    <dimen name="md3_badge_padding_vertical">6dp</dimen>
+    <dimen name="md3_alert_box_padding">14dp</dimen>
+
+    <!-- Material Design 3 Corner Radii -->
+    <dimen name="md3_corner_medium">12dp</dimen>
+    <dimen name="md3_corner_large">16dp</dimen>
+    <dimen name="md3_corner_extra_large">20dp</dimen>
+    <dimen name="md3_corner_pill">28dp</dimen>
+
+    <!-- Material Design 3 Elevations & Touch Targets -->
+    <dimen name="md3_card_elevation_flat">1dp</dimen>
+    <dimen name="md3_card_elevation_raised">2dp</dimen>
+    <dimen name="md3_touch_target_min">48dp</dimen>
+    <dimen name="md3_button_height_primary">52dp</dimen>
+    <dimen name="md3_rv_bottom_clearance_fab">88dp</dimen>
+</resources>

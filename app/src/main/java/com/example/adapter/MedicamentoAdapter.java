@@ -32,9 +32,24 @@ public class MedicamentoAdapter extends RecyclerView.Adapter<MedicamentoAdapter.
         void onAdministrarClick(DoseAlertaDTO doseDTO);
     }
 
+    public interface OnWhatsAppClickListener {
+        void onWhatsAppClick(DoseAlertaDTO doseDTO);
+    }
+
+    public interface OnEditarClickListener {
+        void onEditarClick(Medicamento medicamento);
+    }
+
+    public interface OnExcluirClickListener {
+        void onExcluirClick(Medicamento medicamento);
+    }
+
     private final Context context;
     private final List<DoseAlertaDTO> listaDoses = new ArrayList<>();
     private final OnAdministrarClickListener listener;
+    private OnWhatsAppClickListener whatsAppListener;
+    private OnEditarClickListener editarListener;
+    private OnExcluirClickListener excluirListener;
 
     public MedicamentoAdapter(Context context, List<DoseAlertaDTO> listaDoses, OnAdministrarClickListener listener) {
         this.context = context;
@@ -42,6 +57,28 @@ public class MedicamentoAdapter extends RecyclerView.Adapter<MedicamentoAdapter.
             this.listaDoses.addAll(listaDoses);
         }
         this.listener = listener;
+    }
+
+    public MedicamentoAdapter(Context context, List<DoseAlertaDTO> listaDoses,
+                              OnAdministrarClickListener listener, OnWhatsAppClickListener whatsAppListener) {
+        this.context = context;
+        if (listaDoses != null) {
+            this.listaDoses.addAll(listaDoses);
+        }
+        this.listener = listener;
+        this.whatsAppListener = whatsAppListener;
+    }
+
+    public void setOnWhatsAppClickListener(OnWhatsAppClickListener whatsAppListener) {
+        this.whatsAppListener = whatsAppListener;
+    }
+
+    public void setOnEditarClickListener(OnEditarClickListener editarListener) {
+        this.editarListener = editarListener;
+    }
+
+    public void setOnExcluirClickListener(OnExcluirClickListener excluirListener) {
+        this.excluirListener = excluirListener;
     }
 
     @NonNull
@@ -102,13 +139,52 @@ public class MedicamentoAdapter extends RecyclerView.Adapter<MedicamentoAdapter.
                 binding.tvObservacaoMedica.setVisibility(View.GONE);
             }
 
+            // Estoque disponível
+            if (med.getEstoque() != null && !med.getEstoque().trim().isEmpty()) {
+                binding.tvEstoqueMedicamento.setVisibility(View.VISIBLE);
+                binding.tvEstoqueMedicamento.setText(context.getString(R.string.rotulo_estoque_formato, med.getEstoque()));
+            } else {
+                binding.tvEstoqueMedicamento.setVisibility(View.GONE);
+            }
+
             // Configuração do Badge Visual de Status
             configurarBadgeStatus(dto);
 
-            // Botão "Dar Baixa Agora"
-            if (dto.isAdministradoHoje()) {
+            // Restrição Dinâmica de Interface com base na Matriz RBAC:
+            // Apenas Administrador e Enfermeiro podem visualizar e acionar os botões de editar/excluir.
+            // Para o Cuidador, os botões são ocultados (View.GONE) e desabilitados (setEnabled(false)).
+            boolean podeEditarExcluir = com.example.util.PermissaoUtils.podeEditarMedicamento(context);
+            if (podeEditarExcluir) {
+                binding.layoutAcoesGestao.setVisibility(View.VISIBLE);
+                binding.btnEditarMedicamento.setVisibility(View.VISIBLE);
+                binding.btnEditarMedicamento.setEnabled(true);
+                binding.btnExcluirMedicamento.setVisibility(View.VISIBLE);
+                binding.btnExcluirMedicamento.setEnabled(true);
+
+                binding.btnEditarMedicamento.setOnClickListener(v -> {
+                    if (editarListener != null) {
+                        editarListener.onEditarClick(med);
+                    }
+                });
+
+                binding.btnExcluirMedicamento.setOnClickListener(v -> {
+                    if (excluirListener != null) {
+                        excluirListener.onExcluirClick(med);
+                    }
+                });
+            } else {
+                binding.layoutAcoesGestao.setVisibility(View.GONE);
+                binding.btnEditarMedicamento.setVisibility(View.GONE);
+                binding.btnEditarMedicamento.setEnabled(false);
+                binding.btnExcluirMedicamento.setVisibility(View.GONE);
+                binding.btnExcluirMedicamento.setEnabled(false);
+            }
+
+            // Botão "Dar Baixa Agora" (Permitido para CUIDADOR, ENFERMEIRO e ADMINISTRADOR)
+            boolean podeConfirmarDose = com.example.util.PermissaoUtils.podeConfirmarDose(context);
+            if (dto.isAdministradoHoje() || !podeConfirmarDose) {
                 binding.btnDarBaixaAgora.setEnabled(false);
-                binding.btnDarBaixaAgora.setText(R.string.badge_status_concluido);
+                binding.btnDarBaixaAgora.setText(dto.isAdministradoHoje() ? R.string.badge_status_concluido : R.string.btn_dar_baixa_agora);
                 binding.btnDarBaixaAgora.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.surface_variant));
                 binding.btnDarBaixaAgora.setTextColor(ContextCompat.getColor(context, R.color.text_muted));
                 binding.btnDarBaixaAgora.setIconTint(ContextCompat.getColorStateList(context, R.color.text_muted));
@@ -124,6 +200,13 @@ public class MedicamentoAdapter extends RecyclerView.Adapter<MedicamentoAdapter.
                     }
                 });
             }
+
+            // Botão "Pedir Reposição no WhatsApp"
+            binding.btnWhatsappReposicao.setOnClickListener(v -> {
+                if (whatsAppListener != null) {
+                    whatsAppListener.onWhatsAppClick(dto);
+                }
+            });
         }
 
         private void configurarBadgeStatus(DoseAlertaDTO dto) {

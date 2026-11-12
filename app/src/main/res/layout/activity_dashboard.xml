@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_tela_dashboard"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main">
+
+    <!-- Top AppBar Material Design 3 com navegação de retorno ao Menu Principal -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar_dashboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        app:elevation="4dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar_dashboard"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationContentDescription="@string/desc_voltar_dashboard"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/white"
+            app:subtitle="@string/subtitulo_dashboard_instituicao"
+            app:subtitleTextColor="@color/primary_light"
+            app:title="@string/titulo_dashboard_instituicao"
+            app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Conteúdo Scrollável dos Cards de Indicadores Material Design 3 -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_indicadores_dashboard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:id="@+id/container_cards_dashboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="24dp">
+
+            <TextView
+                android:id="@+id/tv_titulo_secao_resumo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/dashboard_secao_resumo_titulo"
+                android:textColor="@color/text_primary"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/dashboard_secao_resumo_subtitulo"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+
+            <!-- CARD RESUMO 1: Total de Residentes (Material 3 Filled Tonal Card) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_resumo_total_residentes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:minHeight="96dp"
+                app:cardBackgroundColor="@color/primary_container"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:rippleColor="@color/accent"
+                app:strokeColor="@color/accent"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+
+                    <FrameLayout
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_search_box"
+                        android:backgroundTint="@color/primary">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/card_total_residentes_titulo"
+                            android:src="@drawable/ic_groups"
+                            app:tint="@color/white" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/card_total_residentes_titulo"
+                            android:textColor="@color/on_primary_container"
+                            android:textSize="13.5sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_valor_total_residentes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:includeFontPadding="false"
+                            android:textColor="@color/on_primary_container"
+                            android:textSize="34sp"
+                            android:textStyle="bold"
+                            tools:text="4" />
+
+                        <TextView
+                            android:id="@+id/tv_subtitulo_total_residentes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="@color/primary_dark"
+                            android:textSize="13sp"
+                            tools:text="4 residentes acolhidos na ILPI Vovô Lar" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_acao_ver_residentes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_badge_blood"
+                        android:backgroundTint="@color/surface"
+                        android:paddingStart="12dp"
+                        android:paddingTop="6dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="6dp"
+                        android:text="@string/acao_ver_residentes"
+                        android:textColor="@color/primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CARD RESUMO 2: Vagas Ocupadas / Disponíveis (Material 3 Outlined/Elevated Card) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_resumo_vagas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/m3_outline_variant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <FrameLayout
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_search_box"
+                            android:backgroundTint="@color/m3_surface_container_high">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:contentDescription="@string/card_vagas_titulo"
+                                android:src="@drawable/ic_bed"
+                                app:tint="@color/primary" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/card_vagas_titulo"
+                                android:textColor="@color/text_primary"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_capacidade_total_vagas"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12.5sp"
+                                tools:text="Capacidade: 20 vagas" />
+                        </LinearLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_ajustar_capacidade"
+                            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/desc_ajustar_capacidade"
+                            app:icon="@drawable/ic_tune"
+                            app:iconGravity="textStart"
+                            app:iconPadding="0dp"
+                            app:iconTint="@color/primary" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_percentual_ocupacao"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold"
+                            tools:text="20% de ocupação" />
+
+                        <TextView
+                            android:id="@+id/tv_status_lotacao"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_badge_blood"
+                            android:backgroundTint="@color/vagas_disponiveis_bg"
+                            android:paddingStart="10dp"
+                            android:paddingTop="3dp"
+                            android:paddingEnd="10dp"
+                            android:paddingBottom="3dp"
+                            android:textColor="@color/vagas_disponiveis_fg"
+                            android:textSize="11.5sp"
+                            android:textStyle="bold"
+                            tools:text="Vagas abertas" />
+                    </LinearLayout>
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progress_ocupacao_vagas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:max="100"
+                        app:indicatorColor="@color/primary"
+                        app:trackColor="@color/m3_surface_container_high"
+                        app:trackCornerRadius="6dp"
+                        app:trackThickness="12dp"
+                        tools:progress="20" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_vagas_ocupadas"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="6dp"
+                            android:layout_weight="1"
+                            app:cardBackgroundColor="@color/vagas_ocupadas_bg"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="14dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/card_vagas_ocupadas_rotulo"
+                                    android:textColor="@color/vagas_ocupadas_fg"
+                                    android:textSize="12.5sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tv_vagas_ocupadas_valor"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:includeFontPadding="false"
+                                    android:textColor="@color/vagas_ocupadas_fg"
+                                    android:textSize="28sp"
+                                    android:textStyle="bold"
+                                    tools:text="4" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:text="@string/card_vagas_leitos_em_uso"
+                                    android:textColor="@color/primary_dark"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_vagas_disponiveis"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            app:cardBackgroundColor="@color/vagas_disponiveis_bg"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="14dp">
+
+                                <TextView
+                                    android:id="@+id/tv_vagas_disponiveis_rotulo"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/card_vagas_disponiveis_rotulo"
+                                    android:textColor="@color/vagas_disponiveis_fg"
+                                    android:textSize="12.5sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tv_vagas_disponiveis_valor"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:includeFontPadding="false"
+                                    android:textColor="@color/vagas_disponiveis_fg"
+                                    android:textSize="28sp"
+                                    android:textStyle="bold"
+                                    tools:text="16" />
+
+                                <TextView
+                                    android:id="@+id/tv_vagas_disponiveis_legenda"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:text="@string/card_vagas_leitos_livres"
+                                    android:textColor="@color/vagas_disponiveis_fg"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CARD RESUMO 3: Alerta de Aniversariantes do Mês (Material 3 Alert Card) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_alerta_aniversariantes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/aniversario_card_bg"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/aniversario_card_stroke"
+                app:strokeWidth="1.5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <FrameLayout
+                            android:id="@+id/box_icone_aniversariantes"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_search_box"
+                            android:backgroundTint="@color/aniversario_icon_bg">
+
+                            <ImageView
+                                android:id="@+id/iv_icone_aniversariantes"
+                                android:layout_width="26dp"
+                                android:layout_height="26dp"
+                                android:layout_gravity="center"
+                                android:contentDescription="@string/desc_alerta"
+                                android:src="@drawable/ic_cake"
+                                app:tint="@color/aniversario_accent" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_titulo_aniversariantes_mes"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/text_primary"
+                                android:textSize="17sp"
+                                android:textStyle="bold"
+                                tools:text="Aniversariantes de Outubro" />
+
+                            <TextView
+                                android:id="@+id/tv_subtitulo_aniversariantes_mes"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:textColor="@color/aniversario_accent"
+                                android:textSize="12.5sp"
+                                android:textStyle="bold"
+                                tools:text="Alerta: 1 residente faz aniversário neste mês!" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_badge_qtd_aniversariantes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_badge_blood"
+                            android:backgroundTint="@color/aniversario_badge_bg"
+                            android:paddingStart="10dp"
+                            android:paddingTop="4dp"
+                            android:paddingEnd="10dp"
+                            android:paddingBottom="4dp"
+                            android:textColor="@color/aniversario_badge_fg"
+                            android:textSize="11.5sp"
+                            android:textStyle="bold"
+                            tools:text="1 celebração" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_lista_aniversariantes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical" />
+
+                    <LinearLayout
+                        android:id="@+id/layout_sem_aniversariantes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_search_box"
+                        android:backgroundTint="@color/m3_surface_container_low"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="14dp"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:contentDescription="@string/desc_vazio"
+                            android:src="@drawable/ic_calendar"
+                            app:tint="@color/text_muted" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_sem_aniversariantes_titulo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/text_primary"
+                                android:textSize="13.5sp"
+                                android:textStyle="bold"
+                                tools:text="Nenhum aniversariante em Outubro" />
+
+                            <TextView
+                                android:id="@+id/tv_sem_aniversariantes_subtitulo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/card_aniversariantes_vazio_subtitulo"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

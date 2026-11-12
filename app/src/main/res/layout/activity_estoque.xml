@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main">
+
+    <!-- Top AppBar Material 3 -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        app:elevation="4dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_estoque"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:popupTheme="@style/ThemeOverlay.Material3.Light"
+            app:title="@string/titulo_estoque"
+            app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!-- Card de Ação Principal: Exportação de Relatório PDF & Resumo do Estoque -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_search_box"
+                        android:backgroundTint="@color/primary_light">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/desc_medicamento"
+                            android:src="@drawable/ic_medication"
+                            app:tint="@color/primary" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_resumo_total_itens"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            tools:text="14 medicamentos cadastrados" />
+
+                        <TextView
+                            android:id="@+id/tv_resumo_itens_criticos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="@color/danger_red"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            tools:text="2 em estoque crítico" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="14dp"
+                    android:text="@string/subtitulo_estoque"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
+                <!-- Botão Primário Material Design 3 de Exportação em PDF (100% Offline) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_exportar_relatorio_pdf"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:backgroundTint="@color/primary"
+                    android:text="@string/btn_exportar_relatorio_pdf"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_picture_as_pdf"
+                    app:iconGravity="textStart"
+                    app:iconPadding="10dp"
+                    app:iconTint="@color/white" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Barra de Busca Rápida no Estoque -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/bg_search_box">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical|start"
+                android:layout_marginStart="14dp"
+                android:contentDescription="@string/desc_buscar"
+                android:src="@drawable/ic_search"
+                app:tint="@color/text_muted" />
+
+            <EditText
+                android:id="@+id/et_busca_estoque"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="44dp"
+                android:layout_marginEnd="40dp"
+                android:background="@null"
+                android:hint="Buscar medicamento ou residente..."
+                android:imeOptions="actionSearch"
+                android:inputType="textCapWords"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_muted"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/iv_limpar_busca"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="12dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/desc_limpar"
+                android:src="@drawable/ic_close"
+                android:visibility="gone"
+                app:tint="@color/text_muted" />
+        </FrameLayout>
+
+        <!-- Estado Vazio -->
+        <LinearLayout
+            android:id="@+id/layout_estoque_vazio"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginBottom="16dp"
+                android:alpha="0.4"
+                android:contentDescription="@string/desc_vazio"
+                android:src="@drawable/ic_medication"
+                app:tint="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Nenhum item encontrado no estoque"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
+                android:text="Cadastre medicamentos nas fichas dos residentes para monitorar o estoque."
+                android:textColor="@color/text_muted"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- RecyclerView com Lista Consolidada de Estoque -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_estoque_medicamentos"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

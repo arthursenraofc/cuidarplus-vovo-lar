@@ -1,6 +1,6 @@
 {
   "name": "CuidarPlus",
-  "description": "Sistema de gestão e prontuário de idosos para ILPI com cadastro, fichas médicas, busca e captura de fotos.",
+  "description": "Sistema Local-First em Material Design 3 para gestão da ILPI Vovô Lar com Dashboard de indicadores, contato rápido via WhatsApp, prontuário em PDF offline, captura de foto e alerta inteligente de estoque.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

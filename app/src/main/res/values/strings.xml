@@ -3,9 +3,7 @@
     <string name="app_name">CuidarPlus</string>
     <string name="app_subname">Sistema de Gestão &amp; Fichas para ILPI</string>
     
-    <!-- Dashboard / Menu Principal -->
-    <string name="dashboard_boas_vindas">Painel Principal</string>
-    <string name="dashboard_subtitulo">Selecione uma das opções abaixo para gerenciar os residentes.</string>
+    <!-- Menu Principal (Sprint 3 - Módulos e Operação Diária) -->
     <string name="btn_menu_cadastrar">Cadastrar Novo Idoso</string>
     <string name="btn_menu_cadastrar_desc">Registrar nova ficha com dados médicos e foto</string>
     <string name="btn_menu_fichas">Ver Fichas dos Idosos</string>
@@ -15,20 +13,25 @@
     <!-- Perfil / Login -->
     <string name="titulo_selecionar_perfil">Perfil Ativo no Sistema</string>
     <string name="perfil_admin_titulo">Administrador (ADM)</string>
+    <string name="perfil_enfermeiro_titulo">Enfermeiro(a) / Equipe Clínica</string>
     <string name="perfil_cuidador_titulo">Cuidador / Enfermagem</string>
     <string name="msg_perfil_admin_ativado">Modo Administrador (ADM) ativado com sucesso.</string>
+    <string name="msg_perfil_enfermeiro_ativado">Modo Enfermeiro(a) ativado com sucesso.</string>
     <string name="msg_perfil_cuidador_ativado">Modo Cuidador ativado com sucesso.</string>
 
     <string name="badge_perfil_admin">Perfil: Administrador (ADM)</string>
     <string name="badge_perfil_admin_lista">Perfil: Administrador (Acesso Total)</string>
+    <string name="badge_perfil_enfermeiro">Perfil: Enfermeiro(a) (Clínico)</string>
+    <string name="badge_perfil_enfermeiro_lista">Perfil: Enfermeiro(a) (Prescrições)</string>
     <string name="badge_perfil_cuidador">Perfil: Cuidador (Consulta)</string>
     <string name="badge_perfil_cuidador_lista">Perfil: Cuidador (Modo Consulta)</string>
     <string name="ativo_admin_desc">Ativo: Administrador (Controle Total)</string>
     <string name="ativo_admin_clique">Ativo: Administrador (Toque para alternar)</string>
+    <string name="ativo_enfermeiro_desc">Ativo: Enfermeiro(a) (Prescrições &amp; Medicamentos)</string>
     <string name="ativo_cuidador_desc">Ativo: Cuidador / Enfermagem (Modo Leitura)</string>
+    <string name="contador_residentes_padrao">4 Residentes</string>
     <string name="contador_residentes_singular" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d Residente</string>
     <string name="contador_residentes_plural" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d Residentes</string>
-    <string name="rodape_sistema">CuidarPlus • Sistema Offline Local SQLite (Sprint 1)</string>
 
     <!-- Lista de Idosos -->
     <string name="titulo_lista_idosos">Fichas dos Idosos</string>
@@ -51,11 +54,14 @@
     <string name="titulo_cadastro_idoso">Cadastrar Novo Idoso</string>
     <string name="titulo_editar_idoso">Editar Ficha do Idoso</string>
     <string name="hint_nome">Nome Completo *</string>
-    <string name="hint_data_nascimento">Data de Nascimento (DD/MM/AAAA) *</string>
+    <string name="hint_data_nascimento">Data de Nascimento *</string>
+    <string name="helper_data_nascimento">Digite apenas números (DD/MM/AAAA)</string>
+    <string name="desc_selecionar_data">Abrir calendário para selecionar data de nascimento</string>
     <string name="hint_tipo_sanguineo">Tipo Sanguíneo *</string>
     <string name="hint_alergias">Alergias (Ex: Penicilina, Dipirona, Glúten&#8230;)</string>
     <string name="hint_restricoes">Restrições Médicas / Diagnósticos (Ex: Diabético, Hipertenso&#8230;)</string>
-    <string name="hint_contato_emergencia" xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">Contato de Emergência (Ex: Filho Carlos - (51) 99999-9999) *</string>
+    <string name="hint_contato_emergencia">Telefone do Familiar / Emergência *</string>
+    <string name="helper_contato_emergencia">Celular (XX) XXXXX-XXXX ou Fixo (XX) XXXX-XXXX</string>
     <string name="btn_tirar_foto">Câmera</string>
     <string name="btn_galeria_foto">Galeria</string>
     <string name="btn_salvar">Salvar Cadastro</string>
@@ -78,6 +84,21 @@
     <string name="secao_medica">Atenção Médica e Alergias</string>
     <string name="secao_emergencia">Contato de Emergência</string>
     <string name="btn_ligar_emergencia">Ligar para Emergência</string>
+    <string name="btn_whatsapp_familiar">Contatar Familiar via WhatsApp</string>
+    <string name="residente_padrao">residente</string>
+    <string name="msg_padrao_whatsapp_familiar">Olá! Entro em contato da ILPI Vovô Lar a respeito do(a) residente %1$s. Como podemos ajudar?</string>
+    <string name="erro_telefone_familiar_vazio">Nenhum telefone de familiar ou emergência cadastrado para este residente.</string>
+    <string name="erro_telefone_familiar_invalido">O telefone cadastrado não possui um número válido com DDD para contato via WhatsApp.</string>
+    <string name="erro_whatsapp_nao_instalado">O aplicativo WhatsApp não está instalado neste dispositivo.</string>
+    <string name="erro_abrir_whatsapp_generico">Não foi possível iniciar o contato via WhatsApp no momento.</string>
+    <string name="dialog_whatsapp_indisponivel_titulo">WhatsApp não encontrado</string>
+    <string name="dialog_whatsapp_indisponivel_msg">O aplicativo WhatsApp não está instalado neste dispositivo.\n\nDestinatário: +%1$s\n\nMensagem preparada:\n\"%2$s\"\n\nDeseja enviar esta mensagem por SMS ou compartilhar por outro aplicativo?</string>
+    <string name="btn_enviar_sms">Enviar por SMS</string>
+    <string name="btn_compartilhar_mensagem">Compartilhar</string>
+    <string name="erro_sms_indisponivel">Nenhum aplicativo de SMS encontrado neste dispositivo.</string>
+    <string name="chooser_compartilhar_mensagem_familiar">Enviar mensagem ao familiar</string>
+    <string name="btn_whatsapp_aviso_rapido">WhatsApp Familiar</string>
+    <string name="btn_whatsapp_pedir_remedio">Pedir Reposição via WhatsApp</string>
     <string name="btn_editar">Editar Ficha</string>
     <string name="btn_excluir">Excluir Registro</string>
     <string name="rotulo_alergias">Alergias Conhecidas:</string>
@@ -105,17 +126,26 @@
     <!-- Sprint 2: Medicamentos e Alarmes -->
     <string name="titulo_lista_medicamentos">Medicamentos Prescritos</string>
     <string name="titulo_cadastro_medicamento">Novo Medicamento</string>
+    <string name="titulo_editar_medicamento">Editar Medicamento</string>
+    <string name="subtitulo_editar_medicamento">Atualize a dosagem, horários, estoque e frequência da prescrição.</string>
     <string name="btn_menu_medicamentos">Controle de Medicamentos</string>
     <string name="btn_menu_medicamentos_desc">Prescrições, alarmes e registro de doses administradas</string>
     <string name="btn_novo_medicamento">Novo Medicamento</string>
+    <string name="btn_estoque_curto">Estoque</string>
+    <string name="desc_fechar_medicamentos">Fechar tela de medicamentos prescritos</string>
     <string name="label_selecionar_idoso">Residente *</string>
     <string name="hint_selecionar_idoso">Selecione o Idoso</string>
     <string name="hint_nome_medicamento">Nome do Medicamento *</string>
     <string name="hint_dosagem">Dosagem (Ex: 50mg, 1 comprimido, 20 gotas) *</string>
+    <string name="hint_estoque">Estoque Atual / Frascos (Ex: 30 comp., 2 caixas)</string>
+    <string name="rotulo_estoque_formato">Estoque: %1$s</string>
     <string name="hint_horario_inicial">Horário da 1ª Dose (HH:mm) *</string>
     <string name="hint_frequencia_horas">Intervalo / Frequência *</string>
     <string name="btn_salvar_medicamento">Salvar Medicamento</string>
+    <string name="btn_salvar_alteracoes">Salvar Alterações</string>
+    <string name="btn_excluir_medicamento">Excluir Medicamento</string>
     <string name="btn_administrar_dose">Marcar como Administrado</string>
+    <string name="status_ativo_switch">Prescrição Ativa no Sistema</string>
     <string name="formato_intervalo_horas" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">A cada %1$d horas</string>
     <string name="formato_primeiro_horario">1ª Dose: %1$s</string>
     <string name="formato_dosagem_rotulo">Dose: %1$s</string>
@@ -124,9 +154,15 @@
     <string name="sem_medicamentos_titulo">Nenhum medicamento cadastrado</string>
     <string name="sem_medicamentos_desc">Toque em [Novo Medicamento] para registrar a primeira prescrição.</string>
     <string name="sucesso_medicamento_salvo">Medicamento e alarme cadastrados com sucesso!</string>
+    <string name="sucesso_medicamento_atualizado">Medicamento atualizado e alarmes reagendados com sucesso!</string>
+    <string name="sucesso_medicamento_excluido">Medicamento excluído e alarme cancelado.</string>
     <string name="sucesso_dose_administrada">Dose de %1$s registrada no histórico como administrada!</string>
     <string name="confirmar_administracao_titulo">Confirmar Administração</string>
     <string name="confirmar_administracao_msg">Confirma a administração de %1$s (%2$s) para o residente %3$s?</string>
+    <string name="confirmar_exclusao_med_titulo">Excluir Medicamento?</string>
+    <string name="confirmar_exclusao_med_msg">Tem certeza de que deseja excluir permanentemente o medicamento \"%1$s\"? O alarme associado no AlarmManager será cancelado.</string>
+    <string name="aviso_perfil_restrito_med_titulo">Acesso Restrito</string>
+    <string name="aviso_perfil_restrito_med_msg">Apenas usuários com perfil Administrador ou Enfermeiro podem criar, editar ou excluir prescrições médicas. Cuidadores têm permissão para confirmação de administração das doses.</string>
     <string name="btn_confirmar_administrado">Confirmar</string>
     <string name="total_medicamentos_zero">0 medicamentos cadastrados</string>
     <string name="total_medicamentos_singular" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d medicamento</string>
@@ -165,4 +201,139 @@
     <string name="notif_action_administrado">Marcar como Administrado</string>
     <string name="notif_dose_administrada_sucesso">Dose de %1$s administrada com sucesso!</string>
     <string name="label_observacao_formato">Obs: %1$s</string>
+
+    <!-- Relatórios em PDF & Gestão de Estoque (100% Offline) -->
+    <string name="titulo_estoque">Estoque Geral de Medicamentos</string>
+    <string name="subtitulo_estoque">Visão consolidada do estoque da ILPI Vovô Lar com exportação de relatórios em PDF.</string>
+    <string name="btn_exportar_relatorio_pdf">Exportar Relatório em PDF</string>
+    <string name="btn_exportar_ficha_pdf">Exportar Ficha em PDF</string>
+    <string name="btn_compartilhar_ficha_pdf">Compartilhar PDF (WhatsApp / E-mail)</string>
+    <string name="acao_compartilhar_pdf">Compartilhar</string>
+    <string name="btn_exportar_pdf_resumo">Exportar PDF</string>
+    <string name="sucesso_pdf_gerado">Relatório PDF gerado com sucesso!</string>
+    <string name="sucesso_ficha_pdf_salva">Prontuário PDF salvo em Documentos com sucesso!</string>
+    <string name="erro_gerar_pdf">Erro ao gerar documento em PDF.</string>
+    <string name="erro_gerar_ficha_pdf">Falha ao salvar o prontuário em PDF no armazenamento.</string>
+    <string name="gerando_pdf">Gerando prontuário em PDF, aguarde&#8230;</string>
+    <string name="btn_menu_estoque">Estoque Geral de Medicamentos</string>
+    <string name="btn_menu_estoque_desc">Inventário consolidado e emissão de relatório PDF</string>
+    <string name="status_estoque_critico">Estoque Crítico</string>
+    <string name="status_estoque_alerta">Vencimento Próximo</string>
+    <string name="status_estoque_normal">Normal</string>
+    <string name="rotulo_responsavel_residente">Residente: %1$s</string>
+
+    <!-- Captura de Foto de Perfil do Residente (Armazenamento Privado) -->
+    <item name="tag_foto_estado" type="id" />
+    <string name="btn_capturar_foto_perfil">Capturar Foto de Perfil</string>
+    <string name="btn_atualizar_foto_perfil">Atualizar Foto de Perfil</string>
+    <string name="desc_capturar_foto_camera">Capturar nova foto de perfil com a câmera</string>
+    <string name="sucesso_foto_perfil_atualizada">Foto de perfil atualizada e salva com sucesso!</string>
+    <string name="msg_permissao_camera_necessaria">Permissão de câmera necessária para fotografar os residentes. Por favor, conceda o acesso.</string>
+    <string name="erro_camera_indisponivel">Nenhum aplicativo de câmera encontrado neste dispositivo.</string>
+    <string name="erro_salvar_foto_camera">Não foi possível processar e salvar a foto capturada.</string>
+
+    <!-- Dashboard Institucional em Tela Dedicada (Material Design 3) -->
+    <string name="titulo_dashboard_instituicao">Dashboard da Instituição</string>
+    <string name="subtitulo_dashboard_instituicao">Resumo visual de residentes, leitos e celebrações</string>
+    <string name="desc_voltar_dashboard">Voltar ao menu principal</string>
+    <string name="btn_menu_dashboard">Dashboard &amp; Indicadores</string>
+    <string name="btn_menu_dashboard_desc">Total de residentes, vagas ocupadas/disponíveis e aniversariantes do mês</string>
+    <string name="badge_menu_dashboard_padrao">Visão Geral &amp; Vagas</string>
+    <string name="badge_menu_dashboard_aniv_singular" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d/%2$d vagas • %3$d aniversariante</string>
+    <string name="badge_menu_dashboard_aniv_plural" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d/%2$d vagas • %3$d aniversariantes</string>
+    <string name="badge_menu_dashboard_sem_aniv" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d/%2$d vagas ocupadas</string>
+    <string name="dashboard_secao_resumo_titulo">Resumo da Instituição</string>
+    <string name="dashboard_secao_resumo_subtitulo">Indicadores de residentes, ocupação de leitos e celebrações do mês.</string>
+    <string name="dashboard_secao_atalhos_titulo">Módulos e Operação Diária</string>
+    <string name="dashboard_secao_atalhos_subtitulo">Acesse rapidamente prontuários, prescrições, estoque, indicadores e perfis.</string>
+
+    <!-- Card 1: Total de Residentes -->
+    <string name="card_total_residentes_titulo">Total de Residentes</string>
+    <string name="card_total_residentes_sub_zero">Nenhum residente cadastrado no momento</string>
+    <string name="card_total_residentes_sub_singular" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d residente acolhido na ILPI Vovô Lar</string>
+    <string name="card_total_residentes_sub_plural" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d residentes acolhidos na ILPI Vovô Lar</string>
+    <string name="acao_ver_residentes">Ver fichas</string>
+
+    <!-- Card 2: Vagas Ocupadas / Disponíveis -->
+    <string name="card_vagas_titulo">Ocupação de Vagas</string>
+    <string name="card_vagas_capacidade_formato" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">Capacidade: %1$d vagas</string>
+    <string name="card_vagas_percentual_formato">%1$d%% de ocupação</string>
+    <string name="card_vagas_ocupadas_rotulo">Vagas Ocupadas</string>
+    <string name="card_vagas_disponiveis_rotulo">Vagas Disponíveis</string>
+    <string name="card_vagas_leitos_em_uso">leitos ocupados</string>
+    <string name="card_vagas_leitos_livres">leitos livres</string>
+    <string name="card_vagas_lotacao_maxima">Lotação completa</string>
+    <string name="card_vagas_acima_capacidade" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">Lotação máxima (+%1$d extra)</string>
+    <string name="desc_ajustar_capacidade">Ajustar capacidade total de vagas</string>
+    <string name="dialog_capacidade_titulo">Capacidade Total de Vagas</string>
+    <string name="dialog_capacidade_mensagem">Informe o número total de leitos/vagas disponíveis na ILPI Vovô Lar:</string>
+    <string name="hint_capacidade_vagas">Total de vagas (ex: 20)</string>
+    <string name="sucesso_capacidade_atualizada" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">Capacidade atualizada para %1$d vagas.</string>
+    <string name="erro_capacidade_invalida">Informe um número válido de vagas (mínimo de 1).</string>
+
+    <!-- Card 3: Alerta de Aniversariantes do Mês -->
+    <string name="card_aniversariantes_titulo_formato">Aniversariantes de %1$s</string>
+    <string name="card_aniversariantes_alerta_singular" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">Alerta: %1$d residente faz aniversário neste mês!</string>
+    <string name="card_aniversariantes_alerta_plural" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">Alerta: %1$d residentes fazem aniversário neste mês!</string>
+    <string name="card_aniversariantes_badge_singular" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d celebração</string>
+    <string name="card_aniversariantes_badge_plural" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d celebrações</string>
+    <string name="card_aniversariantes_badge_zero">Sem alertas</string>
+    <string name="card_aniversariantes_vazio_titulo">Nenhum aniversariante em %1$s</string>
+    <string name="card_aniversariantes_vazio_subtitulo">Não há residentes com aniversário registrado para este mês.</string>
+    <string name="item_aniversariante_dia_formato">Dia %1$02d/%2$02d</string>
+    <string name="item_aniversariante_hoje_badge">Hoje!</string>
+    <string name="item_aniversariante_idade_formato" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">Completa %1$d anos</string>
+    <string name="item_aniversariante_leito_formato" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">Completa %1$d anos • %2$s</string>
+    <string name="badge_exportar_relatorio_pdf">Exportar Relatório PDF</string>
+
+    <!-- Alerta de Estoque Mínimo Configurável (MedicamentoActivity) -->
+    <string name="card_estoque_alerta_titulo">Alerta de Estoque Baixo</string>
+    <string name="card_estoque_regular_titulo">Estoque em Dia</string>
+    <string name="card_estoque_sem_itens_titulo">Monitoramento de Estoque</string>
+    <string name="card_estoque_alerta_sub_singular" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d item abaixo do mín. (%2$d un.)</string>
+    <string name="card_estoque_alerta_sub_plural" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d itens abaixo do mín. (%2$d un.)</string>
+    <string name="card_estoque_regular_sub" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">Todos acima do mín. (%1$d un.)</string>
+    <string name="card_estoque_sem_itens_sub" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">Nenhum item • Mínimo: %1$d un.</string>
+    <string name="badge_estoque_critico_formato" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">! %1$d</string>
+    <string name="badge_estoque_ok">OK</string>
+    <string name="desc_icone_notificacao_estoque">Ícone de notificação de status do estoque</string>
+    <string name="desc_configurar_limite_estoque">Configurar limite mínimo de estoque</string>
+    <string name="dialog_limite_estoque_titulo">Limite Mínimo de Estoque</string>
+    <string name="dialog_limite_estoque_mensagem">Defina a quantidade mínima por medicamento. Quando qualquer item cadastrado tiver estoque inferior a este valor, o ícone e o badge ficarão vermelhos:</string>
+    <string name="hint_limite_minimo_estoque">Limite mínimo (ex: 10 unidades)</string>
+    <string name="btn_salvar_limite_estoque">Salvar Limite</string>
+    <string name="sucesso_limite_estoque_atualizado" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">Limite mínimo de estoque atualizado para %1$d unidades.</string>
+    <string name="erro_limite_estoque_invalido">Informe uma quantidade mínima válida (mínimo de 1 unidade).</string>
+
+    <!-- Resumo do Prontuário em PDF & Consulta Offline Local -->
+    <string name="secao_resumo_pdf_offline">Resumo do Prontuário Offline (PDF)</string>
+    <string name="desc_resumo_pdf_offline">Gere um resumo executivo das informações principais do prontuário e salve no dispositivo para consulta offline.</string>
+    <string name="status_resumo_nao_salvo">Nenhum resumo salvo localmente para este residente.</string>
+    <string name="status_resumo_salvo_offline">Disponível offline no aparelho • Atualizado em %1$s (%2$s)</string>
+    <string name="btn_gerar_resumo_pdf">Gerar e Salvar Resumo em PDF</string>
+    <string name="btn_abrir_resumo_offline">Consultar Resumo Salvo Offline</string>
+    <string name="btn_salvar_pasta_resumo_pdf">Salvar Cópia em Pasta do Aparelho</string>
+    <string name="btn_atalho_resumo_pdf_lista">Resumo PDF</string>
+    <string name="desc_atalho_resumo_pdf_lista">Selecionar um idoso para gerar e salvar resumo do prontuário em PDF offline</string>
+    <string name="dialog_selecionar_idoso_resumo_titulo">Gerar Resumo em PDF (Offline)</string>
+    <string name="dialog_selecionar_idoso_resumo_vazio">Cadastre ao menos um residente para gerar o resumo do prontuário em PDF.</string>
+    <string name="item_idoso_resumo_salvo_tag"> • [Salvo offline]</string>
+    <string name="gerando_resumo_pdf">Gerando resumo do prontuário em PDF e salvando no armazenamento local&#8230;</string>
+    <string name="sucesso_resumo_pdf_offline">Resumo em PDF salvo localmente para consulta offline!</string>
+    <string name="sucesso_copia_salva_pasta">Cópia do resumo PDF salva na pasta escolhida com sucesso!</string>
+    <string name="sucesso_copia_salva_downloads">Cópia salva em Downloads/CuidarPlus: %1$s</string>
+    <string name="erro_gerar_resumo_pdf">Não foi possível gerar ou salvar o resumo do prontuário em PDF.</string>
+    <string name="acao_consultar_offline">Abrir</string>
+
+    <!-- Tela Visualizador de PDF Offline -->
+    <string name="titulo_visualizador_pdf_offline">Consulta Offline de PDF</string>
+    <string name="subtitulo_visualizador_pdf_offline">Armazenado localmente no dispositivo (100% offline)</string>
+    <string name="desc_voltar_visualizador_pdf">Fechar consulta offline de PDF</string>
+    <string name="badge_arquivo_offline_ativo">Disponível Offline</string>
+    <string name="formato_metadados_pdf_offline">%1$s • %2$s • Salvo em %3$s</string>
+    <string name="btn_salvar_downloads_rapido">Salvar em Downloads</string>
+    <string name="btn_escolher_pasta_local">Escolher Pasta Local</string>
+    <string name="btn_abrir_leitor_externo">Leitor Externo</string>
+    <string name="desc_pagina_pdf_renderizada">Página renderizada do resumo do prontuário em PDF</string>
+    <string name="aviso_visualizador_fallback">Arquivo PDF gravado e validado com sucesso no armazenamento local (%1$s). Utilize os botões abaixo para salvar em pasta pública ou compartilhar.</string>
 </resources>

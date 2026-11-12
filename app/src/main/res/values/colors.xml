@@ -1,33 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Vibrant Palette Core Colors -->
-    <color name="primary">#6750A4</color>
-    <color name="primary_dark">#4F378B</color>
-    <color name="primary_light">#E8DEF8</color>
+    <!-- Material Design 3 Official Core Tokens (CuidarPlus Clinical Palette) -->
+    <color name="primary">#5B4397</color>
+    <color name="primary_dark">#432C7A</color>
+    <color name="primary_light">#EDE7F6</color>
     <color name="primary_container">#EADDFF</color>
     <color name="on_primary_container">#21005D</color>
     <color name="accent">#D0BCFF</color>
-    
-    <!-- Profile Theme Colors -->
-    <color name="admin_color">#6750A4</color>
+
+    <!-- Secondary & Clinical Tokens (MD3 colorContainer / onColorContainer) -->
+    <color name="md3_secondary">#006874</color>
+    <color name="md3_on_secondary">#FFFFFF</color>
+    <color name="md3_secondary_container">#D8F2F5</color>
+    <color name="md3_on_secondary_container">#001F24</color>
+
+    <!-- Health & Alert Semantic Containers (High Contrast WCAG AAA for Nursing Staff) -->
+    <color name="md3_blood_container">#EADDFF</color>
+    <color name="md3_on_blood_container">#21005D</color>
+    <color name="md3_allergy_container">#FCE8E6</color>
+    <color name="md3_on_allergy_container">#410E0B</color>
+    <color name="md3_allergy_icon">#B3261E</color>
+    <color name="md3_clinical_container">#E2F3F5</color>
+    <color name="md3_on_clinical_container">#00363D</color>
+    <color name="md3_safe_container">#E6F4EA</color>
+    <color name="md3_on_safe_container">#0D5324</color>
+
+    <!-- Profile Theme Colors (RBAC) -->
+    <color name="admin_color">#5B4397</color>
     <color name="admin_light">#EADDFF</color>
+    <color name="enfermeiro_color">#006874</color>
+    <color name="enfermeiro_light">#D8F2F5</color>
     <color name="cuidador_color">#7D5260</color>
     <color name="cuidador_light">#FFD8E4</color>
 
-    <!-- Surfaces & Canvas -->
-    <color name="bg_main">#FEF7FF</color>
+    <!-- Surfaces, Canvas & Outlines (MD3 Neutral Variant) -->
+    <color name="bg_main">#FAF8FC</color>
     <color name="surface">#FFFFFF</color>
     <color name="surface_variant">#ECE6F0</color>
     <color name="text_primary">#1D1B20</color>
     <color name="text_secondary">#49454F</color>
-    <color name="text_muted">#79747E</color>
-    <color name="divider">#CAC4D0</color>
+    <color name="text_muted">#726D78</color>
+    <color name="divider">#DDD7E4</color>
 
-    <!-- Status & Alerts (Material 3 Vibrant Tones) -->
+    <!-- Status & Alerts -->
     <color name="danger_red">#B3261E</color>
     <color name="danger_text">#410E0B</color>
-    <color name="danger_light">#F9DEDC</color>
-    <color name="success_green">#1E6B37</color>
+    <color name="danger_light">#FCE8E6</color>
+    <color name="success_green">#186A3B</color>
+
+    <!-- WhatsApp Official & Tonal Colors -->
+    <color name="whatsapp_green">#25D366</color>
+    <color name="whatsapp_green_dark">#128C7E</color>
+    <color name="whatsapp_container">#E7F9EE</color>
+    <color name="on_whatsapp_container">#0B5C28</color>
+
+    <!-- Material 3 Dashboard Tonal Containers & Semantic Indicators -->
+    <color name="m3_surface_container_low">#F7F2FA</color>
+    <color name="m3_surface_container">#F3EDF7</color>
+    <color name="m3_surface_container_high">#ECE6F0</color>
+    <color name="m3_outline_variant">#CAC4D0</color>
+
+    <color name="vagas_ocupadas_bg">#EADDFF</color>
+    <color name="vagas_ocupadas_fg">#21005D</color>
+    <color name="vagas_disponiveis_bg">#E6F4EA</color>
+    <color name="vagas_disponiveis_fg">#137333</color>
+    <color name="vagas_alerta_bg">#FEF7E0</color>
+    <color name="vagas_alerta_fg">#B06000</color>
+
+    <color name="aniversario_card_bg">#FFF8F5</color>
+    <color name="aniversario_card_stroke">#F2B8B5</color>
+    <color name="aniversario_icon_bg">#FFDAD6</color>
+    <color name="aniversario_accent">#904A43</color>
+    <color name="aniversario_badge_bg">#FFDBCF</color>
+    <color name="aniversario_badge_fg">#7D2B1F</color>
+    <color name="aniversario_hoje_bg">#186A3B</color>
+
+    <!-- Card de Alerta de Estoque (MedicamentoActivity) -->
+    <color name="estoque_alerta_card_bg">#FFF5F4</color>
+    <color name="estoque_alerta_stroke">#B3261E</color>
+    <color name="estoque_alerta_icon_bg">#FCE8E6</color>
+    <color name="estoque_alerta_fg">#B3261E</color>
+    <color name="estoque_ok_card_bg">#FFFFFF</color>
+    <color name="estoque_ok_stroke">#A8DAB5</color>
+    <color name="estoque_ok_icon_bg">#E6F4EA</color>
+    <color name="estoque_ok_fg">#186A3B</color>
 
     <color name="white">#FFFFFFFF</color>
 </resources>

@@ -11,16 +11,32 @@ plugins {
 
 android {
   namespace = "com.example"
-  compileSdk = 36
+  compileSdk { version = release(36) { minorApiLevel = 1 } }
 
   defaultConfig {
     applicationId = "com.aistudio.laridosos.app"
     minSdk = 24
     targetSdk = 36
-    versionCode = 1
-    versionName = "1.0"
+    versionCode = 14
+    versionName = "3.0.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  }
+
+  signingConfigs {
+    create("release") {
+      val keystorePath = System.getenv("KEYSTORE_PATH") ?: "${rootDir}/my-upload-key.jks"
+      storeFile = file(keystorePath)
+      storePassword = System.getenv("STORE_PASSWORD")
+      keyAlias = "upload"
+      keyPassword = System.getenv("KEY_PASSWORD")
+    }
+    create("debugConfig") {
+      storeFile = file("${rootDir}/debug.keystore")
+      storePassword = "android"
+      keyAlias = "androiddebugkey"
+      keyPassword = "android"
+    }
   }
 
   buildTypes {
@@ -28,30 +44,24 @@ android {
       isCrunchPngs = false
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+      signingConfig = signingConfigs.getByName("release")
     }
-    debug {
-      // Utiliza a chave de depuração padrão do Android Studio
-    }
+    debug { signingConfig = signingConfigs.getByName("debugConfig") }
   }
-
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
   }
-
   buildFeatures {
     compose = true
     viewBinding = true
     buildConfig = true
   }
-
   testOptions { unitTests { isIncludeAndroidResources = true } }
-
   dependenciesInfo {
     includeInApk = false
     includeInBundle = true
   }
-
   lint {
     disable += setOf("AndroidGradlePluginVersion", "GradleDependency", "NewerVersionAvailable", "IconDuplicates")
     abortOnError = false
@@ -76,6 +86,7 @@ dependencies {
   implementation(libs.androidx.recyclerview)
   implementation(libs.androidx.constraintlayout)
   implementation(libs.androidx.cardview)
+  implementation(libs.androidx.security.crypto)
   implementation(platform(libs.androidx.compose.bom))
   implementation(platform(libs.firebase.bom))
   // implementation(libs.accompanist.permissions)

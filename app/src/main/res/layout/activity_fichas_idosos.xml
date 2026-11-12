@@ -2,48 +2,52 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_fichas_idosos"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_main">
 
-    <!-- Top AppBar com Visual Moderno Material 3 -->
+    <!-- Top AppBar Material Design 3 -->
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar_lista"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
-        app:elevation="4dp">
+        app:elevation="2dp">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar_lista"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:navigationIconTint="@color/white"
             app:title="@string/titulo_lista_idosos"
+            app:titleTextAppearance="?attr/textAppearanceTitleLarge"
             app:titleTextColor="@color/white" />
 
-        <!-- Faixa informativa com Perfil Ativo e Total de Residentes -->
+        <!-- Faixa informativa com Perfil Ativo (MD3 Container) e Total de Residentes -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="12dp">
+            android:paddingStart="@dimen/md3_screen_padding_horizontal"
+            android:paddingEnd="@dimen/md3_screen_padding_horizontal"
+            android:paddingBottom="14dp">
 
             <TextView
                 android:id="@+id/tv_badge_perfil_atual"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_search_box"
+                android:background="@drawable/bg_badge_blood"
                 android:backgroundTint="@color/primary_container"
                 android:paddingStart="12dp"
-                android:paddingTop="4dp"
+                android:paddingTop="5dp"
                 android:paddingEnd="12dp"
-                android:paddingBottom="4dp"
+                android:paddingBottom="5dp"
                 android:text="@string/badge_perfil_admin"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:textColor="@color/on_primary_container"
-                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <View
@@ -55,76 +59,85 @@
                 android:id="@+id/tv_total_residentes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="3 residentes"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
                 android:textColor="@color/primary_light"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="4 residentes" />
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Conteúdo Principal: Barra de Busca Pill 28dp + Lista com Folga do FAB -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Barra de Pesquisa em Tempo Real Dinâmica -->
-        <com.google.android.material.card.MaterialCardView
+        <!-- Barra de Busca Material Design 3 em formato Pill (28dp) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_busca_idosos"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="14dp"
-            app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:strokeColor="@color/divider"
-            app:strokeWidth="1dp">
+            android:layout_marginStart="@dimen/md3_screen_padding_horizontal"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="@dimen/md3_screen_padding_horizontal"
+            android:layout_marginBottom="8dp"
+            app:boxBackgroundColor="@color/surface"
+            app:boxStrokeColor="@color/primary"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+            app:endIconContentDescription="@string/desc_limpar"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/text_muted"
+            app:hintEnabled="false"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.CuidarPlus.SearchPill"
+            app:startIconContentDescription="@string/desc_buscar"
+            app:startIconDrawable="@drawable/ic_search"
+            app:startIconTint="@color/primary">
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_campo_busca"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp">
+                android:layout_height="wrap_content"
+                android:hint="@string/buscar_idoso_hint"
+                android:imeOptions="actionSearch"
+                android:importantForAutofill="no"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                android:minHeight="52dp"
+                android:paddingTop="14dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="14dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_muted" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:contentDescription="@string/desc_buscar"
-                    android:src="@drawable/ic_search"
-                    app:tint="@color/primary" />
+        <!-- Atalho rápido para selecionar um residente e gerar/consultar o Resumo PDF Offline -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_gerar_resumo_selecionado"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/md3_screen_padding_horizontal"
+            android:layout_marginEnd="@dimen/md3_screen_padding_horizontal"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/desc_atalho_resumo_pdf_lista"
+            android:minHeight="48dp"
+            android:text="@string/dialog_selecionar_idoso_resumo_titulo"
+            android:textAllCaps="false"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="@color/md3_on_secondary_container"
+            android:textStyle="bold"
+            app:backgroundTint="@color/md3_secondary_container"
+            app:cornerRadius="14dp"
+            app:icon="@drawable/ic_picture_as_pdf"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:iconTint="@color/md3_on_secondary_container" />
 
-                <EditText
-                    android:id="@+id/et_campo_busca"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:hint="@string/buscar_idoso_hint"
-                    android:imeOptions="actionSearch"
-                    android:importantForAutofill="no"
-                    android:inputType="textPersonName"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_muted"
-                    android:textSize="14sp" />
-
-                <ImageView
-                    android:id="@+id/iv_limpar_busca"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:contentDescription="@string/desc_limpar"
-                    android:focusable="true"
-                    android:src="@drawable/ic_close"
-                    android:visibility="gone"
-                    app:tint="@color/text_muted" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Lista Recycler com Rolagem e Espaçamento Seguro -->
+        <!-- Lista Recycler com clipToPadding="false" e paddingBottom="88dp" para não sobrepor o FAB -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -138,6 +151,7 @@
                 android:paddingTop="4dp"
                 android:paddingEnd="12dp"
                 android:paddingBottom="88dp"
+                android:scrollbars="vertical"
                 tools:listitem="@layout/item_idoso" />
 
             <!-- Estado Vazio / Nenhum Resultado Encontrado -->
@@ -153,17 +167,17 @@
                 <FrameLayout
                     android:layout_width="96dp"
                     android:layout_height="96dp"
-                    android:background="@drawable/bg_search_box"
-                    android:backgroundTint="@color/surface_variant">
+                    android:background="@drawable/bg_badge_blood"
+                    android:backgroundTint="@color/primary_container">
 
                     <ImageView
                         android:id="@+id/iv_vazio_icone"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:layout_gravity="center"
                         android:contentDescription="@string/desc_vazio"
                         android:src="@drawable/ic_medical_folder"
-                        app:tint="@color/primary" />
+                        app:tint="@color/on_primary_container" />
                 </FrameLayout>
 
                 <TextView
@@ -173,8 +187,8 @@
                     android:layout_marginTop="20dp"
                     android:gravity="center"
                     android:text="@string/sem_idosos_titulo"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:textColor="@color/text_primary"
-                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -184,14 +198,14 @@
                     android:layout_marginTop="8dp"
                     android:gravity="center"
                     android:text="@string/sem_idosos_subtitulo"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="@color/text_secondary" />
             </LinearLayout>
 
         </FrameLayout>
     </LinearLayout>
 
-    <!-- Botão Flutuante (FAB) para Cadastrar Novo Idoso -->
+    <!-- Botão Flutuante Estendido (ExtendedFAB) para Cadastrar Novo Idoso -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_novo_idoso"
         android:layout_width="wrap_content"

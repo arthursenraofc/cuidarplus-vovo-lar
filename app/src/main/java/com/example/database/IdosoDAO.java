@@ -4,31 +4,50 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.model.Idoso;
+import com.example.model.PerfilUsuario;
+import com.example.util.PermissaoUtils;
+import com.example.util.SessaoManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Classe DAO (Data Access Object) responsável pelas operações de CRUD na tabela de idosos.
- * Utiliza try-with-resources para fechamento automático de cursores e conexões com o SQLite,
- * prevenindo vazamentos de memória (resource leaks).
+ * Contém travas de segurança de nível de persistência (RBAC) para garantir que
+ * operações de alteração e exclusão somente sejam executadas por perfis autorizados (ADMINISTRADOR).
  */
 public class IdosoDAO {
 
+    private static final String TAG = "IdosoDAO";
     private final DatabaseHelper dbHelper;
+    private final Context context;
 
     public IdosoDAO(Context context) {
+        this.context = context.getApplicationContext();
         this.dbHelper = DatabaseHelper.getInstance(context);
     }
 
     /**
-     * Insere um novo Idoso no banco de dados SQLite.
-     * @param idoso Objeto idoso com os dados a serem salvos
-     * @return ID do registro inserido ou -1 em caso de erro
+     * Insere um novo Idoso validando a permissão do perfil ativo na sessão.
      */
     public long inserir(Idoso idoso) {
+        PerfilUsuario perfilAtivo = SessaoManager.getPerfil(context);
+        return inserir(idoso, perfilAtivo);
+    }
+
+    /**
+     * Insere um novo Idoso com trava de segurança explícita para o perfil informado.
+     * @throws AcessoNaoAutorizadoException se o perfil não tiver permissão de cadastro
+     */
+    public long inserir(Idoso idoso, PerfilUsuario perfil) {
+        if (!PermissaoUtils.podeCadastrarIdoso(perfil)) {
+            Log.e(TAG, "Tentativa não autorizada de cadastro de idoso por: " + perfil);
+            throw new AcessoNaoAutorizadoException(perfil, "Cadastrar Idoso");
+        }
+
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(DatabaseHelper.COL_NOME, idoso.getNome());
@@ -38,16 +57,32 @@ public class IdosoDAO {
         cv.put(DatabaseHelper.COL_RESTRICOES_MEDICAS, idoso.getRestricoesMedicas());
         cv.put(DatabaseHelper.COL_CONTATO_EMERGENCIA, idoso.getContatoEmergencia());
         cv.put(DatabaseHelper.COL_CAMINHO_FOTO, idoso.getCaminhoFoto());
+        if (idoso.getCpf() != null) cv.put(DatabaseHelper.COL_CPF, idoso.getCpf());
+        if (idoso.getLeitoQuarto() != null) cv.put(DatabaseHelper.COL_LEITO_QUARTO, idoso.getLeitoQuarto());
+        if (idoso.getNomeFamiliar() != null) cv.put(DatabaseHelper.COL_NOME_FAMILIAR, idoso.getNomeFamiliar());
+        if (idoso.getGrauParentesco() != null) cv.put(DatabaseHelper.COL_GRAU_PARENTESCO, idoso.getGrauParentesco());
 
         return db.insert(DatabaseHelper.TABLE_IDOSOS, null, cv);
     }
 
     /**
-     * Atualiza os dados de um Idoso existente.
-     * @param idoso Objeto com o ID e novos dados
-     * @return Quantidade de linhas afetadas
+     * Atualiza os dados de um Idoso existente validando o perfil ativo na sessão.
      */
     public int atualizar(Idoso idoso) {
+        PerfilUsuario perfilAtivo = SessaoManager.getPerfil(context);
+        return atualizar(idoso, perfilAtivo);
+    }
+
+    /**
+     * Atualiza os dados de um Idoso existente com validação de segurança RBAC.
+     * @throws AcessoNaoAutorizadoException se o perfil não for Administrador
+     */
+    public int atualizar(Idoso idoso, PerfilUsuario perfil) {
+        if (!PermissaoUtils.podeEditarIdoso(perfil)) {
+            Log.e(TAG, "Tentativa não autorizada de atualização de idoso por: " + perfil);
+            throw new AcessoNaoAutorizadoException(perfil, "Editar/Atualizar Idoso");
+        }
+
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(DatabaseHelper.COL_NOME, idoso.getNome());
@@ -57,6 +92,10 @@ public class IdosoDAO {
         cv.put(DatabaseHelper.COL_RESTRICOES_MEDICAS, idoso.getRestricoesMedicas());
         cv.put(DatabaseHelper.COL_CONTATO_EMERGENCIA, idoso.getContatoEmergencia());
         cv.put(DatabaseHelper.COL_CAMINHO_FOTO, idoso.getCaminhoFoto());
+        if (idoso.getCpf() != null) cv.put(DatabaseHelper.COL_CPF, idoso.getCpf());
+        if (idoso.getLeitoQuarto() != null) cv.put(DatabaseHelper.COL_LEITO_QUARTO, idoso.getLeitoQuarto());
+        if (idoso.getNomeFamiliar() != null) cv.put(DatabaseHelper.COL_NOME_FAMILIAR, idoso.getNomeFamiliar());
+        if (idoso.getGrauParentesco() != null) cv.put(DatabaseHelper.COL_GRAU_PARENTESCO, idoso.getGrauParentesco());
 
         return db.update(
                 DatabaseHelper.TABLE_IDOSOS,
@@ -67,18 +106,67 @@ public class IdosoDAO {
     }
 
     /**
-     * Remove o registro de um Idoso pelo seu ID (long).
-     * @param id Identificador do idoso
-     * @return true se removido com sucesso
+     * Atualiza exclusivamente o caminho local da foto de perfil de um residente no SQLite.
      */
-    public boolean excluir(long id) {
-        return excluir((int) id) > 0;
+    public int atualizarFotoPerfil(int idIdoso, String novoCaminhoFoto) {
+        PerfilUsuario perfilAtivo = SessaoManager.getPerfil(context);
+        return atualizarFotoPerfil(idIdoso, novoCaminhoFoto, perfilAtivo);
     }
 
     /**
-     * Remove o registro de um Idoso pelo seu ID (int).
+     * Atualiza exclusivamente o caminho local da foto de perfil validando o perfil ativo.
+     */
+    public int atualizarFotoPerfil(int idIdoso, String novoCaminhoFoto, PerfilUsuario perfil) {
+        if (!PermissaoUtils.podeAtualizarFotoPerfil(perfil)) {
+            Log.w(TAG, "Tentativa não autorizada de atualização de foto de perfil por: " + perfil);
+            throw new AcessoNaoAutorizadoException(perfil, "Atualizar Foto de Perfil do Residente");
+        }
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DatabaseHelper.COL_CAMINHO_FOTO, novoCaminhoFoto != null ? novoCaminhoFoto : "");
+
+        return db.update(
+                DatabaseHelper.TABLE_IDOSOS,
+                cv,
+                DatabaseHelper.COL_ID + " = ?",
+                new String[]{String.valueOf(idIdoso)}
+        );
+    }
+
+    /**
+     * Remove o registro de um Idoso pelo seu ID (long) com perfil da sessão.
+     */
+    public boolean excluir(long id) {
+        PerfilUsuario perfilAtivo = SessaoManager.getPerfil(context);
+        return excluir(id, perfilAtivo);
+    }
+
+    /**
+     * Remove o registro de um Idoso pelo seu ID (long) com perfil explícito.
+     */
+    public boolean excluir(long id, PerfilUsuario perfil) {
+        return excluir((int) id, perfil) > 0;
+    }
+
+    /**
+     * Remove o registro de um Idoso pelo seu ID (int) com perfil da sessão.
      */
     public int excluir(int id) {
+        PerfilUsuario perfilAtivo = SessaoManager.getPerfil(context);
+        return excluir(id, perfilAtivo);
+    }
+
+    /**
+     * Remove o registro de um Idoso pelo seu ID (int) com validação de segurança RBAC.
+     * @throws AcessoNaoAutorizadoException se o perfil não for Administrador
+     */
+    public int excluir(int id, PerfilUsuario perfil) {
+        if (!PermissaoUtils.podeExcluirIdoso(perfil)) {
+            Log.e(TAG, "Tentativa não autorizada de exclusão de idoso por: " + perfil);
+            throw new AcessoNaoAutorizadoException(perfil, "Excluir Idoso");
+        }
+
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         return db.delete(
                 DatabaseHelper.TABLE_IDOSOS,
@@ -89,8 +177,6 @@ public class IdosoDAO {
 
     /**
      * Busca um único idoso pelo ID (long).
-     * @param id Identificador
-     * @return Objeto Idoso encontrado ou null
      */
     public Idoso buscarPorId(long id) {
         return buscarPorId((int) id);
@@ -98,8 +184,6 @@ public class IdosoDAO {
 
     /**
      * Busca um único idoso pelo ID (int).
-     * @param id Identificador
-     * @return Objeto Idoso encontrado ou null
      */
     public Idoso buscarPorId(int id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -160,8 +244,6 @@ public class IdosoDAO {
 
     /**
      * Filtra idosos por termo no nome ou nas restrições médicas.
-     * @param termo Palavra-chave para busca
-     * @return Lista de idosos correspondentes
      */
     public List<Idoso> buscarPorTermo(String termo) {
         if (termo == null || termo.trim().isEmpty()) {
@@ -192,6 +274,20 @@ public class IdosoDAO {
     }
 
     /**
+     * Retorna os residentes aniversariantes do mês corrente ordenados pelo dia do aniversário.
+     */
+    public List<com.example.util.DashboardManager.AniversarianteMes> listarAniversariantesDoMesAtual() {
+        return com.example.util.DashboardManager.filtrarAniversariantesDoMesAtual(listarTodos());
+    }
+
+    /**
+     * Retorna os residentes aniversariantes para um mês específico (1 a 12).
+     */
+    public List<com.example.util.DashboardManager.AniversarianteMes> listarAniversariantesDoMes(int mes1a12, int anoReferencia) {
+        return com.example.util.DashboardManager.filtrarAniversariantesDoMes(listarTodos(), -1, mes1a12, anoReferencia);
+    }
+
+    /**
      * Método utilitário para converter uma linha do Cursor em um objeto Idoso.
      */
     private Idoso converterCursorParaIdoso(Cursor cursor) {
@@ -204,6 +300,20 @@ public class IdosoDAO {
         String contatoEmergencia = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_CONTATO_EMERGENCIA));
         String caminhoFoto = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_CAMINHO_FOTO));
 
-        return new Idoso(id, nome, dataNasc, tipoSangue, alergias, restricoes, contatoEmergencia, caminhoFoto);
+        Idoso idoso = new Idoso(id, nome, dataNasc, tipoSangue, alergias, restricoes, contatoEmergencia, caminhoFoto);
+
+        int idxCpf = cursor.getColumnIndex(DatabaseHelper.COL_CPF);
+        if (idxCpf != -1) idoso.setCpf(cursor.getString(idxCpf));
+
+        int idxLeito = cursor.getColumnIndex(DatabaseHelper.COL_LEITO_QUARTO);
+        if (idxLeito != -1) idoso.setLeitoQuarto(cursor.getString(idxLeito));
+
+        int idxNomeFam = cursor.getColumnIndex(DatabaseHelper.COL_NOME_FAMILIAR);
+        if (idxNomeFam != -1) idoso.setNomeFamiliar(cursor.getString(idxNomeFam));
+
+        int idxParentesco = cursor.getColumnIndex(DatabaseHelper.COL_GRAU_PARENTESCO);
+        if (idxParentesco != -1) idoso.setGrauParentesco(cursor.getString(idxParentesco));
+
+        return idoso;
     }
 }

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_item_aniversariante"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:minHeight="60dp"
+    app:cardBackgroundColor="@color/surface"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="0dp"
+    app:rippleColor="@color/aniversario_icon_bg"
+    app:strokeColor="@color/aniversario_card_stroke"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="60dp"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="10dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_foto_aniversariante"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:background="@color/aniversario_icon_bg"
+            android:contentDescription="@string/desc_foto_idoso"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_resident_placeholder"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+            app:strokeColor="@color/aniversario_accent"
+            app:strokeWidth="1.5dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_nome_aniversariante"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="Seu Joaquim Augusto Silveira" />
+
+            <TextView
+                android:id="@+id/tv_detalhe_aniversariante"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text_secondary"
+                android:textSize="12.5sp"
+                tools:text="Completa 85 anos • Quarto 04 - Leito A" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end|center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_badge_hoje_aniversariante"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/bg_badge_blood"
+                android:backgroundTint="@color/aniversario_hoje_bg"
+                android:paddingStart="8dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="2dp"
+                android:text="@string/item_aniversariante_hoje_badge"
+                android:textColor="@color/white"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tv_data_aniversariante"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_badge_blood"
+                android:backgroundTint="@color/aniversario_badge_bg"
+                android:paddingStart="10dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="4dp"
+                android:textColor="@color/aniversario_badge_fg"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="Dia 25/10" />
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
