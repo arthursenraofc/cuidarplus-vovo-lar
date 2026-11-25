@@ -1,24 +1,17 @@
-# Cuidar+ (Gestão Assistencial para ILPI)
+# Cuidar+ — Sistema de Gestão Assistencial para ILPI
 
 Aplicativo Android nativo desenvolvido sob o paradigma **Local-First (100% offline)** para modernizar a rotina de cuidados, o prontuário eletrônico e o controle de medicamentos da Instituição de Longa Permanência para Idosos (ILPI) **Vovô Lar**.
 
-## Principais Funcionalidades
+## Guia de Instalação e Execução
 
-* **Prontuário Digital Offline:** Cadastro completo de residentes com foto (CameraX), tipagem sanguínea, alergias em destaque e contatos de emergência.
-* **Gestão de Medicamentos e Alarmes Nativos:** Aprazamento automático de doses com alertas sonoros e notificações de alta prioridade (`AlarmManager` e `BroadcastReceiver`), mesmo com a tela bloqueada ou após reinicialização do aparelho.
-* **Controle e Baixa Automática de Estoque:** Dedução transacional a cada dose administrada e alertas visuais para itens abaixo do limite mínimo configurável.
-* **Relatórios e Comunicação:** Geração nativa de prontuários e inventário de estoque em **PDF (A4)** 100% no dispositivo e acionamento rápido de familiares via **WhatsApp** ou discador telefônico.
-* **Dashboard e Controle de Acesso (RBAC):** Indicadores de ocupação de leitos, aniversariantes do mês e perfis distintos (*Administrador*, *Enfermeiro* e *Cuidador*) com sessão criptografada (`EncryptedSharedPreferences`).
+### Opção 1: Instalação Direta no Smartphone Android (via APK)
+1. Baixe o arquivo instalável (`app-debug.apk`) disponível na aba **Releases** deste repositório (ou entregue em anexo).
+2. No smartphone Android (versão **7.0 / API 24 ou superior**), abra o gerenciador de arquivos e toque sobre o arquivo `.apk`.
+3. Caso o sistema solicite permissão, habilite a opção **"Permitir desta fonte"** (instalação de aplicativos de fontes desconhecidas).
+4. Conclua a instalação, abra o **Cuidar+** e conceda as permissões de **Câmera** e **Alarmes/Notificações** no primeiro acesso.
+5. O aplicativo funciona integralmente sem conexão com a internet.
 
-## Tecnologias Utilizadas
-
-* **Linguagem:** Java Nativo (Android SDK, API 24+)
-* **Interface:** XML com Material Design 3 (MD3)
-* **Banco de Dados:** SQLite relacional local (padrão DAO)
-* **APIs Nativas:** `CameraX`, `PdfDocument`, `FileProvider`, `AlarmManager` e `EncryptedSharedPreferences`
-
-## Equipe de Desenvolvimento
-
-* **Arthur Senra Homercher** — Analista / Desenvolvedor
-* **Gilmar Ribeiro Fragoso Júnior** — Desenvolvedor / Testador
-* **Joaquim Neinas** — Desenvolvedor / Documentador
+### Opção 2: Execução via Código-Fonte (Android Studio)
+1. Clone este repositório ou baixe o código em **Code > Download ZIP**:
+   ```bash
+   git clone [https://github.com/arthursenraofc/cuidarplus-vovo-lar.git](https://github.com/arthursenraofc/cuidarplus-vovo-lar.git)
