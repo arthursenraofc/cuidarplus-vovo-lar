@@ -228,6 +228,8 @@ public class MedicamentoActivity extends ListaMedicamentosActivity {
             binding.btnExportarEstoquePdf.setIconTint(ColorStateList.valueOf(corPrimaria));
         }
 
+        com.example.util.NotificationHelper.avaliarENotificarEstoqueBaixo(activity, todosMedicamentos);
+
         return resumo;
     }
 

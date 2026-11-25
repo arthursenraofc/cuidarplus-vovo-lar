@@ -1,5 +1,6 @@
 package com.example;
 
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -15,6 +16,8 @@ import com.example.database.IdosoDAO;
 import com.example.databinding.ActivityCadastroMedicamentoBinding;
 import com.example.model.Idoso;
 import com.example.model.Medicamento;
+import com.example.util.MascaraDataWatcher;
+import com.example.util.ValidadeMedicamentoHelper;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
@@ -153,6 +156,29 @@ public class CadastroMedicamentoActivity extends AppCompatActivity {
                 selectedFrequenciaHoras = intervalosDisponiveis[position];
             }
         });
+
+        // 4. Data de Validade opcional (máscara DD/MM/AAAA + calendário)
+        binding.etDataValidade.addTextChangedListener(
+                new MascaraDataWatcher(binding.etDataValidade, binding.tilDataValidade)
+        );
+        binding.tilDataValidade.setEndIconOnClickListener(v -> exibirDatePickerValidade());
+    }
+
+    private void exibirDatePickerValidade() {
+        Calendar cal = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, year, month, dayOfMonth) -> {
+                    String dataFormatada = String.format(Locale.getDefault(), "%02d/%02d/%04d",
+                            dayOfMonth, month + 1, year);
+                    binding.etDataValidade.setText(dataFormatada);
+                    binding.tilDataValidade.setError(null);
+                },
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
     }
 
     private void exibirTimePicker() {
@@ -186,6 +212,8 @@ public class CadastroMedicamentoActivity extends AppCompatActivity {
                 ? binding.etDosagem.getText().toString().trim() : "";
         String estoque = binding.etEstoque.getText() != null
                 ? binding.etEstoque.getText().toString().trim() : "";
+        String dataValidade = binding.etDataValidade.getText() != null
+                ? binding.etDataValidade.getText().toString().trim() : "";
         String horario = binding.etHorarioInicial.getText() != null
                 ? binding.etHorarioInicial.getText().toString().trim() : "";
         String observacao = binding.etObservacao.getText() != null
@@ -214,6 +242,10 @@ public class CadastroMedicamentoActivity extends AppCompatActivity {
             binding.tilDosagem.setError(null);
         }
 
+        if (!ValidadeMedicamentoHelper.validarDataValidadeOpcional(dataValidade, binding.tilDataValidade)) {
+            valido = false;
+        }
+
         if (horario.isEmpty()) {
             binding.tilHorarioInicial.setError("Selecione o horário inicial.");
             valido = false;
@@ -231,6 +263,7 @@ public class CadastroMedicamentoActivity extends AppCompatActivity {
         med.setNomeMedicamento(nomeMed);
         med.setDosagem(dosagem);
         med.setEstoque(estoque);
+        med.setDataValidade(dataValidade);
         med.setTipo(selectedTipo);
         med.setHorarioInicial(horario);
         med.setFrequenciaHoras(selectedFrequenciaHoras);
@@ -246,6 +279,7 @@ public class CadastroMedicamentoActivity extends AppCompatActivity {
             com.example.database.MedicamentoDAO medDAO = new com.example.database.MedicamentoDAO(this);
             long idGerado = medDAO.inserir(med);
             if (idGerado != -1) {
+                com.example.util.NotificationHelper.avaliarENotificarEstoqueBaixo(this);
                 Toast.makeText(this, R.string.sucesso_medicamento_salvo, Toast.LENGTH_LONG).show();
                 finish();
             } else {

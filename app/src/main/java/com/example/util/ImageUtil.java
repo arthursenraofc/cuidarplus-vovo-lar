@@ -10,6 +10,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.LruCache;
 import android.widget.ImageView;
 
 import androidx.core.content.FileProvider;
@@ -42,6 +43,14 @@ public final class ImageUtil {
     private static final int ALTURA_EXIBICAO_PADRAO = 512;
     private static final int DIMENSAO_MAXIMA_SALVAMENTO = 1024;
     private static final int QUALIDADE_JPEG_SALVAMENTO = 88;
+    private static final int CACHE_MEMORIA_BYTES = 4 * 1024 * 1024; // 4 MB
+
+    private static final LruCache<String, Bitmap> BITMAP_CACHE = new LruCache<String, Bitmap>(CACHE_MEMORIA_BYTES) {
+        @Override
+        protected int sizeOf(String key, Bitmap value) {
+            return value != null ? value.getByteCount() : 0;
+        }
+    };
 
     private ImageUtil() {
         // Classe utilitária estática
@@ -59,7 +68,7 @@ public final class ImageUtil {
     }
 
     /**
-     * Carrega a foto local armazenada nos arquivos privados do aplicativo com amostragem segura.
+     * Carrega a foto local armazenada nos arquivos privados do aplicativo com cache em memória e amostragem segura.
      * Caso o caminho seja nulo, vazio, inexistente ou inválido, exibe a imagem de placeholder padrão.
      */
     public static void carregarFoto(ImageView imageView, String caminhoFoto) {
@@ -69,6 +78,15 @@ public final class ImageUtil {
 
         if (possuiFotoValida(caminhoFoto)) {
             String caminhoLimpo = caminhoFoto.trim();
+            File arquivo = new File(caminhoLimpo);
+            String chaveCache = caminhoLimpo + "@" + arquivo.lastModified();
+            Bitmap bitmapEmCache = BITMAP_CACHE.get(chaveCache);
+            if (bitmapEmCache != null && !bitmapEmCache.isRecycled()) {
+                imageView.setImageBitmap(bitmapEmCache);
+                imageView.setTag(R.id.tag_foto_estado, caminhoLimpo);
+                return;
+            }
+
             Bitmap bitmap = decodificarBitmapReduzido(
                     caminhoLimpo,
                     LARGURA_EXIBICAO_PADRAO,
@@ -76,6 +94,7 @@ public final class ImageUtil {
             );
             if (bitmap != null) {
                 Bitmap bitmapOrientado = corrigirOrientacaoExif(caminhoLimpo, bitmap);
+                BITMAP_CACHE.put(chaveCache, bitmapOrientado);
                 imageView.setImageBitmap(bitmapOrientado);
                 imageView.setTag(R.id.tag_foto_estado, caminhoLimpo);
                 return;

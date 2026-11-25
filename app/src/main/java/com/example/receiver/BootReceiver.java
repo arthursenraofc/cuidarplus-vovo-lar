@@ -8,6 +8,7 @@ import android.util.Log;
 import com.example.alarm.AlarmScheduler;
 import com.example.database.DatabaseHelper;
 import com.example.model.Medicamento;
+import com.example.util.NotificationHelper;
 
 import java.util.List;
 
@@ -15,8 +16,8 @@ import java.util.List;
  * BroadcastReceiver acionado pelo sistema operacional no evento ACTION_BOOT_COMPLETED.
  *
  * Responsável por restaurar e reagendar todos os alarmes de medicamentos ativos da
- * ILPI Vovô Lar diretamente no AlarmManager logo após o dispositivo ser reiniciado,
- * descarregar ou ter seu sistema atualizado.
+ * ILPI Vovô Lar diretamente no AlarmManager e reavaliar notificações de estoque crítico
+ * logo após o dispositivo ser reiniciado, descarregar ou ter seu sistema atualizado.
  *
  * Garante a confiabilidade da arquitetura Local-First (100% offline).
  */
@@ -36,9 +37,11 @@ public class BootReceiver extends BroadcastReceiver {
                 || "com.htc.intent.action.QUICKBOOT_POWERON".equals(action)
                 || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action)) {
 
-            Log.i(TAG, "Dispositivo reiniciado. Restaurando alarmes ativos do CuidarPlus...");
+            Log.i(TAG, "Dispositivo reiniciado. Restaurando alarmes ativos e notificações do CuidarPlus...");
 
             try {
+                NotificationHelper.criarCanalNotificacao(context);
+
                 DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
                 List<Medicamento> medicamentosAtivos = dbHelper.buscarMedicamentosAgendados();
 
@@ -49,6 +52,8 @@ public class BootReceiver extends BroadcastReceiver {
                         contadorRestaurados++;
                     }
                 }
+
+                NotificationHelper.avaliarENotificarEstoqueBaixo(context);
 
                 Log.i(TAG, "Sucesso: " + contadorRestaurados + " alarmes de medicação foram restaurados no AlarmManager.");
             } catch (Exception e) {

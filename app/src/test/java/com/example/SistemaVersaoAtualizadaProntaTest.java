@@ -73,7 +73,7 @@ public class SistemaVersaoAtualizadaProntaTest {
     }
 
     @Test
-    public void buildConfigEManifestDevemGarantirAtualizacaoEAberturaDiretaNoMenuPrincipal() throws Exception {
+    public void buildConfigEManifestDevemGarantirAtualizacaoEAberturaDiretaNoDashboard() throws Exception {
         assertTrue(
                 "versionCode deve ser superior às versões anteriores para forçar upgrade do APK",
                 BuildConfig.VERSION_CODE >= 14
@@ -84,26 +84,41 @@ public class SistemaVersaoAtualizadaProntaTest {
         mainLauncherQuery.addCategory(Intent.CATEGORY_LAUNCHER);
         mainLauncherQuery.setPackage(context.getPackageName());
         List<android.content.pm.ResolveInfo> launchers = pm.queryIntentActivities(mainLauncherQuery, 0);
-        assertEquals("Apenas MainActivity deve possuir MAIN/LAUNCHER no AndroidManifest", 1, launchers.size());
-        assertEquals(MainActivity.class.getName(), launchers.get(0).activityInfo.name);
+        assertEquals("Apenas DashboardActivity deve possuir MAIN/LAUNCHER no AndroidManifest", 1, launchers.size());
+        assertEquals(DashboardActivity.class.getName(), launchers.get(0).activityInfo.name);
 
         Intent launchIntent = pm.getLaunchIntentForPackage(context.getPackageName());
         assertNotNull("Intent de LAUNCHER deve estar configurada", launchIntent);
-        assertEquals(MainActivity.class.getName(), launchIntent.getComponent().getClassName());
+        assertEquals(DashboardActivity.class.getName(), launchIntent.getComponent().getClassName());
 
         ActivityInfo info = pm.getActivityInfo(launchIntent.getComponent(), 0);
         assertEquals(ActivityInfo.LAUNCH_SINGLE_TOP, info.launchMode);
         assertTrue((info.flags & ActivityInfo.FLAG_CLEAR_TASK_ON_LAUNCH) != 0);
 
-        // Verifica renderização estática e direta logo no onCreate() (sem depender de callbacks assíncronos)
-        try (ActivityController<MainActivity> controller =
-                     Robolectric.buildActivity(MainActivity.class).create()) {
-            MainActivity activity = controller.get();
-            TextView tvTituloModulos = activity.findViewById(R.id.tv_titulo_modulos_operacao);
-            TextView tvContador = activity.findViewById(R.id.tv_contador_dashboard);
-            assertNotNull(tvTituloModulos);
-            assertEquals("Módulos e Operação Diária", tvTituloModulos.getText().toString());
-            assertEquals("4 Residentes", tvContador.getText().toString());
+        // Verifica renderização estática e direta dos indicadores logo no onCreate() do DashboardActivity
+        try (ActivityController<DashboardActivity> controller =
+                     Robolectric.buildActivity(DashboardActivity.class).create()) {
+            DashboardActivity activity = controller.get();
+            TextView tvTituloResumo = activity.findViewById(R.id.tv_titulo_secao_resumo);
+            TextView tvTotalResidentes = activity.findViewById(R.id.tv_valor_total_residentes);
+            TextView tvKpiCriticos = activity.findViewById(R.id.tv_kpi_estoque_critico_valor);
+            TextView tvKpiTurnos = activity.findViewById(R.id.tv_kpi_passagem_turno_valor);
+            View btnModulos = activity.findViewById(R.id.btn_abrir_modulos_operacao);
+
+            assertNotNull(tvTituloResumo);
+            assertNotNull(btnModulos);
+            assertNotNull(activity.findViewById(R.id.card_resumo_total_residentes));
+            assertNotNull(activity.findViewById(R.id.card_resumo_vagas));
+            assertNotNull(activity.findViewById(R.id.card_alerta_aniversariantes));
+            assertEquals(View.VISIBLE, activity.findViewById(R.id.card_resumo_total_residentes).getVisibility());
+            assertEquals("4", tvTotalResidentes.getText().toString());
+            assertEquals("1", tvKpiCriticos.getText().toString());
+            assertEquals("1", tvKpiTurnos.getText().toString());
+
+            btnModulos.performClick();
+            Intent modulosIntent = Shadows.shadowOf(activity).getNextStartedActivity();
+            assertNotNull(modulosIntent);
+            assertEquals(MainActivity.class.getName(), modulosIntent.getComponent().getClassName());
         }
     }
 
@@ -140,9 +155,14 @@ public class SistemaVersaoAtualizadaProntaTest {
                      Robolectric.buildActivity(MainActivity.class).setup()) {
             MainActivity mainActivity = mainController.get();
 
-            // Cards expandidos de Dashboard não ficam fixos na tela principal
-            assertNull(mainActivity.findViewById(R.id.card_resumo_total_residentes));
-            assertNull(mainActivity.findViewById(R.id.card_resumo_vagas));
+            // Cards do Dashboard já aparecem imediatamente na tela inicial
+            MaterialCardView cardResumoTotal = mainActivity.findViewById(R.id.card_resumo_total_residentes);
+            MaterialCardView cardResumoVagas = mainActivity.findViewById(R.id.card_resumo_vagas);
+            assertNotNull(cardResumoTotal);
+            assertNotNull(cardResumoVagas);
+            assertEquals(View.VISIBLE, cardResumoTotal.getVisibility());
+            assertEquals(View.VISIBLE, cardResumoVagas.getVisibility());
+            assertEquals("4", ((TextView) mainActivity.findViewById(R.id.tv_valor_total_residentes)).getText().toString());
 
             MaterialCardView cardMenuDashboard = mainActivity.findViewById(R.id.card_menu_dashboard);
             assertNotNull(cardMenuDashboard);

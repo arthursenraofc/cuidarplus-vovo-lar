@@ -238,4 +238,94 @@ public class WhatsAppUtils {
                 + "* está próximo do término em nosso estoque. "
                 + "Solicitamos a gentileza de providenciar a reposição na instituição. Agradecemos a colaboração!";
     }
+
+    /**
+     * Compartilha texto consolidado no WhatsApp da equipe (padrão ou Business),
+     * com fallback automático para a folha nativa de compartilhamento caso não haja WhatsApp instalado.
+     */
+    public static void compartilharTextoWhatsAppEquipe(Context context, String mensagem) {
+        if (context == null || mensagem == null || mensagem.trim().isEmpty()) {
+            return;
+        }
+        String texto = mensagem.trim();
+        try {
+            Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
+            whatsappIntent.setType("text/plain");
+            whatsappIntent.putExtra(Intent.EXTRA_TEXT, texto);
+            whatsappIntent.setPackage(PACKAGE_WHATSAPP);
+            if (!(context instanceof Activity)) {
+                whatsappIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
+            try {
+                context.startActivity(whatsappIntent);
+            } catch (ActivityNotFoundException exPadrao) {
+                whatsappIntent.setPackage(PACKAGE_WHATSAPP_BUSINESS);
+                context.startActivity(whatsappIntent);
+            }
+        } catch (ActivityNotFoundException exSemWhatsApp) {
+            try {
+                Intent fallback = new Intent(Intent.ACTION_SEND);
+                fallback.setType("text/plain");
+                fallback.putExtra(Intent.EXTRA_TEXT, texto);
+                Intent chooser = Intent.createChooser(
+                        fallback,
+                        context.getString(R.string.chooser_compartilhar_passagem_turno)
+                );
+                if (!(context instanceof Activity)) {
+                    chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                }
+                context.startActivity(chooser);
+            } catch (ActivityNotFoundException ignored) {
+                Toast.makeText(context, R.string.erro_whatsapp_nao_instalado, Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Erro ao compartilhar resumo do turno no WhatsApp: " + e.getMessage());
+            compartilharTextoMensagem(context, texto);
+        }
+    }
+
+    /**
+     * Formata o resumo automático do plantão + últimas ocorrências para compartilhamento rápido com a equipe.
+     */
+    public static String gerarResumoPassagemTurnoEquipe(
+            int doses12h,
+            int dosesPendentes,
+            int alertasEstoqueCritico,
+            int alertasValidade,
+            java.util.List<com.example.model.PassagemTurno> ocorrencias
+    ) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("*CuidarPlus • Passagem de Turno (ILPI Vovô Lar)*\n\n");
+        sb.append("*Resumo Automático do Plantão:*\n");
+        sb.append("• Doses administradas (12h): ").append(doses12h).append("\n");
+        sb.append("• Doses atrasadas/pendentes: ").append(dosesPendentes).append("\n");
+        sb.append("• Alertas ativos de estoque crítico: ").append(alertasEstoqueCritico);
+        if (alertasValidade > 0) {
+            sb.append(" (+" + alertasValidade + " validade)");
+        }
+        sb.append("\n");
+
+        if (ocorrencias != null && !ocorrencias.isEmpty()) {
+            sb.append("\n*Ocorrências Registradas no Turno:*\n");
+            int limite = Math.min(ocorrencias.size(), 5);
+            for (int i = 0; i < limite; i++) {
+                com.example.model.PassagemTurno pt = ocorrencias.get(i);
+                sb.append("\n• [").append(pt.getTurno()).append(" | ").append(pt.getDataHoraRegistro()).append("] ");
+                if (pt.getNomeIdoso() != null && !pt.getNomeIdoso().trim().isEmpty()) {
+                    sb.append(pt.getNomeIdoso()).append(" — ");
+                }
+                sb.append("Resp.: ").append(pt.getProfissionalOrigem()).append("\n");
+                sb.append("  Obs.: ").append(pt.getObservacoes()).append("\n");
+                if (pt.getIntercorrencias() != null && !pt.getIntercorrencias().trim().isEmpty()) {
+                    sb.append("  Intercorrências: ").append(pt.getIntercorrencias()).append("\n");
+                }
+                if (pt.getPendenciasProximoTurno() != null && !pt.getPendenciasProximoTurno().trim().isEmpty()) {
+                    sb.append("  Pendências: ").append(pt.getPendenciasProximoTurno()).append("\n");
+                }
+            }
+        } else {
+            sb.append("\nSem ocorrências clínicas registradas até o momento.");
+        }
+        return sb.toString().trim();
+    }
 }

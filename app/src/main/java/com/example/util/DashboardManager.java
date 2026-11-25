@@ -153,8 +153,7 @@ public final class DashboardManager {
         }
         SharedPreferences prefs = context.getApplicationContext()
                 .getSharedPreferences(PREFS_DASHBOARD, Context.MODE_PRIVATE);
-        prefs.edit().putInt(KEY_CAPACIDADE_TOTAL_VAGAS, novaCapacidade).apply();
-        return true;
+        return prefs.edit().putInt(KEY_CAPACIDADE_TOTAL_VAGAS, novaCapacidade).commit();
     }
 
     /**

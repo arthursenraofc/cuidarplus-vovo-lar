@@ -1,5 +1,6 @@
 package com.example;
 
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +19,9 @@ import com.example.database.MedicamentoDAO;
 import com.example.databinding.ActivityEditarMedicamentoBinding;
 import com.example.model.Idoso;
 import com.example.model.Medicamento;
+import com.example.util.MascaraDataWatcher;
 import com.example.util.PerfilManager;
+import com.example.util.ValidadeMedicamentoHelper;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.Calendar;
@@ -75,6 +78,7 @@ public class EditarMedicamentoActivity extends AppCompatActivity {
         recuperarMedicamento();
         configurarToolbar();
         configurarCamposDropdown();
+        configurarDataValidade();
         configurarTimePicker();
         configurarBotoes();
         verificarPermissoesRuntime();
@@ -132,6 +136,7 @@ public class EditarMedicamentoActivity extends AppCompatActivity {
         binding.etNomeMedicamento.setText(medicamentoAtual.getNomeMedicamento());
         binding.etDosagem.setText(medicamentoAtual.getDosagem());
         binding.etEstoque.setText(medicamentoAtual.getEstoque());
+        binding.etDataValidade.setText(medicamentoAtual.getDataValidade());
         binding.etHorarioInicial.setText(medicamentoAtual.getHorarioInicial());
         binding.etObservacao.setText(medicamentoAtual.getObservacaoMedica());
         binding.switchStatusAtivo.setChecked(medicamentoAtual.isAtivo());
@@ -183,6 +188,28 @@ public class EditarMedicamentoActivity extends AppCompatActivity {
         });
     }
 
+    private void configurarDataValidade() {
+        binding.etDataValidade.addTextChangedListener(
+                new MascaraDataWatcher(binding.etDataValidade, binding.tilDataValidade)
+        );
+        binding.tilDataValidade.setEndIconOnClickListener(v -> {
+            Calendar cal = Calendar.getInstance();
+            DatePickerDialog dialog = new DatePickerDialog(
+                    this,
+                    (view, year, month, dayOfMonth) -> {
+                        String dataFormatada = String.format(Locale.getDefault(), "%02d/%02d/%04d",
+                                dayOfMonth, month + 1, year);
+                        binding.etDataValidade.setText(dataFormatada);
+                        binding.tilDataValidade.setError(null);
+                    },
+                    cal.get(Calendar.YEAR),
+                    cal.get(Calendar.MONTH),
+                    cal.get(Calendar.DAY_OF_MONTH)
+            );
+            dialog.show();
+        });
+    }
+
     private void configurarTimePicker() {
         View.OnClickListener timePickerListener = v -> {
             Calendar c = Calendar.getInstance();
@@ -221,6 +248,7 @@ public class EditarMedicamentoActivity extends AppCompatActivity {
         String nome = binding.etNomeMedicamento.getText() != null ? binding.etNomeMedicamento.getText().toString().trim() : "";
         String dosagem = binding.etDosagem.getText() != null ? binding.etDosagem.getText().toString().trim() : "";
         String estoque = binding.etEstoque.getText() != null ? binding.etEstoque.getText().toString().trim() : "";
+        String dataValidade = binding.etDataValidade.getText() != null ? binding.etDataValidade.getText().toString().trim() : "";
         String horario = binding.etHorarioInicial.getText() != null ? binding.etHorarioInicial.getText().toString().trim() : "";
         String observacao = binding.etObservacao.getText() != null ? binding.etObservacao.getText().toString().trim() : "";
         boolean ativo = binding.switchStatusAtivo.isChecked();
@@ -241,6 +269,10 @@ public class EditarMedicamentoActivity extends AppCompatActivity {
             binding.tilDosagem.setError(null);
         }
 
+        if (!ValidadeMedicamentoHelper.validarDataValidadeOpcional(dataValidade, binding.tilDataValidade)) {
+            valido = false;
+        }
+
         if (horario.isEmpty() || !horario.matches("^([01]?\\d|2[0-3]):[0-5]\\d$")) {
             binding.tilHorarioInicial.setError("Selecione um horário válido (HH:mm)");
             valido = false;
@@ -257,6 +289,7 @@ public class EditarMedicamentoActivity extends AppCompatActivity {
         medicamentoAtual.setNomeMedicamento(nome);
         medicamentoAtual.setDosagem(dosagem);
         medicamentoAtual.setEstoque(estoque);
+        medicamentoAtual.setDataValidade(dataValidade);
         medicamentoAtual.setTipo(selectedTipo);
         medicamentoAtual.setHorarioInicial(horario);
         medicamentoAtual.setFrequenciaHoras(selectedFrequenciaHoras);
@@ -266,6 +299,7 @@ public class EditarMedicamentoActivity extends AppCompatActivity {
         // Salva no SQLite e reagenda o alarme no AlarmManager automaticamente via DAO
         int linhas = medicamentoDAO.atualizarMedicamento(medicamentoAtual);
         if (linhas > 0) {
+            com.example.util.NotificationHelper.avaliarENotificarEstoqueBaixo(this);
             Toast.makeText(this, R.string.sucesso_medicamento_atualizado, Toast.LENGTH_LONG).show();
             setResult(RESULT_OK);
             finish();

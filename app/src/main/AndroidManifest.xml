@@ -64,9 +64,9 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- 1. ÚNICA Activity de Inicialização (MAIN / LAUNCHER): Módulos e Operação Diária (Sprint 3) -->
+        <!-- 1. ÚNICA Activity de Inicialização (MAIN / LAUNCHER): Dashboard & Indicadores da Instituição -->
         <activity
-            android:name=".MainActivity"
+            android:name=".DashboardActivity"
             android:clearTaskOnLaunch="true"
             android:exported="true"
             android:label="@string/app_name"
@@ -77,19 +77,20 @@
             </intent-filter>
         </activity>
 
-        <!-- 1b. Tela Dedicada de Dashboard & Indicadores da Instituição (Material Design 3) -->
+        <!-- 1b. Módulos e Operação Diária (acessível pelo Dashboard) -->
         <activity
-            android:name=".DashboardActivity"
+            android:name=".MainActivity"
             android:exported="false"
-            android:label="@string/titulo_dashboard_instituicao"
-            android:parentActivityName=".MainActivity" />
+            android:label="@string/dashboard_secao_atalhos_titulo"
+            android:launchMode="singleTop"
+            android:parentActivityName=".DashboardActivity" />
 
         <!-- 2. Lista e Fichas dos Idosos com busca -->
         <activity
             android:name=".ListaIdososActivity"
             android:exported="false"
             android:label="@string/titulo_lista_idosos"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".DashboardActivity" />
 
         <!-- 3. Cadastro e Edição de Idoso com Câmera e Validações -->
         <activity
@@ -97,6 +98,12 @@
             android:exported="false"
             android:label="@string/titulo_cadastro_idoso"
             android:windowSoftInputMode="adjustResize" />
+
+        <!-- 3b. Captura Nativa de Foto de Perfil com CameraX -->
+        <activity
+            android:name=".CameraFotoIdosoActivity"
+            android:exported="false"
+            android:label="@string/titulo_camera_foto_idoso" />
 
         <!-- 4. Ficha Detalhada / Prontuário Clínico do Idoso -->
         <activity
@@ -115,14 +122,14 @@
             android:name=".ListaMedicamentosActivity"
             android:exported="false"
             android:label="@string/titulo_lista_medicamentos"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".DashboardActivity" />
 
         <!-- 5b. Gestão de Medicamentos com RBAC (MedicamentoActivity) -->
         <activity
             android:name=".MedicamentoActivity"
             android:exported="false"
             android:label="@string/titulo_lista_medicamentos"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".DashboardActivity" />
 
         <!-- 6. Cadastro de Medicamento e Alarme (Sprint 2) -->
         <activity
@@ -143,7 +150,15 @@
             android:name=".EstoqueActivity"
             android:exported="false"
             android:label="@string/titulo_estoque"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".DashboardActivity" />
+
+        <!-- 9. Passagem de Turno e Observações da Equipe (Manhã / Tarde / Noite) -->
+        <activity
+            android:name=".PassagemTurnoActivity"
+            android:exported="false"
+            android:label="@string/titulo_passagem_turno"
+            android:parentActivityName=".DashboardActivity"
+            android:windowSoftInputMode="adjustResize" />
 
         <!-- 1. BroadcastReceiver para Alarmes e Notificações de Medicamento (MedicamentoReceiver) -->
         <receiver

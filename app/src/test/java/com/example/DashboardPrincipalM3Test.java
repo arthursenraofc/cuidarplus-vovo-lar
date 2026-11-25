@@ -79,15 +79,31 @@ public class DashboardPrincipalM3Test {
     }
 
     @Test
-    public void menuPrincipalDeveExibirOpcaoDedicadaDeDashboardENavegarParaDashboardActivity() {
+    public void menuPrincipalDeveExibirDashboardIntegradoEAtalhoParaDashboardActivity() {
         try (ActivityController<MainActivity> controller =
                      Robolectric.buildActivity(MainActivity.class).setup()) {
             MainActivity mainActivity = controller.get();
 
-            // Os cards expandidos do Dashboard NÃO devem poluir a tela principal de operação diária
-            assertNull(mainActivity.findViewById(R.id.card_resumo_total_residentes));
-            assertNull(mainActivity.findViewById(R.id.card_resumo_vagas));
-            assertNull(mainActivity.findViewById(R.id.card_alerta_aniversariantes));
+            // O Dashboard & Indicadores deve aparecer pronto e populado imediatamente na tela inicial
+            MaterialCardView cardTotal = mainActivity.findViewById(R.id.card_resumo_total_residentes);
+            MaterialCardView cardVagas = mainActivity.findViewById(R.id.card_resumo_vagas);
+            MaterialCardView cardAniversariantes = mainActivity.findViewById(R.id.card_alerta_aniversariantes);
+            MaterialCardView cardKpiEstoque = mainActivity.findViewById(R.id.card_kpi_estoque_critico);
+            TextView tvTotal = mainActivity.findViewById(R.id.tv_valor_total_residentes);
+            TextView tvDisponiveis = mainActivity.findViewById(R.id.tv_vagas_disponiveis_valor);
+            TextView tvCriticos = mainActivity.findViewById(R.id.tv_kpi_estoque_critico_valor);
+
+            assertNotNull(cardTotal);
+            assertNotNull(cardVagas);
+            assertNotNull(cardAniversariantes);
+            assertNotNull(cardKpiEstoque);
+            assertEquals(View.VISIBLE, cardTotal.getVisibility());
+            assertEquals(View.VISIBLE, cardVagas.getVisibility());
+            assertEquals(View.VISIBLE, cardAniversariantes.getVisibility());
+            assertEquals(View.VISIBLE, cardKpiEstoque.getVisibility());
+            assertEquals("4", tvTotal.getText().toString());
+            assertEquals("16", tvDisponiveis.getText().toString());
+            assertEquals("1", tvCriticos.getText().toString());
 
             MaterialCardView cardMenuDashboard = mainActivity.findViewById(R.id.card_menu_dashboard);
             TextView tvBadgeMenu = mainActivity.findViewById(R.id.tv_badge_resumo_menu_dashboard);

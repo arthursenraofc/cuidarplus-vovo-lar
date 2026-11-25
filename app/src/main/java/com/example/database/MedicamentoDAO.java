@@ -93,6 +93,7 @@ public class MedicamentoDAO {
         cv.put(DatabaseHelper.COL_MED_NOME, med.getNomeMedicamento());
         cv.put(DatabaseHelper.COL_MED_DOSAGEM, med.getDosagem());
         cv.put(DatabaseHelper.COL_MED_ESTOQUE, med.getEstoque());
+        cv.put(DatabaseHelper.COL_MED_DATA_VALIDADE, med.getDataValidade());
         cv.put(DatabaseHelper.COL_MED_TIPO, med.getTipo());
         cv.put(DatabaseHelper.COL_MED_HORARIO_INICIAL, med.getHorarioInicial());
         cv.put(DatabaseHelper.COL_MED_FREQUENCIA_HORAS, med.getFrequenciaHoras());

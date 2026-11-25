@@ -90,20 +90,49 @@ public class EstoqueAdapter extends RecyclerView.Adapter<EstoqueAdapter.EstoqueV
                 ? med.getNomeIdoso() : "Geral / Sem residente vinculado";
         holder.tvResponsavel.setText("Residente: " + responsavel);
 
-        // Status badge
+        // Data de Validade e Badge de Alerta de Vencimento (Vermelho vencido / Laranja <= 30 dias)
+        String validade = med.getDataValidade();
+        if (!validade.isEmpty()) {
+            holder.tvDataValidade.setText(context.getString(R.string.rotulo_validade_formato, validade));
+        } else {
+            holder.tvDataValidade.setText(R.string.validade_nao_informada);
+        }
+
+        com.example.util.ValidadeMedicamentoHelper.AvaliacaoValidade avaliacaoValidade =
+                com.example.util.ValidadeMedicamentoHelper.avaliarValidade(validade);
+
+        if (avaliacaoValidade.possuiAlerta()) {
+            holder.tvBadgeValidade.setVisibility(View.VISIBLE);
+            holder.tvBadgeValidade.setText(
+                    com.example.util.ValidadeMedicamentoHelper.formatarTextoBadge(avaliacaoValidade)
+            );
+            if (avaliacaoValidade.getStatus() == com.example.util.ValidadeMedicamentoHelper.StatusValidade.VENCIDO) {
+                holder.tvBadgeValidade.setBackgroundColor(ContextCompat.getColor(context, R.color.danger_red));
+                holder.tvDataValidade.setTextColor(ContextCompat.getColor(context, R.color.danger_red));
+            } else {
+                holder.tvBadgeValidade.setBackgroundColor(ContextCompat.getColor(context, R.color.validade_alerta_bg));
+                holder.tvDataValidade.setTextColor(ContextCompat.getColor(context, R.color.validade_alerta_fg));
+            }
+        } else {
+            holder.tvBadgeValidade.setVisibility(View.GONE);
+            holder.tvDataValidade.setTextColor(ContextCompat.getColor(context, R.color.text_secondary));
+        }
+
+        // Status badge do estoque
         String status = determinarStatus(med);
         holder.tvBadgeStatus.setText(status);
 
-        if (status.equals("Estoque Crítico")) {
+        boolean mostrarWhatsApp = avaliacaoValidade.possuiAlerta();
+        if ("Estoque Crítico".equals(status)) {
             holder.tvBadgeStatus.setBackgroundColor(ContextCompat.getColor(context, R.color.danger_red));
-            holder.btnWhatsApp.setVisibility(View.VISIBLE);
-        } else if (status.equals("Vencimento Próximo") || status.equals("Atenção")) {
-            holder.tvBadgeStatus.setBackgroundColor(Color.parseColor("#EF6C00"));
-            holder.btnWhatsApp.setVisibility(View.VISIBLE);
+            mostrarWhatsApp = true;
+        } else if ("Estoque Baixo".equals(status) || "Atenção".equals(status)) {
+            holder.tvBadgeStatus.setBackgroundColor(ContextCompat.getColor(context, R.color.validade_alerta_bg));
+            mostrarWhatsApp = true;
         } else {
             holder.tvBadgeStatus.setBackgroundColor(ContextCompat.getColor(context, R.color.success_green));
-            holder.btnWhatsApp.setVisibility(View.GONE);
         }
+        holder.btnWhatsApp.setVisibility(mostrarWhatsApp ? View.VISIBLE : View.GONE);
 
         holder.btnWhatsApp.setOnClickListener(v -> {
             if (reposicaoClickListener != null) {
@@ -125,7 +154,7 @@ public class EstoqueAdapter extends RecyclerView.Adapter<EstoqueAdapter.EstoqueV
 
         int qtd = com.example.util.EstoqueAlertaManager.extrairQuantidadeNumerica(med.getEstoque());
         if (qtd <= limiteMinimo + 5) {
-            return "Vencimento Próximo";
+            return context.getString(R.string.status_estoque_baixo);
         }
         return "Normal";
     }
@@ -134,8 +163,10 @@ public class EstoqueAdapter extends RecyclerView.Adapter<EstoqueAdapter.EstoqueV
         final TextView tvNomeMed;
         final TextView tvDosagem;
         final TextView tvBadgeStatus;
+        final TextView tvBadgeValidade;
         final TextView tvEstoqueQtd;
         final TextView tvResponsavel;
+        final TextView tvDataValidade;
         final MaterialButton btnWhatsApp;
 
         public EstoqueViewHolder(@NonNull View itemView) {
@@ -143,8 +174,10 @@ public class EstoqueAdapter extends RecyclerView.Adapter<EstoqueAdapter.EstoqueV
             tvNomeMed = itemView.findViewById(R.id.tv_item_nome_medicamento);
             tvDosagem = itemView.findViewById(R.id.tv_item_dosagem);
             tvBadgeStatus = itemView.findViewById(R.id.tv_item_badge_status);
+            tvBadgeValidade = itemView.findViewById(R.id.tv_item_badge_validade);
             tvEstoqueQtd = itemView.findViewById(R.id.tv_item_estoque_qtd);
             tvResponsavel = itemView.findViewById(R.id.tv_item_responsavel);
+            tvDataValidade = itemView.findViewById(R.id.tv_item_data_validade);
             btnWhatsApp = itemView.findViewById(R.id.btn_item_whatsapp_reposicao);
         }
     }

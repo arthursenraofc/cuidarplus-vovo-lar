@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_camera_foto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0F0D13">
+
+    <!-- Visualizador ao vivo da CameraX -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/preview_view_camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:implementationMode="compatible"
+        app:scaleType="fillCenter" />
+
+    <!-- Guia visual de enquadramento facial -->
+    <LinearLayout
+        android:id="@+id/layout_guia_retrato"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="40dp">
+
+        <View
+            android:id="@+id/view_guia_circular_rosto"
+            android:layout_width="248dp"
+            android:layout_height="248dp"
+            android:background="@drawable/bg_camera_face_guide" />
+
+        <TextView
+            android:id="@+id/tv_dica_enquadramento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="#801D1B20"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:text="@string/dica_enquadramento_camera"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Barra Superior Translúcida (Fechar, Contexto do Residente, Flash) -->
+    <LinearLayout
+        android:id="@+id/layout_topo_camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="#800F0D13"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="12dp">
+
+        <ImageButton
+            android:id="@+id/btn_fechar_camera"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/desc_fechar_camera"
+            android:padding="12dp"
+            android:src="@drawable/ic_close"
+            app:tint="@color/white" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingHorizontal="8dp">
+
+            <TextView
+                android:id="@+id/tv_titulo_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/titulo_camera_foto_idoso"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_subtitulo_residente_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/subtitulo_camera_padrao"
+                android:textColor="#E6E0E9"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_alternar_flash"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/desc_flash_desligado"
+            android:padding="12dp"
+            android:src="@drawable/ic_flash_off"
+            app:tint="@color/white" />
+    </LinearLayout>
+
+    <!-- Dock Inferior de Captura (Alternar Câmera + Obturador) -->
+    <LinearLayout
+        android:id="@+id/layout_controles_captura"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#990F0D13"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="28dp">
+
+        <ImageButton
+            android:id="@+id/btn_alternar_camera"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/desc_alternar_camera"
+            android:padding="10dp"
+            android:src="@drawable/ic_flip_camera"
+            app:tint="@color/white" />
+
+        <FrameLayout
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_marginHorizontal="36dp">
+
+            <ImageButton
+                android:id="@+id/btn_disparar_captura"
+                android:layout_width="76dp"
+                android:layout_height="76dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_shutter_button"
+                android:contentDescription="@string/desc_capturar_foto_camera" />
+
+            <ProgressBar
+                android:id="@+id/progress_captura_foto"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/primary"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <View
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+    </LinearLayout>
+
+    <!-- Overlay de Revisão da Foto Capturada (Refazer / Usar Foto) -->
+    <FrameLayout
+        android:id="@+id/layout_confirmacao_foto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#0F0D13"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_preview_captura_confirmacao"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/desc_preview_foto_capturada"
+            android:scaleType="fitCenter" />
+
+        <LinearLayout
+            android:id="@+id/layout_acoes_confirmacao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="#B30F0D13"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="18dp"
+            android:paddingBottom="24dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_refazer_foto"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/btn_refazer_foto"
+                android:textColor="@color/white"
+                app:cornerRadius="26dp"
+                app:icon="@drawable/ic_refresh"
+                app:iconTint="@color/white"
+                app:strokeColor="#CCFFFFFF" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_confirmar_foto"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/primary"
+                android:text="@string/btn_usar_foto"
+                android:textColor="@color/white"
+                app:cornerRadius="26dp"
+                app:icon="@drawable/ic_check"
+                app:iconTint="@color/white" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Estado de Permissão ou Câmera Indisponível -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/layout_estado_camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="24dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/surface"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="6dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_camera"
+                app:tint="@color/primary" />
+
+            <TextView
+                android:id="@+id/tv_mensagem_estado_camera"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center"
+                android:text="@string/msg_permissao_camera_necessaria"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_solicitar_permissao_camera"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/primary"
+                android:text="@string/btn_permitir_camera_agora"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                app:cornerRadius="24dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_fechar_estado_camera"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/btn_cancelar"
+                android:textColor="@color/primary"
+                app:cornerRadius="24dp"
+                app:strokeColor="@color/primary" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

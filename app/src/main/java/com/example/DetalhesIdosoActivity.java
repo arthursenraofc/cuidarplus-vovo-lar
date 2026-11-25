@@ -25,6 +25,7 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.widget.TextViewCompat;
 
+import com.example.alarm.AlarmScheduler;
 import com.example.database.AcessoNaoAutorizadoException;
 import com.example.database.IdosoDAO;
 import com.example.database.MedicamentoDAO;
@@ -34,6 +35,7 @@ import com.example.model.Medicamento;
 import com.example.model.PerfilUsuario;
 import com.example.util.FichaIdosoPdfGenerator;
 import com.example.util.ImageUtil;
+import com.example.util.NotificationHelper;
 import com.example.util.PermissaoUtils;
 import com.example.util.ResumoProntuarioPdfGenerator;
 import com.example.util.SessaoManager;
@@ -545,18 +547,14 @@ public class DetalhesIdosoActivity extends AppCompatActivity {
 
     private void iniciarCapturaCameraPerfil() {
         try {
-            arquivoFotoTemporario = ImageUtil.criarArquivoTemporarioCaptura(this);
-            Intent intentCamera = ImageUtil.criarIntentCapturaCamera(this, arquivoFotoTemporario);
-            cameraPerfilLauncher.launch(intentCamera);
-        } catch (ActivityNotFoundException e) {
-            Log.w(TAG, "Nenhum aplicativo de câmera disponível no dispositivo.");
-            ImageUtil.removerArquivoSilenciosamente(arquivoFotoTemporario);
-            arquivoFotoTemporario = null;
-            Toast.makeText(this, R.string.erro_camera_indisponivel, Toast.LENGTH_LONG).show();
+            Intent intentCameraX = new Intent(this, CameraFotoIdosoActivity.class);
+            String nomeResidente = obterNomeResidenteAtual();
+            if (!nomeResidente.isEmpty()) {
+                intentCameraX.putExtra(CameraFotoIdosoActivity.EXTRA_NOME_RESIDENTE, nomeResidente);
+            }
+            cameraPerfilLauncher.launch(intentCameraX);
         } catch (Exception e) {
-            Log.w(TAG, "Não foi possível iniciar a captura de foto: " + e.getMessage());
-            ImageUtil.removerArquivoSilenciosamente(arquivoFotoTemporario);
-            arquivoFotoTemporario = null;
+            Log.w(TAG, "Não foi possível iniciar a captura de foto com CameraX: " + e.getMessage());
             Toast.makeText(this, R.string.erro_salvar_foto_camera, Toast.LENGTH_SHORT).show();
         }
     }
@@ -569,7 +567,17 @@ public class DetalhesIdosoActivity extends AppCompatActivity {
         }
 
         String novoCaminhoPrivado = null;
-        if (arquivoFotoTemporario != null && arquivoFotoTemporario.exists() && arquivoFotoTemporario.length() > 0) {
+        if (resultado.getData() != null) {
+            String caminhoSalvoCameraX = resultado.getData().getStringExtra(
+                    CameraFotoIdosoActivity.EXTRA_CAMINHO_FOTO_SALVA
+            );
+            if (ImageUtil.possuiFotoValida(caminhoSalvoCameraX)) {
+                novoCaminhoPrivado = caminhoSalvoCameraX.trim();
+            }
+        }
+
+        if (novoCaminhoPrivado == null && arquivoFotoTemporario != null
+                && arquivoFotoTemporario.exists() && arquivoFotoTemporario.length() > 0) {
             novoCaminhoPrivado = ImageUtil.salvarFotoCapturadaNoArmazenamentoPrivado(this, arquivoFotoTemporario);
         } else {
             ImageUtil.removerArquivoSilenciosamente(arquivoFotoTemporario);
@@ -911,9 +919,24 @@ public class DetalhesIdosoActivity extends AppCompatActivity {
                 .setMessage(getString(R.string.confirmar_exclusao_msg, obterNomeResidenteAtual()))
                 .setPositiveButton(R.string.excluir, (dialog, which) -> {
                     try {
+                        List<Medicamento> medsDoIdoso = medicamentoDAO.listarPorIdoso(idosoId);
                         int linhas = idosoDAO.excluir(idosoId);
                         if (linhas > 0) {
+                            for (Medicamento med : medsDoIdoso) {
+                                if (med != null && med.getId() > 0) {
+                                    AlarmScheduler.cancelarAlarme(DetalhesIdosoActivity.this, med.getId());
+                                }
+                            }
                             ImageUtil.removerFotoPrivadaSeExistir(DetalhesIdosoActivity.this, caminhoFotoResidente);
+                            File resumoOffline = ResumoProntuarioPdfGenerator.obterResumoSalvoOffline(
+                                    DetalhesIdosoActivity.this,
+                                    idosoAtual
+                            );
+                            if (resumoOffline != null && resumoOffline.exists()) {
+                                //noinspection ResultOfMethodCallIgnored
+                                resumoOffline.delete();
+                            }
+                            NotificationHelper.avaliarENotificarEstoqueBaixo(DetalhesIdosoActivity.this);
                             Toast.makeText(DetalhesIdosoActivity.this, getString(R.string.sucesso_excluido), Toast.LENGTH_SHORT).show();
                             finish();
                         } else {

@@ -14,8 +14,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Gerenciador do Banco de Dados Local SQLite para a ILPI (Sprint 1 & Sprint 2 Avançado).
@@ -25,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Configurações do Banco de Dados
     public static final String DATABASE_NAME = "lar_idosos.db";
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 7;
 
     // Tabela Idosos
     public static final String TABLE_IDOSOS = "idosos";
@@ -49,6 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_MED_NOME = "nome_medicamento";
     public static final String COL_MED_DOSAGEM = "dosagem";
     public static final String COL_MED_ESTOQUE = "estoque";
+    public static final String COL_MED_DATA_VALIDADE = "data_validade";
     public static final String COL_MED_TIPO = "tipo";
     public static final String COL_MED_HORARIO_INICIAL = "horario_inicial";
     public static final String COL_MED_FREQUENCIA_HORAS = "frequencia_horas";
@@ -65,6 +68,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_HIST_STATUS = "status";
     public static final String COL_HIST_NOME_CUIDADOR = "nome_cuidador";
     public static final String COL_HIST_OBSERVACAO = "observacao";
+
+    // Tabela Passagem de Turno e Observações (Sprint 4)
+    public static final String TABLE_PASSAGEM_TURNO = "passagem_turno";
+    public static final String COL_PT_ID = "id";
+    public static final String COL_PT_TURNO = "turno";
+    public static final String COL_PT_DATA_HORA = "data_hora_registro";
+    public static final String COL_PT_TIMESTAMP = "timestamp_registro";
+    public static final String COL_PT_PROFISSIONAL_ORIGEM = "profissional_origem";
+    public static final String COL_PT_CARGO_ORIGEM = "cargo_origem";
+    public static final String COL_PT_ID_IDOSO = "id_idoso";
+    public static final String COL_PT_NOME_IDOSO = "nome_idoso";
+    public static final String COL_PT_PRIORIDADE = "prioridade";
+    public static final String COL_PT_OBSERVACOES = "observacoes";
+    public static final String COL_PT_INTERCORRENCIAS = "intercorrencias";
+    public static final String COL_PT_PENDENCIAS = "pendencias_proximo_turno";
+    public static final String COL_PT_CONFERIDO = "conferido";
+    public static final String COL_PT_PROFISSIONAL_DESTINO = "profissional_destino";
+    public static final String COL_PT_DATA_HORA_CONFERENCIA = "data_hora_conferencia";
 
     // SQL de Criação da Tabela Idosos
     private static final String CREATE_TABLE_IDOSOS = "CREATE TABLE IF NOT EXISTS " + TABLE_IDOSOS + " ("
@@ -88,6 +109,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COL_MED_NOME + " TEXT NOT NULL, "
             + COL_MED_DOSAGEM + " TEXT NOT NULL, "
             + COL_MED_ESTOQUE + " TEXT DEFAULT '', "
+            + COL_MED_DATA_VALIDADE + " TEXT DEFAULT '', "
             + COL_MED_TIPO + " TEXT NOT NULL DEFAULT 'Comprimido', "
             + COL_MED_HORARIO_INICIAL + " TEXT NOT NULL, "
             + COL_MED_FREQUENCIA_HORAS + " INTEGER NOT NULL DEFAULT 8, "
@@ -107,6 +129,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COL_HIST_OBSERVACAO + " TEXT, "
             + "FOREIGN KEY(" + COL_HIST_ID_MEDICAMENTO + ") REFERENCES " + TABLE_MEDICAMENTO + "(" + COL_MED_ID + ") ON DELETE CASCADE, "
             + "FOREIGN KEY(" + COL_HIST_ID_IDOSO + ") REFERENCES " + TABLE_IDOSOS + "(" + COL_ID + ") ON DELETE CASCADE);";
+
+    // SQL de Criação da Tabela Passagem de Turno
+    private static final String CREATE_TABLE_PASSAGEM_TURNO = "CREATE TABLE IF NOT EXISTS " + TABLE_PASSAGEM_TURNO + " ("
+            + COL_PT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + COL_PT_TURNO + " TEXT NOT NULL, "
+            + COL_PT_DATA_HORA + " TEXT NOT NULL, "
+            + COL_PT_TIMESTAMP + " INTEGER NOT NULL DEFAULT 0, "
+            + COL_PT_PROFISSIONAL_ORIGEM + " TEXT NOT NULL, "
+            + COL_PT_CARGO_ORIGEM + " TEXT DEFAULT '', "
+            + COL_PT_ID_IDOSO + " INTEGER DEFAULT -1, "
+            + COL_PT_NOME_IDOSO + " TEXT DEFAULT '', "
+            + COL_PT_PRIORIDADE + " TEXT NOT NULL DEFAULT 'NORMAL', "
+            + COL_PT_OBSERVACOES + " TEXT NOT NULL, "
+            + COL_PT_INTERCORRENCIAS + " TEXT DEFAULT '', "
+            + COL_PT_PENDENCIAS + " TEXT DEFAULT '', "
+            + COL_PT_CONFERIDO + " INTEGER NOT NULL DEFAULT 0, "
+            + COL_PT_PROFISSIONAL_DESTINO + " TEXT DEFAULT '', "
+            + COL_PT_DATA_HORA_CONFERENCIA + " TEXT DEFAULT '');";
 
     private static DatabaseHelper instance;
     private volatile boolean esquemaVerificado = false;
@@ -145,6 +185,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onConfigure(SQLiteDatabase db) {
         super.onConfigure(db);
         db.setForeignKeyConstraintsEnabled(true);
+        if (!db.isReadOnly()) {
+            db.enableWriteAheadLogging();
+        }
     }
 
     @Override
@@ -152,14 +195,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_IDOSOS);
         db.execSQL(CREATE_TABLE_MEDICAMENTO);
         db.execSQL(CREATE_TABLE_HISTORICO_MEDICACAO);
+        db.execSQL(CREATE_TABLE_PASSAGEM_TURNO);
 
         inserirDadosIniciais(db);
+        inserirPassagensTurnoIniciais(db);
         esquemaVerificado = true;
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Garante primeiro que todas as tabelas e colunas novas (CPF, leito, familiar, estoque) existam
+        esquemaVerificado = false;
         garantirEsquemaAtualizado(db);
 
         // Migração da v1 (Sprint 1) para a versão completa atualizada
@@ -172,6 +218,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (!db.isReadOnly()) {
+            esquemaVerificado = false;
             garantirEsquemaAtualizado(db);
         }
     }
@@ -179,7 +226,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
-        if (!db.isReadOnly()) {
+        if (!db.isReadOnly() && !esquemaVerificado) {
             garantirEsquemaAtualizado(db);
         }
     }
@@ -204,37 +251,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * esperadas pelas queries existem no SQLite local, adicionando colunas ausentes sem perda de dados.
      */
     private synchronized void garantirEsquemaAtualizado(SQLiteDatabase db) {
+        if (esquemaVerificado) {
+            return;
+        }
+        boolean passagemExistia = tabelaExiste(db, TABLE_PASSAGEM_TURNO);
         db.execSQL(CREATE_TABLE_IDOSOS);
         db.execSQL(CREATE_TABLE_MEDICAMENTO);
         db.execSQL(CREATE_TABLE_HISTORICO_MEDICACAO);
+        db.execSQL(CREATE_TABLE_PASSAGEM_TURNO);
 
-        // Colunas da tabela idosos
-        adicionarColunaSeAusente(db, TABLE_IDOSOS, COL_DATA_NASCIMENTO, "TEXT");
-        adicionarColunaSeAusente(db, TABLE_IDOSOS, COL_TIPO_SANGUINEO, "TEXT");
-        adicionarColunaSeAusente(db, TABLE_IDOSOS, COL_ALERGIAS, "TEXT");
-        adicionarColunaSeAusente(db, TABLE_IDOSOS, COL_RESTRICOES_MEDICAS, "TEXT");
-        adicionarColunaSeAusente(db, TABLE_IDOSOS, COL_CONTATO_EMERGENCIA, "TEXT");
-        adicionarColunaSeAusente(db, TABLE_IDOSOS, COL_CAMINHO_FOTO, "TEXT");
-        adicionarColunaSeAusente(db, TABLE_IDOSOS, COL_CPF, "TEXT DEFAULT ''");
-        adicionarColunaSeAusente(db, TABLE_IDOSOS, COL_LEITO_QUARTO, "TEXT DEFAULT ''");
-        adicionarColunaSeAusente(db, TABLE_IDOSOS, COL_NOME_FAMILIAR, "TEXT DEFAULT ''");
-        adicionarColunaSeAusente(db, TABLE_IDOSOS, COL_GRAU_PARENTESCO, "TEXT DEFAULT ''");
+        if (!passagemExistia) {
+            inserirPassagensTurnoIniciais(db);
+        }
 
-        // Colunas da tabela medicamento (inclui correção definitiva para m.estoque)
-        adicionarColunaSeAusente(db, TABLE_MEDICAMENTO, COL_MED_ESTOQUE, "TEXT DEFAULT ''");
-        adicionarColunaSeAusente(db, TABLE_MEDICAMENTO, COL_MED_TIPO, "TEXT NOT NULL DEFAULT 'Comprimido'");
-        adicionarColunaSeAusente(db, TABLE_MEDICAMENTO, COL_MED_HORARIO_INICIAL, "TEXT NOT NULL DEFAULT '08:00'");
-        adicionarColunaSeAusente(db, TABLE_MEDICAMENTO, COL_MED_FREQUENCIA_HORAS, "INTEGER NOT NULL DEFAULT 8");
-        adicionarColunaSeAusente(db, TABLE_MEDICAMENTO, COL_MED_OBSERVACAO, "TEXT DEFAULT ''");
-        adicionarColunaSeAusente(db, TABLE_MEDICAMENTO, COL_MED_STATUS_ATIVO, "INTEGER NOT NULL DEFAULT 1");
+        // Colunas da tabela idosos (consulta única de PRAGMA table_info)
+        Set<String> colunasIdosos = listarColunasTabela(db, TABLE_IDOSOS);
+        adicionarColunaSeAusente(db, TABLE_IDOSOS, colunasIdosos, COL_DATA_NASCIMENTO, "TEXT");
+        adicionarColunaSeAusente(db, TABLE_IDOSOS, colunasIdosos, COL_TIPO_SANGUINEO, "TEXT");
+        adicionarColunaSeAusente(db, TABLE_IDOSOS, colunasIdosos, COL_ALERGIAS, "TEXT");
+        adicionarColunaSeAusente(db, TABLE_IDOSOS, colunasIdosos, COL_RESTRICOES_MEDICAS, "TEXT");
+        adicionarColunaSeAusente(db, TABLE_IDOSOS, colunasIdosos, COL_CONTATO_EMERGENCIA, "TEXT");
+        adicionarColunaSeAusente(db, TABLE_IDOSOS, colunasIdosos, COL_CAMINHO_FOTO, "TEXT");
+        adicionarColunaSeAusente(db, TABLE_IDOSOS, colunasIdosos, COL_CPF, "TEXT DEFAULT ''");
+        adicionarColunaSeAusente(db, TABLE_IDOSOS, colunasIdosos, COL_LEITO_QUARTO, "TEXT DEFAULT ''");
+        adicionarColunaSeAusente(db, TABLE_IDOSOS, colunasIdosos, COL_NOME_FAMILIAR, "TEXT DEFAULT ''");
+        adicionarColunaSeAusente(db, TABLE_IDOSOS, colunasIdosos, COL_GRAU_PARENTESCO, "TEXT DEFAULT ''");
+
+        // Colunas da tabela medicamento
+        boolean alterouMedicamento = false;
+        Set<String> colunasMed = listarColunasTabela(db, TABLE_MEDICAMENTO);
+        alterouMedicamento |= adicionarColunaSeAusente(db, TABLE_MEDICAMENTO, colunasMed, COL_MED_ESTOQUE, "TEXT DEFAULT ''");
+        alterouMedicamento |= adicionarColunaSeAusente(db, TABLE_MEDICAMENTO, colunasMed, COL_MED_DATA_VALIDADE, "TEXT DEFAULT ''");
+        adicionarColunaSeAusente(db, TABLE_MEDICAMENTO, colunasMed, COL_MED_TIPO, "TEXT NOT NULL DEFAULT 'Comprimido'");
+        adicionarColunaSeAusente(db, TABLE_MEDICAMENTO, colunasMed, COL_MED_HORARIO_INICIAL, "TEXT NOT NULL DEFAULT '08:00'");
+        adicionarColunaSeAusente(db, TABLE_MEDICAMENTO, colunasMed, COL_MED_FREQUENCIA_HORAS, "INTEGER NOT NULL DEFAULT 8");
+        adicionarColunaSeAusente(db, TABLE_MEDICAMENTO, colunasMed, COL_MED_OBSERVACAO, "TEXT DEFAULT ''");
+        adicionarColunaSeAusente(db, TABLE_MEDICAMENTO, colunasMed, COL_MED_STATUS_ATIVO, "INTEGER NOT NULL DEFAULT 1");
 
         // Colunas da tabela historico_medicacao
-        adicionarColunaSeAusente(db, TABLE_HISTORICO_MEDICACAO, COL_HIST_DATA_HORA_PRESCRITA, "TEXT");
-        adicionarColunaSeAusente(db, TABLE_HISTORICO_MEDICACAO, COL_HIST_NOME_CUIDADOR, "TEXT");
-        adicionarColunaSeAusente(db, TABLE_HISTORICO_MEDICACAO, COL_HIST_OBSERVACAO, "TEXT");
+        Set<String> colunasHist = listarColunasTabela(db, TABLE_HISTORICO_MEDICACAO);
+        adicionarColunaSeAusente(db, TABLE_HISTORICO_MEDICACAO, colunasHist, COL_HIST_DATA_HORA_PRESCRITA, "TEXT");
+        adicionarColunaSeAusente(db, TABLE_HISTORICO_MEDICACAO, colunasHist, COL_HIST_NOME_CUIDADOR, "TEXT");
+        adicionarColunaSeAusente(db, TABLE_HISTORICO_MEDICACAO, colunasHist, COL_HIST_OBSERVACAO, "TEXT");
 
-        // Normaliza registros legados cujo estoque estava nulo após ALTER TABLE
-        db.execSQL("UPDATE " + TABLE_MEDICAMENTO + " SET " + COL_MED_ESTOQUE + " = '' WHERE " + COL_MED_ESTOQUE + " IS NULL");
+        // Normaliza registros legados cujo estoque ou validade estavam nulos após ALTER TABLE
+        if (alterouMedicamento) {
+            db.execSQL("UPDATE " + TABLE_MEDICAMENTO + " SET " + COL_MED_ESTOQUE + " = '' WHERE " + COL_MED_ESTOQUE + " IS NULL");
+            db.execSQL("UPDATE " + TABLE_MEDICAMENTO + " SET " + COL_MED_DATA_VALIDADE + " = '' WHERE " + COL_MED_DATA_VALIDADE + " IS NULL");
+        }
 
         // Enriquece de forma não-destrutiva campos ausentes nos cadastros padrão vindos de versões anteriores
         enriquecerCamposLegadosIdososPadrao(db);
@@ -351,10 +415,95 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         inserirMedicamentosIniciais(db);
     }
 
-    private void adicionarColunaSeAusente(SQLiteDatabase db, String tabela, String coluna, String definicaoSql) {
-        if (!colunaExiste(db, tabela, coluna)) {
-            db.execSQL("ALTER TABLE " + tabela + " ADD COLUMN " + coluna + " " + definicaoSql);
+    private Set<String> listarColunasTabela(SQLiteDatabase db, String tabela) {
+        Set<String> colunas = new HashSet<>();
+        try (Cursor cursor = db.rawQuery("PRAGMA table_info(" + tabela + ")", null)) {
+            if (cursor != null) {
+                int nameIdx = cursor.getColumnIndex("name");
+                while (cursor.moveToNext()) {
+                    if (nameIdx != -1) {
+                        String nome = cursor.getString(nameIdx);
+                        if (nome != null) {
+                            colunas.add(nome.toLowerCase(Locale.ROOT));
+                        }
+                    }
+                }
+            }
         }
+        return colunas;
+    }
+
+    private boolean adicionarColunaSeAusente(
+            SQLiteDatabase db,
+            String tabela,
+            Set<String> colunasExistentes,
+            String coluna,
+            String definicaoSql
+    ) {
+        if (!colunasExistentes.contains(coluna.toLowerCase(Locale.ROOT))) {
+            db.execSQL("ALTER TABLE " + tabela + " ADD COLUMN " + coluna + " " + definicaoSql);
+            colunasExistentes.add(coluna.toLowerCase(Locale.ROOT));
+            return true;
+        }
+        return false;
+    }
+
+    private boolean tabelaExiste(SQLiteDatabase db, String tabela) {
+        try (Cursor cursor = db.rawQuery(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                new String[]{tabela}
+        )) {
+            return cursor != null && cursor.moveToFirst();
+        }
+    }
+
+    private void inserirPassagensTurnoIniciais(SQLiteDatabase db) {
+        try (Cursor c = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_PASSAGEM_TURNO, null)) {
+            if (c != null && c.moveToFirst() && c.getInt(0) > 0) {
+                return;
+            }
+        } catch (Exception ignored) {
+            return;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        long agora = System.currentTimeMillis();
+        String dataAtual = sdf.format(new Date(agora));
+        String dataAnterior = sdf.format(new Date(agora - (6L * 60L * 60L * 1000L)));
+
+        ContentValues pt1 = new ContentValues();
+        pt1.put(COL_PT_TURNO, "Manhã");
+        pt1.put(COL_PT_DATA_HORA, dataAtual);
+        pt1.put(COL_PT_TIMESTAMP, agora);
+        pt1.put(COL_PT_PROFISSIONAL_ORIGEM, "Enf. Camila Mendes");
+        pt1.put(COL_PT_CARGO_ORIGEM, "Enfermeiro(a)");
+        pt1.put(COL_PT_ID_IDOSO, 2);
+        pt1.put(COL_PT_NOME_IDOSO, "Seu Antônio Carlos Ribeiro");
+        pt1.put(COL_PT_PRIORIDADE, "URGENTE");
+        pt1.put(COL_PT_OBSERVACOES, "Apresentou leve instabilidade postural ao levantar. Estoque de Prolopa com 4 comprimidos restantes.");
+        pt1.put(COL_PT_INTERCORRENCIAS, "Necessário auxílio integral no deslocamento ao refeitório.");
+        pt1.put(COL_PT_PENDENCIAS, "Confirmar solicitação de reposição de Prolopa junto ao familiar Roberto.");
+        pt1.put(COL_PT_CONFERIDO, 0);
+        pt1.put(COL_PT_PROFISSIONAL_DESTINO, "");
+        pt1.put(COL_PT_DATA_HORA_CONFERENCIA, "");
+        db.insert(TABLE_PASSAGEM_TURNO, null, pt1);
+
+        ContentValues pt2 = new ContentValues();
+        pt2.put(COL_PT_TURNO, "Noite");
+        pt2.put(COL_PT_DATA_HORA, dataAnterior);
+        pt2.put(COL_PT_TIMESTAMP, agora - (6L * 60L * 60L * 1000L));
+        pt2.put(COL_PT_PROFISSIONAL_ORIGEM, "Téc. Marcos Oliveira");
+        pt2.put(COL_PT_CARGO_ORIGEM, "Cuidador(a)");
+        pt2.put(COL_PT_ID_IDOSO, -1);
+        pt2.put(COL_PT_NOME_IDOSO, "Geral da Instituição");
+        pt2.put(COL_PT_PRIORIDADE, "NORMAL");
+        pt2.put(COL_PT_OBSERVACOES, "Plantão noturno tranquilo. Todos os residentes hidratados e com sinais vitais estáveis.");
+        pt2.put(COL_PT_INTERCORRENCIAS, "Sem intercorrências clínicas registradas.");
+        pt2.put(COL_PT_PENDENCIAS, "Manter aferição matinal de PA da Dona Francisca.");
+        pt2.put(COL_PT_CONFERIDO, 1);
+        pt2.put(COL_PT_PROFISSIONAL_DESTINO, "Enf. Camila Mendes");
+        pt2.put(COL_PT_DATA_HORA_CONFERENCIA, dataAtual);
+        db.insert(TABLE_PASSAGEM_TURNO, null, pt2);
     }
 
     private boolean colunaExiste(SQLiteDatabase db, String tabela, String coluna) {
@@ -440,6 +589,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         m1.put(COL_MED_NOME, "Losartana Potássica");
         m1.put(COL_MED_DOSAGEM, "50mg (1 comprimido)");
         m1.put(COL_MED_ESTOQUE, "28 comprimidos");
+        m1.put(COL_MED_DATA_VALIDADE, com.example.util.ValidadeMedicamentoHelper.gerarDataDeslocadaFormatada(180));
         m1.put(COL_MED_TIPO, "Comprimido");
         m1.put(COL_MED_HORARIO_INICIAL, "08:00");
         m1.put(COL_MED_FREQUENCIA_HORAS, 12);
@@ -452,6 +602,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         m2.put(COL_MED_NOME, "Metformina");
         m2.put(COL_MED_DOSAGEM, "850mg (1 comprimido)");
         m2.put(COL_MED_ESTOQUE, "45 comprimidos");
+        m2.put(COL_MED_DATA_VALIDADE, com.example.util.ValidadeMedicamentoHelper.gerarDataDeslocadaFormatada(15));
         m2.put(COL_MED_TIPO, "Comprimido");
         m2.put(COL_MED_HORARIO_INICIAL, "09:00");
         m2.put(COL_MED_FREQUENCIA_HORAS, 8);
@@ -464,6 +615,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         m3.put(COL_MED_NOME, "Prolopa (Levodopa + Benserazida)");
         m3.put(COL_MED_DOSAGEM, "200/50mg (1 comprimido)");
         m3.put(COL_MED_ESTOQUE, "4 comprimidos");
+        m3.put(COL_MED_DATA_VALIDADE, com.example.util.ValidadeMedicamentoHelper.gerarDataDeslocadaFormatada(120));
         m3.put(COL_MED_TIPO, "Comprimido");
         m3.put(COL_MED_HORARIO_INICIAL, "07:00");
         m3.put(COL_MED_FREQUENCIA_HORAS, 6);
@@ -486,6 +638,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COL_MED_NOME, med.getNomeMedicamento());
         cv.put(COL_MED_DOSAGEM, med.getDosagem());
         cv.put(COL_MED_ESTOQUE, med.getEstoque());
+        cv.put(COL_MED_DATA_VALIDADE, med.getDataValidade());
         cv.put(COL_MED_TIPO, med.getTipo());
         cv.put(COL_MED_HORARIO_INICIAL, med.getHorarioInicial());
         cv.put(COL_MED_FREQUENCIA_HORAS, med.getFrequenciaHoras());
@@ -512,6 +665,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COL_MED_NOME, med.getNomeMedicamento());
         cv.put(COL_MED_DOSAGEM, med.getDosagem());
         cv.put(COL_MED_ESTOQUE, med.getEstoque());
+        cv.put(COL_MED_DATA_VALIDADE, med.getDataValidade());
         cv.put(COL_MED_TIPO, med.getTipo());
         cv.put(COL_MED_HORARIO_INICIAL, med.getHorarioInicial());
         cv.put(COL_MED_FREQUENCIA_HORAS, med.getFrequenciaHoras());
@@ -559,7 +713,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private List<Medicamento> consultarMedicamentosSeguro(String clausulaJoinEWhere, String[] args) {
         List<Medicamento> lista = new ArrayList<>();
         String projecaoCompleta = "SELECT m." + COL_MED_ID + ", m." + COL_MED_ID_IDOSO + ", m." + COL_MED_NOME + ", "
-                + "m." + COL_MED_DOSAGEM + ", m." + COL_MED_ESTOQUE + ", m." + COL_MED_TIPO + ", m." + COL_MED_HORARIO_INICIAL + ", "
+                + "m." + COL_MED_DOSAGEM + ", m." + COL_MED_ESTOQUE + ", m." + COL_MED_DATA_VALIDADE + ", m." + COL_MED_TIPO + ", m." + COL_MED_HORARIO_INICIAL + ", "
                 + "m." + COL_MED_FREQUENCIA_HORAS + ", m." + COL_MED_OBSERVACAO + ", "
                 + "m." + COL_MED_STATUS_ATIVO + ", i." + COL_NOME + " AS nome_idoso "
                 + "FROM " + TABLE_MEDICAMENTO + " m "
@@ -574,7 +728,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             return lista;
         } catch (android.database.sqlite.SQLiteException ex) {
-            // Auto-recuperação caso o banco estivesse aberto sem a coluna estoque
+            // Auto-recuperação caso o banco estivesse aberto sem a coluna estoque/validade
             try {
                 SQLiteDatabase writableDb = getWritableDatabase();
                 if (!writableDb.isReadOnly()) {
@@ -593,7 +747,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             // Fallback seguro caso o armazenamento esteja estritamente somente-leitura
             String projecaoFallback = "SELECT m." + COL_MED_ID + ", m." + COL_MED_ID_IDOSO + ", m." + COL_MED_NOME + ", "
-                    + "m." + COL_MED_DOSAGEM + ", '' AS " + COL_MED_ESTOQUE + ", m." + COL_MED_TIPO + ", m." + COL_MED_HORARIO_INICIAL + ", "
+                    + "m." + COL_MED_DOSAGEM + ", '' AS " + COL_MED_ESTOQUE + ", '' AS " + COL_MED_DATA_VALIDADE + ", m." + COL_MED_TIPO + ", m." + COL_MED_HORARIO_INICIAL + ", "
                     + "m." + COL_MED_FREQUENCIA_HORAS + ", m." + COL_MED_OBSERVACAO + ", "
                     + "m." + COL_MED_STATUS_ATIVO + ", i." + COL_NOME + " AS nome_idoso "
                     + "FROM " + TABLE_MEDICAMENTO + " m "
@@ -670,7 +824,115 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Helper para cálculo das próximas doses e classificação de pontualidade.
+     * Retorna apenas as doses ainda pendentes (ATRASADO ou NO_HORARIO) para o dia atual.
+     * Exclui doses já administradas, concluídas ou recusadas, sem duplicidade por ID.
+     */
+    public List<DoseAlertaDTO> buscarDosesPendentes(int idIdoso) {
+        List<DoseAlertaDTO> base = idIdoso > 0 ? buscarProximasDoses(idIdoso) : buscarAlertasDoDia();
+        List<DoseAlertaDTO> pendentes = new ArrayList<>();
+        for (DoseAlertaDTO dto : base) {
+            if (!dto.isAdministradoHoje() && !"CONCLUIDO".equalsIgnoreCase(dto.getStatusPontualidade())) {
+                pendentes.add(dto);
+            }
+        }
+        return pendentes;
+    }
+
+    /**
+     * Retorna estritamente as doses atrasadas e ainda pendentes de administração.
+     */
+    public List<DoseAlertaDTO> buscarDosesAtrasadasPendentes() {
+        List<DoseAlertaDTO> pendentes = buscarDosesPendentes(-1);
+        List<DoseAlertaDTO> atrasadas = new ArrayList<>();
+        for (DoseAlertaDTO dto : pendentes) {
+            if ("ATRASADO".equalsIgnoreCase(dto.getStatusPontualidade())) {
+                atrasadas.add(dto);
+            }
+        }
+        return atrasadas;
+    }
+
+    /**
+     * Lista os registros de histórico de medicação lançados na data informada (dd/MM/yyyy).
+     */
+    public List<HistoricoMedicacao> listarHistoricoDoDia(String dataHojeStr) {
+        List<HistoricoMedicacao> lista = new ArrayList<>();
+        String dataRef = (dataHojeStr != null && !dataHojeStr.trim().isEmpty())
+                ? dataHojeStr.trim()
+                : new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+
+        SQLiteDatabase db = obterBancoComEsquemaGarantido();
+        String sql = "SELECT * FROM " + TABLE_HISTORICO_MEDICACAO
+                + " WHERE " + COL_HIST_DATA_HORA_EXECUTADA + " LIKE ?"
+                + " ORDER BY " + COL_HIST_ID + " DESC";
+        try (Cursor c = db.rawQuery(sql, new String[]{"%" + dataRef + "%"})) {
+            if (c != null && c.moveToFirst()) {
+                do {
+                    HistoricoMedicacao h = new HistoricoMedicacao();
+                    h.setId(c.getInt(c.getColumnIndexOrThrow(COL_HIST_ID)));
+                    h.setIdMedicamento(c.getInt(c.getColumnIndexOrThrow(COL_HIST_ID_MEDICAMENTO)));
+                    h.setIdIdoso(c.getInt(c.getColumnIndexOrThrow(COL_HIST_ID_IDOSO)));
+                    h.setDataHoraPrescrita(c.getString(c.getColumnIndexOrThrow(COL_HIST_DATA_HORA_PRESCRITA)));
+                    h.setDataHoraExecutada(c.getString(c.getColumnIndexOrThrow(COL_HIST_DATA_HORA_EXECUTADA)));
+                    h.setStatus(c.getString(c.getColumnIndexOrThrow(COL_HIST_STATUS)));
+                    h.setNomeCuidador(c.getString(c.getColumnIndexOrThrow(COL_HIST_NOME_CUIDADOR)));
+                    h.setObservacao(c.getString(c.getColumnIndexOrThrow(COL_HIST_OBSERVACAO)));
+                    lista.add(h);
+                } while (c.moveToNext());
+            }
+        } catch (Exception ignored) {
+        }
+        return lista;
+    }
+
+    /**
+     * Conta o total de doses efetivamente administradas nas últimas 12 horas
+     * para exibição no resumo automático da Passagem de Turno.
+     */
+    public int contarDosesAdministradasUltimas12Horas() {
+        long agoraMs = System.currentTimeMillis();
+        long limiteInicioMs = agoraMs - (12L * 60L * 60L * 1000L);
+        int total = 0;
+
+        SimpleDateFormat sdfCompleto = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+        sdfCompleto.setLenient(false);
+        SimpleDateFormat sdfCurto = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        sdfCurto.setLenient(false);
+
+        SQLiteDatabase db = obterBancoComEsquemaGarantido();
+        String sql = "SELECT " + COL_HIST_DATA_HORA_EXECUTADA + " FROM " + TABLE_HISTORICO_MEDICACAO
+                + " WHERE " + COL_HIST_STATUS + " IN ('"
+                + HistoricoMedicacao.STATUS_ADMINISTRADO + "', '"
+                + HistoricoMedicacao.STATUS_ATRASADO + "', 'CONCLUIDO')";
+
+        try (Cursor cursor = db.rawQuery(sql, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    String dataHora = cursor.getString(0);
+                    if (dataHora == null || dataHora.trim().isEmpty()) {
+                        continue;
+                    }
+                    Date parsed = null;
+                    try {
+                        parsed = sdfCompleto.parse(dataHora.trim());
+                    } catch (Exception ignored) {
+                        try {
+                            parsed = sdfCurto.parse(dataHora.trim());
+                        } catch (Exception ignored2) {
+                        }
+                    }
+                    if (parsed != null && parsed.getTime() >= limiteInicioMs && parsed.getTime() <= agoraMs + 60_000L) {
+                        total++;
+                    }
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception ignored) {
+        }
+        return total;
+    }
+
+    /**
+     * Helper para cálculo das próximas doses e classificação de pontualidade (sem duplicidade por medicamento).
      */
     private List<DoseAlertaDTO> calcularDosesEStatus(List<Medicamento> medicamentos) {
         List<DoseAlertaDTO> resultado = new ArrayList<>();
@@ -682,7 +944,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int minutoAtual = agora.get(Calendar.MINUTE);
         int agoraMinutos = (horaAtual * 60) + minutoAtual;
 
+        java.util.Set<Integer> idsProcessados = new java.util.HashSet<>();
         for (Medicamento med : medicamentos) {
+            if (med == null || med.getId() <= 0 || !idsProcessados.add(med.getId())) {
+                continue;
+            }
             String horarioPrevisto = med.getHorarioInicial();
             boolean administradoHoje = verificarSeAdministradoHoje(med.getId(), hojeStr);
 
@@ -702,17 +968,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             resultado.add(new DoseAlertaDTO(med, horarioPrevisto, statusPontualidade, administradoHoje));
         }
 
+        resultado.sort((d1, d2) -> {
+            int p1 = prioridadeStatusPontualidade(d1.getStatusPontualidade());
+            int p2 = prioridadeStatusPontualidade(d2.getStatusPontualidade());
+            if (p1 != p2) {
+                return Integer.compare(p1, p2);
+            }
+            int m1 = extrairMinutosDoHorario(d1.getHorarioPrevisto());
+            int m2 = extrairMinutosDoHorario(d2.getHorarioPrevisto());
+            if (m1 != m2) {
+                return Integer.compare(m1, m2);
+            }
+            String n1 = d1.getNomeIdoso() != null ? d1.getNomeIdoso() : "";
+            String n2 = d2.getNomeIdoso() != null ? d2.getNomeIdoso() : "";
+            int cmpNome = n1.compareToIgnoreCase(n2);
+            if (cmpNome != 0) {
+                return cmpNome;
+            }
+            return Integer.compare(d1.getIdMedicamento(), d2.getIdMedicamento());
+        });
+
         return resultado;
     }
 
+    private int prioridadeStatusPontualidade(String status) {
+        if ("ATRASADO".equalsIgnoreCase(status)) {
+            return 0;
+        }
+        if ("NO_HORARIO".equalsIgnoreCase(status)) {
+            return 1;
+        }
+        return 2; // CONCLUIDO
+    }
+
     /**
-     * Verifica no histórico se já houve registro de dose administrada para o medicamento hoje.
+     * Verifica no histórico se já houve baixa definitiva para o medicamento hoje.
+     * Considera STATUS_ADMINISTRADO, STATUS_ATRASADO, CONCLUIDO e STATUS_RECUSADO.
      */
     private boolean verificarSeAdministradoHoje(int idMedicamento, String dataHojeStr) {
         SQLiteDatabase db = getReadableDatabase();
         String sql = "SELECT COUNT(*) FROM " + TABLE_HISTORICO_MEDICACAO + " "
                 + "WHERE " + COL_HIST_ID_MEDICAMENTO + " = ? "
-                + "AND " + COL_HIST_STATUS + " = 'ADMINISTRADO' "
+                + "AND " + COL_HIST_STATUS + " IN ('"
+                + HistoricoMedicacao.STATUS_ADMINISTRADO + "', '"
+                + HistoricoMedicacao.STATUS_ATRASADO + "', 'CONCLUIDO', '"
+                + HistoricoMedicacao.STATUS_RECUSADO + "') "
                 + "AND " + COL_HIST_DATA_HORA_EXECUTADA + " LIKE ?";
 
         try (Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(idMedicamento), "%" + dataHojeStr + "%"})) {
@@ -744,6 +1044,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int colEstoqueIdx = cursor.getColumnIndex(COL_MED_ESTOQUE);
         if (colEstoqueIdx != -1) {
             med.setEstoque(cursor.getString(colEstoqueIdx));
+        }
+
+        int colValidadeIdx = cursor.getColumnIndex(COL_MED_DATA_VALIDADE);
+        if (colValidadeIdx != -1) {
+            med.setDataValidade(cursor.getString(colValidadeIdx));
         }
 
         int colTipoIdx = cursor.getColumnIndex(COL_MED_TIPO);

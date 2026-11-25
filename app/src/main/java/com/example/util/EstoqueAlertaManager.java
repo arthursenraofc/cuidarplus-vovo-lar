@@ -94,8 +94,7 @@ public final class EstoqueAlertaManager {
         }
         SharedPreferences prefs = context.getApplicationContext()
                 .getSharedPreferences(PREFS_ESTOQUE, Context.MODE_PRIVATE);
-        prefs.edit().putInt(KEY_LIMITE_MINIMO_ESTOQUE, novoLimite).apply();
-        return true;
+        return prefs.edit().putInt(KEY_LIMITE_MINIMO_ESTOQUE, novoLimite).commit();
     }
 
     /**

@@ -85,5 +85,10 @@
     <color name="estoque_ok_icon_bg">#E6F4EA</color>
     <color name="estoque_ok_fg">#186A3B</color>
 
+    <!-- Validade de Medicamentos -->
+    <color name="validade_alerta_bg">#EF6C00</color>
+    <color name="validade_alerta_container">#FFF3E0</color>
+    <color name="validade_alerta_fg">#B04100</color>
+
     <color name="white">#FFFFFFFF</color>
 </resources>

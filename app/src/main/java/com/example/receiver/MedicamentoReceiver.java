@@ -194,20 +194,39 @@ public class MedicamentoReceiver extends BroadcastReceiver {
         }
 
         try {
+            if (medId <= 0) {
+                Log.w(TAG, "Ignorando ação direta sem ID de medicamento válido.");
+                return;
+            }
             DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+            Medicamento medAntes = dbHelper.buscarMedicamentoPorId(medId);
+            int idosoResolvido = idosoId > 0 ? idosoId : (medAntes != null ? medAntes.getIdIdoso() : -1);
+            if (idosoResolvido <= 0) {
+                Log.w(TAG, "Residente não encontrado para o medicamento ID: " + medId);
+                return;
+            }
+
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
             String agoraStr = sdf.format(new Date());
+            String nomeProfissional = com.example.util.SessaoManager.getInstance(context).getNomeUsuario();
+            if (nomeProfissional == null || nomeProfissional.trim().isEmpty()) {
+                nomeProfissional = "Cuidador (Notificação)";
+            }
 
             HistoricoMedicacao hist = new HistoricoMedicacao();
             hist.setIdMedicamento(medId);
-            hist.setIdIdoso(idosoId);
-            hist.setDataHoraPrescrita(agoraStr);
+            hist.setIdIdoso(idosoResolvido);
+            hist.setDataHoraPrescrita(medAntes != null ? medAntes.getHorarioInicial() : agoraStr);
             hist.setDataHoraExecutada(agoraStr);
             hist.setStatus(HistoricoMedicacao.STATUS_ADMINISTRADO);
-            hist.setNomeCuidador("Cuidador (Notificação)");
+            hist.setNomeCuidador(nomeProfissional);
             hist.setObservacao("Baixa efetuada diretamente pelo botão da notificação");
 
-            dbHelper.registrarAplicacao(hist);
+            long histId = dbHelper.registrarAplicacao(hist);
+            if (histId != -1) {
+                dbHelper.decrementarEstoqueUmaUnidade(medId);
+            }
+            NotificationHelper.avaliarENotificarEstoqueBaixo(context);
 
             // Reagenda o próximo ciclo conforme intervalo
             Medicamento med = dbHelper.buscarMedicamentoPorId(medId);

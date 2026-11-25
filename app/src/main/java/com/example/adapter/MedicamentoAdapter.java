@@ -122,6 +122,14 @@ public class MedicamentoAdapter extends RecyclerView.Adapter<MedicamentoAdapter.
             Medicamento med = dto.getMedicamento();
             binding.tvNomeMedicamento.setText(med.getNomeMedicamento());
 
+            String nomeResidente = med.getNomeIdoso();
+            if (nomeResidente != null && !nomeResidente.trim().isEmpty()) {
+                binding.tvNomeResidenteDose.setVisibility(View.VISIBLE);
+                binding.tvNomeResidenteDose.setText(context.getString(R.string.rotulo_responsavel_residente, nomeResidente));
+            } else {
+                binding.tvNomeResidenteDose.setVisibility(View.GONE);
+            }
+
             // Dosagem e tipo farmacêutico
             String dosagemTipo = "Dose: " + med.getDosagem() + " • " + med.getTipo();
             binding.tvDosagemTipo.setText(dosagemTipo);
@@ -145,6 +153,35 @@ public class MedicamentoAdapter extends RecyclerView.Adapter<MedicamentoAdapter.
                 binding.tvEstoqueMedicamento.setText(context.getString(R.string.rotulo_estoque_formato, med.getEstoque()));
             } else {
                 binding.tvEstoqueMedicamento.setVisibility(View.GONE);
+            }
+
+            // Data de Validade e alerta visual (Vermelho vencido / Laranja <= 30 dias)
+            String validade = med.getDataValidade();
+            if (!validade.isEmpty()) {
+                binding.layoutValidadeMedicamento.setVisibility(View.VISIBLE);
+                binding.tvValidadeMedicamento.setText(context.getString(R.string.rotulo_validade_formato, validade));
+
+                com.example.util.ValidadeMedicamentoHelper.AvaliacaoValidade av =
+                        com.example.util.ValidadeMedicamentoHelper.avaliarValidade(validade);
+                if (av.possuiAlerta()) {
+                    binding.tvBadgeValidade.setVisibility(View.VISIBLE);
+                    binding.tvBadgeValidade.setText(
+                            com.example.util.ValidadeMedicamentoHelper.formatarTextoBadge(av)
+                    );
+                    if (av.getStatus() == com.example.util.ValidadeMedicamentoHelper.StatusValidade.VENCIDO) {
+                        binding.tvBadgeValidade.setBackgroundColor(ContextCompat.getColor(context, R.color.danger_red));
+                        binding.tvValidadeMedicamento.setTextColor(ContextCompat.getColor(context, R.color.danger_red));
+                    } else {
+                        binding.tvBadgeValidade.setBackgroundColor(ContextCompat.getColor(context, R.color.validade_alerta_bg));
+                        binding.tvValidadeMedicamento.setTextColor(ContextCompat.getColor(context, R.color.validade_alerta_fg));
+                    }
+                } else {
+                    binding.tvBadgeValidade.setVisibility(View.GONE);
+                    binding.tvValidadeMedicamento.setTextColor(ContextCompat.getColor(context, R.color.text_secondary));
+                }
+            } else {
+                binding.layoutValidadeMedicamento.setVisibility(View.GONE);
+                binding.tvBadgeValidade.setVisibility(View.GONE);
             }
 
             // Configuração do Badge Visual de Status
@@ -191,7 +228,9 @@ public class MedicamentoAdapter extends RecyclerView.Adapter<MedicamentoAdapter.
             } else {
                 binding.btnDarBaixaAgora.setEnabled(true);
                 binding.btnDarBaixaAgora.setText(R.string.btn_dar_baixa_agora);
-                binding.btnDarBaixaAgora.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.primary));
+                boolean atrasado = "ATRASADO".equalsIgnoreCase(dto.getStatusPontualidade());
+                binding.btnDarBaixaAgora.setBackgroundTintList(ContextCompat.getColorStateList(
+                        context, atrasado ? R.color.danger_red : R.color.primary));
                 binding.btnDarBaixaAgora.setTextColor(ContextCompat.getColor(context, R.color.white));
                 binding.btnDarBaixaAgora.setIconTint(ContextCompat.getColorStateList(context, R.color.white));
                 binding.btnDarBaixaAgora.setOnClickListener(v -> {
@@ -211,19 +250,26 @@ public class MedicamentoAdapter extends RecyclerView.Adapter<MedicamentoAdapter.
 
         private void configurarBadgeStatus(DoseAlertaDTO dto) {
             String status = dto.getStatusPontualidade();
+            float density = context.getResources().getDisplayMetrics().density;
             if ("CONCLUIDO".equalsIgnoreCase(status)) {
                 binding.tvBadgeStatus.setBackgroundResource(R.drawable.bg_badge_concluido);
                 binding.tvBadgeStatus.setText(R.string.badge_status_concluido);
                 binding.tvBadgeStatus.setTextColor(Color.parseColor("#5F6368"));
+                binding.cardItemMedicamento.setStrokeColor(ContextCompat.getColor(context, R.color.divider));
+                binding.cardItemMedicamento.setStrokeWidth(Math.round(1f * density));
             } else if ("ATRASADO".equalsIgnoreCase(status)) {
                 binding.tvBadgeStatus.setBackgroundResource(R.drawable.bg_badge_atrasado);
                 binding.tvBadgeStatus.setText(R.string.badge_status_atrasado);
                 binding.tvBadgeStatus.setTextColor(Color.parseColor("#C5221F"));
+                binding.cardItemMedicamento.setStrokeColor(ContextCompat.getColor(context, R.color.danger_red));
+                binding.cardItemMedicamento.setStrokeWidth(Math.round(1.5f * density));
             } else {
                 // "NO_HORARIO"
                 binding.tvBadgeStatus.setBackgroundResource(R.drawable.bg_badge_no_horario);
                 binding.tvBadgeStatus.setText(R.string.badge_status_no_horario);
                 binding.tvBadgeStatus.setTextColor(Color.parseColor("#137333"));
+                binding.cardItemMedicamento.setStrokeColor(ContextCompat.getColor(context, R.color.divider));
+                binding.cardItemMedicamento.setStrokeWidth(Math.round(1f * density));
             }
         }
     }

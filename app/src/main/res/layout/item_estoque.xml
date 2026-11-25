@@ -48,21 +48,46 @@
                     tools:text="50mg (1 comprimido)" />
             </LinearLayout>
 
-            <!-- Badge de Status do Estoque -->
-            <TextView
-                android:id="@+id/tv_item_badge_status"
+            <!-- Badges de Status do Estoque e Validade -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_badge_blood"
-                android:paddingStart="10dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="4dp"
-                android:textColor="@color/white"
-                android:textSize="11.5sp"
-                android:textStyle="bold"
-                tools:backgroundTint="@color/danger_red"
-                tools:text="Estoque Crítico" />
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_item_badge_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_badge_blood"
+                    android:paddingStart="10dp"
+                    android:paddingTop="4dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="4dp"
+                    android:textColor="@color/white"
+                    android:textSize="11.5sp"
+                    android:textStyle="bold"
+                    tools:backgroundTint="@color/danger_red"
+                    tools:text="Estoque Crítico" />
+
+                <TextView
+                    android:id="@+id/tv_item_badge_validade"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/bg_badge_blood"
+                    android:paddingStart="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="3dp"
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:backgroundTint="@color/validade_alerta_bg"
+                    tools:text="Vence em 15 dias"
+                    tools:visibility="visible" />
+            </LinearLayout>
         </LinearLayout>
 
         <View
@@ -101,6 +126,15 @@
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp"
                     tools:text="Residente: Dona Maria da Silva" />
+
+                <TextView
+                    android:id="@+id/tv_item_data_validade"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    tools:text="Validade: 25/05/2026" />
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton

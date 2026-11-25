@@ -13,6 +13,7 @@ public class Medicamento implements Serializable {
     private String nomeMedicamento;
     private String dosagem;            // Ex: "50mg", "2 comprimidos", "10 gotas"
     private String estoque;            // Ex: "30 comprimidos", "2 caixas", "Restam 10"
+    private String dataValidade;       // Formato opcional DD/MM/AAAA
     private String tipo;               // Ex: "Comprimido", "Gotas", "Injeção", "Pomada"
     private String horarioInicial;     // Formato HH:mm (Ex: "08:00")
     private int frequenciaHoras;       // Intervalo em horas (Ex: 4, 6, 8, 12, 24)
@@ -27,6 +28,7 @@ public class Medicamento implements Serializable {
         this.statusAtivo = 1;
         this.observacaoMedica = "";
         this.estoque = "";
+        this.dataValidade = "";
     }
 
     public Medicamento(int idosoId, String nome, String dosagem, String horario, String observacoes) {
@@ -135,6 +137,14 @@ public class Medicamento implements Serializable {
 
     public void setEstoque(String estoque) {
         this.estoque = estoque;
+    }
+
+    public String getDataValidade() {
+        return dataValidade != null ? dataValidade : "";
+    }
+
+    public void setDataValidade(String dataValidade) {
+        this.dataValidade = dataValidade != null ? dataValidade.trim() : "";
     }
 
     public String getTipo() {

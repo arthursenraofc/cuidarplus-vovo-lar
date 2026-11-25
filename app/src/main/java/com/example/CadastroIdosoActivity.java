@@ -227,18 +227,14 @@ public class CadastroIdosoActivity extends AppCompatActivity {
 
     private void iniciarCapturaCamera() {
         try {
-            arquivoFotoTemporario = ImageUtil.criarArquivoTemporarioCaptura(this);
-            Intent intentCamera = ImageUtil.criarIntentCapturaCamera(this, arquivoFotoTemporario);
-            cameraLauncher.launch(intentCamera);
-        } catch (ActivityNotFoundException e) {
-            Log.w(TAG, "Nenhum aplicativo de câmera disponível no dispositivo.");
-            ImageUtil.removerArquivoSilenciosamente(arquivoFotoTemporario);
-            arquivoFotoTemporario = null;
-            Toast.makeText(this, R.string.erro_camera_indisponivel, Toast.LENGTH_LONG).show();
+            Intent intentCameraX = new Intent(this, CameraFotoIdosoActivity.class);
+            String nomeDigitado = obterTextoCampo(binding.etNome);
+            if (!nomeDigitado.isEmpty()) {
+                intentCameraX.putExtra(CameraFotoIdosoActivity.EXTRA_NOME_RESIDENTE, nomeDigitado);
+            }
+            cameraLauncher.launch(intentCameraX);
         } catch (Exception e) {
-            Log.w(TAG, "Falha ao preparar captura de foto: " + e.getMessage());
-            ImageUtil.removerArquivoSilenciosamente(arquivoFotoTemporario);
-            arquivoFotoTemporario = null;
+            Log.w(TAG, "Falha ao abrir captura de foto com CameraX: " + e.getMessage());
             Toast.makeText(this, R.string.erro_salvar_foto_camera, Toast.LENGTH_SHORT).show();
         }
     }
@@ -251,7 +247,17 @@ public class CadastroIdosoActivity extends AppCompatActivity {
         }
 
         String novoCaminhoPrivado = null;
-        if (arquivoFotoTemporario != null && arquivoFotoTemporario.exists() && arquivoFotoTemporario.length() > 0) {
+        if (resultado.getData() != null) {
+            String caminhoSalvoCameraX = resultado.getData().getStringExtra(
+                    CameraFotoIdosoActivity.EXTRA_CAMINHO_FOTO_SALVA
+            );
+            if (ImageUtil.possuiFotoValida(caminhoSalvoCameraX)) {
+                novoCaminhoPrivado = caminhoSalvoCameraX.trim();
+            }
+        }
+
+        if (novoCaminhoPrivado == null && arquivoFotoTemporario != null
+                && arquivoFotoTemporario.exists() && arquivoFotoTemporario.length() > 0) {
             novoCaminhoPrivado = ImageUtil.salvarFotoCapturadaNoArmazenamentoPrivado(this, arquivoFotoTemporario);
         } else {
             ImageUtil.removerArquivoSilenciosamente(arquivoFotoTemporario);
@@ -398,6 +404,7 @@ public class CadastroIdosoActivity extends AppCompatActivity {
                     Toast.makeText(this, "Erro ao gravar no banco SQLite.", Toast.LENGTH_LONG).show();
                 }
             } else {
+                Idoso idosoExistente = idosoDAO.buscarPorId(idosoIdEmEdicao);
                 Idoso idosoAtualizado = new Idoso(
                         idosoIdEmEdicao,
                         nomeHigienizado,
@@ -408,6 +415,12 @@ public class CadastroIdosoActivity extends AppCompatActivity {
                         telefonePadronizado,
                         caminhoFotoAtual
                 );
+                if (idosoExistente != null) {
+                    idosoAtualizado.setCpf(idosoExistente.getCpf());
+                    idosoAtualizado.setLeitoQuarto(idosoExistente.getLeitoQuarto());
+                    idosoAtualizado.setNomeFamiliar(idosoExistente.getNomeFamiliar());
+                    idosoAtualizado.setGrauParentesco(idosoExistente.getGrauParentesco());
+                }
                 int linhas = idosoDAO.atualizar(idosoAtualizado);
 
                 if (linhas > 0) {

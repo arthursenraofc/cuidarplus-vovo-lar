@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_item_medicamento"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
@@ -62,6 +63,18 @@
                 tools:text="No Horário" />
         </LinearLayout>
 
+        <!-- Residente Vinculado -->
+        <TextView
+            android:id="@+id/tv_nome_residente_dose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="38dp"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/primary"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            tools:text="Residente: Seu Antônio Carlos Ribeiro" />
+
         <!-- Detalhes: Dosagem e Forma Farmacêutica -->
         <TextView
             android:id="@+id/tv_dosagem_tipo"
@@ -115,6 +128,45 @@
             android:visibility="gone"
             tools:text="Estoque: 30 comprimidos"
             tools:visibility="visible" />
+
+        <!-- Data de Validade e Badge de Alerta (Vencido / Vence em <= 30 dias) -->
+        <LinearLayout
+            android:id="@+id/layout_validade_medicamento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="38dp"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/tv_validade_medicamento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                tools:text="Validade: 15/05/2026" />
+
+            <TextView
+                android:id="@+id/tv_badge_validade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_badge_blood"
+                android:paddingStart="8dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="2dp"
+                android:textColor="@color/white"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:backgroundTint="@color/validade_alerta_bg"
+                tools:text="Vence em 15 dias"
+                tools:visibility="visible" />
+        </LinearLayout>
 
         <!-- Divisor sutil -->
         <View

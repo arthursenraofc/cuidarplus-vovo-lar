@@ -115,7 +115,7 @@ public class SessaoManager {
             securePrefs.edit()
                     .putBoolean(KEY_SESSAO_ATIVA, true)
                     .putString(KEY_PERFIL, PerfilUsuario.ADMINISTRADOR.getCodigo())
-                    .apply();
+                    .commit();
         }
     }
 
@@ -219,7 +219,7 @@ public class SessaoManager {
             if (!securePrefs.contains(KEY_TIMESTAMP_LOGIN) && legacyPrefs.contains(KEY_TIMESTAMP_LOGIN)) {
                 editor.putLong(KEY_TIMESTAMP_LOGIN, legacyPrefs.getLong(KEY_TIMESTAMP_LOGIN, System.currentTimeMillis()));
             }
-            editor.apply();
+            editor.commit();
 
             // Destrói os dados em texto plano após migração para o EncryptedSharedPreferences
             legacyPrefs.edit().clear().commit();
@@ -266,7 +266,7 @@ public class SessaoManager {
                 .putString(KEY_CRED_PERFIL, perfilSeguro.getCodigo())
                 .putString(KEY_CRED_HASH, hashBase64)
                 .putString(KEY_CRED_SALT, saltBase64)
-                .apply();
+                .commit();
     }
 
     /**
@@ -353,7 +353,7 @@ public class SessaoManager {
         securePrefs.edit()
                 .putString(KEY_CRED_HASH, novoHashBase64)
                 .putString(KEY_CRED_SALT, novoSaltBase64)
-                .apply();
+                .commit();
         return true;
     }
 
@@ -389,7 +389,7 @@ public class SessaoManager {
                 .putString(KEY_USUARIO_EMAIL, normalizarIdentificador(usuario.getEmail()))
                 .putString(KEY_PERFIL, perfilSeguro.getCodigo())
                 .putLong(KEY_TIMESTAMP_LOGIN, agora)
-                .apply();
+                .commit();
     }
 
     /**
@@ -419,7 +419,7 @@ public class SessaoManager {
         }
         securePrefs.edit()
                 .putString(KEY_PERFIL, perfil.getCodigo())
-                .apply();
+                .commit();
     }
 
     /**
@@ -507,7 +507,7 @@ public class SessaoManager {
                 .remove(KEY_TIMESTAMP_LOGIN)
                 // Redefine para o perfil operacional mais restrito (Princípio do Menor Privilégio) após logout
                 .putString(KEY_PERFIL, PerfilUsuario.CUIDADOR.getCodigo())
-                .apply();
+                .commit();
     }
 
     public void logout() {
@@ -519,7 +519,7 @@ public class SessaoManager {
      * no cofre criptografado (recomendado ao desvincular um tablet/dispositivo da ILPI).
      */
     public void revogarCredenciaisESessao() {
-        securePrefs.edit().clear().apply();
+        securePrefs.edit().clear().commit();
     }
 
     // =========================================================================

@@ -14,10 +14,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.test.core.app.ApplicationProvider;
 
@@ -43,10 +44,9 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowLog;
-import org.robolectric.shadows.ShadowToast;
 
 import java.io.File;
-import java.io.OutputStream;
+import java.io.FileOutputStream;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = {35})
@@ -57,7 +57,6 @@ public class CapturaFotoPerfilIdosoTest {
     @Before
     public void setUp() throws Exception {
         context = ApplicationProvider.getApplicationContext();
-        // Limpa o cache estático de diretórios do FileProvider entre testes isolados do Robolectric
         java.lang.reflect.Field sCacheField = androidx.core.content.FileProvider.class.getDeclaredField("sCache");
         sCacheField.setAccessible(true);
         java.util.Map<?, ?> cache = (java.util.Map<?, ?>) sCacheField.get(null);
@@ -66,7 +65,6 @@ public class CapturaFotoPerfilIdosoTest {
         }
 
         ShadowLog.clear();
-        ShadowToast.reset();
         DatabaseHelper.resetInstanceForTesting();
         context.deleteDatabase(DatabaseHelper.DATABASE_NAME);
         limparDiretorio(new File(context.getFilesDir(), ImageUtil.DIRETORIO_FOTOS_PRIVADO));
@@ -93,7 +91,7 @@ public class CapturaFotoPerfilIdosoTest {
     }
 
     @Test
-    public void perfilSemFoto_deveExibirPlaceholderEAtualizarParaFotoLocalPrivadaAoCapturarNaCamera() throws Exception {
+    public void perfilSemFoto_deveExibirPlaceholderEAtualizarParaFotoLocalPrivadaAoCapturarComCameraX() throws Exception {
         IdosoDAO dao = new IdosoDAO(context);
         long idResidente = dao.inserir(new Idoso(
                 "Dona Helena Vasconcelos",
@@ -105,7 +103,6 @@ public class CapturaFotoPerfilIdosoTest {
                 ""
         ));
 
-        // Testa também com perfil CUIDADOR para garantir que a equipe operacional pode fotografar o residente
         SessaoManager.getInstance(context).salvarSessao(
                 new Usuario(3L, "Cuidadora Paula", "paula@vovolar.org", PerfilUsuario.CUIDADOR),
                 "Cuida@123"
@@ -130,24 +127,32 @@ public class CapturaFotoPerfilIdosoTest {
                     btnCameraBadge.getContentDescription().toString()
             );
 
-            // 2. Inicia captura de foto pelo botão flutuante sobreposto à foto de perfil
+            // 2. Inicia captura com CameraX pelo botão flutuante sobreposto à foto de perfil
             btnCameraBadge.performClick();
 
-            ShadowActivity.IntentForResult intentCameraDisparada =
+            ShadowActivity.IntentForResult intentCameraXDisparada =
                     Shadows.shadowOf(activity).getNextStartedActivityForResult();
-            assertNotNull("Intent de câmera deve ser disparada", intentCameraDisparada);
-            assertEquals(MediaStore.ACTION_IMAGE_CAPTURE, intentCameraDisparada.intent.getAction());
+            assertNotNull("Activity da CameraX deve ser iniciada", intentCameraXDisparada);
+            assertNotNull(intentCameraXDisparada.intent.getComponent());
+            assertEquals(
+                    CameraFotoIdosoActivity.class.getName(),
+                    intentCameraXDisparada.intent.getComponent().getClassName()
+            );
+            assertEquals(
+                    "Dona Helena Vasconcelos",
+                    intentCameraXDisparada.intent.getStringExtra(CameraFotoIdosoActivity.EXTRA_NOME_RESIDENTE)
+            );
 
-            Uri outputUri = intentCameraDisparada.intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
-            assertNotNull("EXTRA_OUTPUT via FileProvider deve estar presente", outputUri);
-            assertEquals(context.getPackageName() + ".fileprovider", outputUri.getAuthority());
-
-            // 3. Simula gravação de foto real pela câmera do dispositivo no FileProvider Uri
-            gravarImagemTesteNoUri(outputUri, Color.rgb(33, 150, 243));
+            // 3. Simula retorno da CameraFotoIdosoActivity com foto gravada no armazenamento privado
+            String primeiroCaminhoGerado = gerarArquivoFotoPrivadoSimulado(Color.rgb(33, 150, 243));
+            Intent retornoCameraX = new Intent().putExtra(
+                    CameraFotoIdosoActivity.EXTRA_CAMINHO_FOTO_SALVA,
+                    primeiroCaminhoGerado
+            );
             Shadows.shadowOf(activity).receiveResult(
-                    intentCameraDisparada.intent,
+                    intentCameraXDisparada.intent,
                     Activity.RESULT_OK,
-                    new Intent()
+                    retornoCameraX
             );
             Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
 
@@ -163,8 +168,7 @@ public class CapturaFotoPerfilIdosoTest {
             Idoso atualizadoNoBanco = dao.buscarPorId((int) idResidente);
             assertNotNull(atualizadoNoBanco);
             String primeiroCaminhoPrivado = atualizadoNoBanco.getCaminhoFoto();
-            assertNotNull(primeiroCaminhoPrivado);
-            assertFalse(primeiroCaminhoPrivado.isEmpty());
+            assertEquals(primeiroCaminhoGerado, primeiroCaminhoPrivado);
 
             File primeiroArquivo = new File(primeiroCaminhoPrivado);
             assertTrue("Arquivo da foto deve existir no disco", primeiroArquivo.exists());
@@ -179,13 +183,16 @@ public class CapturaFotoPerfilIdosoTest {
             ShadowActivity.IntentForResult segundaCaptura =
                     Shadows.shadowOf(activity).getNextStartedActivityForResult();
             assertNotNull(segundaCaptura);
+            assertEquals(
+                    CameraFotoIdosoActivity.class.getName(),
+                    segundaCaptura.intent.getComponent().getClassName()
+            );
 
-            Uri segundoUri = segundaCaptura.intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
-            gravarImagemTesteNoUri(segundoUri, Color.rgb(76, 175, 80));
+            String segundoCaminhoGerado = gerarArquivoFotoPrivadoSimulado(Color.rgb(76, 175, 80));
             Shadows.shadowOf(activity).receiveResult(
                     segundaCaptura.intent,
                     Activity.RESULT_OK,
-                    new Intent()
+                    new Intent().putExtra(CameraFotoIdosoActivity.EXTRA_CAMINHO_FOTO_SALVA, segundoCaminhoGerado)
             );
             Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
 
@@ -204,7 +211,7 @@ public class CapturaFotoPerfilIdosoTest {
     }
 
     @Test
-    public void cadastroNovoIdoso_deveCapturarFotoPelaCameraEPersistirNosArquivosPrivados() throws Exception {
+    public void cadastroNovoIdoso_deveCapturarFotoComCameraXEPersistirNosArquivosPrivados() throws Exception {
         ShadowApplication shadowApp = Shadows.shadowOf((Application) context);
         shadowApp.grantPermissions(Manifest.permission.CAMERA);
 
@@ -215,21 +222,32 @@ public class CapturaFotoPerfilIdosoTest {
 
             assertTrue("Preview deve iniciar com placeholder", ImageUtil.estaExibindoPlaceholder(ivPreview));
 
+            ((TextInputEditText) activity.findViewById(R.id.et_nome)).setText("Sr. Oswaldo Montenegro");
             activity.findViewById(R.id.btn_tirar_foto_camera).performClick();
-            ShadowActivity.IntentForResult intentCamera =
-                    Shadows.shadowOf(activity).getNextStartedActivityForResult();
-            assertNotNull(intentCamera);
-            assertEquals(MediaStore.ACTION_IMAGE_CAPTURE, intentCamera.intent.getAction());
 
-            Uri outputUri = intentCamera.intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
-            gravarImagemTesteNoUri(outputUri, Color.rgb(156, 39, 176));
-            Shadows.shadowOf(activity).receiveResult(intentCamera.intent, Activity.RESULT_OK, new Intent());
+            ShadowActivity.IntentForResult intentCameraX =
+                    Shadows.shadowOf(activity).getNextStartedActivityForResult();
+            assertNotNull(intentCameraX);
+            assertNotNull(intentCameraX.intent.getComponent());
+            assertEquals(
+                    CameraFotoIdosoActivity.class.getName(),
+                    intentCameraX.intent.getComponent().getClassName()
+            );
+            assertEquals(
+                    "Sr. Oswaldo Montenegro",
+                    intentCameraX.intent.getStringExtra(CameraFotoIdosoActivity.EXTRA_NOME_RESIDENTE)
+            );
+
+            String caminhoSalvoCameraX = gerarArquivoFotoPrivadoSimulado(Color.rgb(156, 39, 176));
+            Shadows.shadowOf(activity).receiveResult(
+                    intentCameraX.intent,
+                    Activity.RESULT_OK,
+                    new Intent().putExtra(CameraFotoIdosoActivity.EXTRA_CAMINHO_FOTO_SALVA, caminhoSalvoCameraX)
+            );
             Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
 
             assertFalse("Preview deve exibir a foto capturada", ImageUtil.estaExibindoPlaceholder(ivPreview));
 
-            // Preenche dados obrigatórios e salva
-            ((TextInputEditText) activity.findViewById(R.id.et_nome)).setText("Sr. Oswaldo Montenegro");
             ((TextInputEditText) activity.findViewById(R.id.et_data_nascimento)).setText("22091940");
             ((TextInputEditText) activity.findViewById(R.id.et_contato_emergencia)).setText("51991112233");
 
@@ -245,7 +263,7 @@ public class CapturaFotoPerfilIdosoTest {
                 }
             }
             assertNotNull("Residente recém-cadastrado deve estar no SQLite", salvo);
-            assertNotNull(salvo.getCaminhoFoto());
+            assertEquals(caminhoSalvoCameraX, salvo.getCaminhoFoto());
             File arquivoSalvo = new File(salvo.getCaminhoFoto());
             assertTrue(arquivoSalvo.exists());
             assertTrue(arquivoSalvo.getCanonicalPath().startsWith(context.getFilesDir().getCanonicalPath()));
@@ -253,7 +271,7 @@ public class CapturaFotoPerfilIdosoTest {
     }
 
     @Test
-    public void cancelamentoOuAusenciaDeCamera_deveManterPlaceholderSemArquivosOrfaosESemLogError() {
+    public void cancelamentoCameraX_deveManterPlaceholderSemArquivosOrfaosESemLogError() {
         ShadowApplication shadowApp = Shadows.shadowOf((Application) context);
         shadowApp.grantPermissions(Manifest.permission.CAMERA);
 
@@ -266,13 +284,12 @@ public class CapturaFotoPerfilIdosoTest {
             DetalhesIdosoActivity activity = controller.get();
             ImageView ivFoto = activity.findViewById(R.id.iv_detalhe_foto);
 
-            // 1. Usuário abre a câmera e cancela (RESULT_CANCELED)
             activity.findViewById(R.id.btn_camera_badge_detalhe).performClick();
-            ShadowActivity.IntentForResult intentCamera =
+            ShadowActivity.IntentForResult intentCameraX =
                     Shadows.shadowOf(activity).getNextStartedActivityForResult();
-            assertNotNull(intentCamera);
+            assertNotNull(intentCameraX);
 
-            Shadows.shadowOf(activity).receiveResult(intentCamera.intent, Activity.RESULT_CANCELED, null);
+            Shadows.shadowOf(activity).receiveResult(intentCameraX.intent, Activity.RESULT_CANCELED, null);
             Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
 
             assertTrue("Placeholder deve permanecer ativo após cancelamento",
@@ -283,32 +300,113 @@ public class CapturaFotoPerfilIdosoTest {
             assertEquals("Nenhum arquivo temporário deve sobrar após cancelamento",
                     0, arquivosTempRestantes != null ? arquivosTempRestantes.length : 0);
 
-            // 2. Dispositivo sem app de câmera instalado (ActivityNotFoundException)
-            shadowApp.checkActivities(true);
-            ShadowLog.clear();
-            ShadowToast.reset();
-
-            activity.findViewById(R.id.btn_camera_badge_detalhe).performClick();
-            assertEquals(
-                    activity.getString(R.string.erro_camera_indisponivel),
-                    ShadowToast.getTextOfLatestToast()
-            );
-
             for (ShadowLog.LogItem item : ShadowLog.getLogs()) {
-                assertFalse("Nenhum Log.ERROR deve ser emitido por ausência de app de câmera: " + item.msg,
+                assertFalse("Nenhum Log.ERROR deve ser emitido no fluxo cancelado: " + item.msg,
                         item.type == Log.ERROR);
             }
         }
     }
 
-    private void gravarImagemTesteNoUri(Uri uri, int cor) throws Exception {
+    @Test
+    public void cameraFotoIdosoActivity_deveGerenciarFlashRevisaoRefazerEConfirmacaoPrivada() throws Exception {
+        ShadowApplication shadowApp = Shadows.shadowOf((Application) context);
+        shadowApp.grantPermissions(Manifest.permission.CAMERA);
+
+        Intent intent = new Intent(context, CameraFotoIdosoActivity.class);
+        intent.putExtra(CameraFotoIdosoActivity.EXTRA_NOME_RESIDENTE, "Dona Margarida");
+
+        try (ActivityController<CameraFotoIdosoActivity> controller =
+                     Robolectric.buildActivity(CameraFotoIdosoActivity.class, intent).setup()) {
+            CameraFotoIdosoActivity activity = controller.get();
+            Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+
+            TextView tvSubtitulo = activity.findViewById(R.id.tv_subtitulo_residente_camera);
+            assertTrue(tvSubtitulo.getText().toString().contains("Dona Margarida"));
+
+            // Testa alternância de flash (OFF -> AUTO -> ON -> OFF)
+            ImageButton btnFlash = activity.findViewById(R.id.btn_alternar_flash);
+            assertEquals(activity.getString(R.string.desc_flash_desligado), btnFlash.getContentDescription().toString());
+            btnFlash.performClick();
+            assertEquals(activity.getString(R.string.desc_flash_auto), btnFlash.getContentDescription().toString());
+            btnFlash.performClick();
+            assertEquals(activity.getString(R.string.desc_flash_ligado), btnFlash.getContentDescription().toString());
+            btnFlash.performClick();
+            assertEquals(activity.getString(R.string.desc_flash_desligado), btnFlash.getContentDescription().toString());
+
+            // Simula foto recém-capturada pela CameraX entrando na etapa de revisão
+            File capturaTemp1 = gerarArquivoTemporarioSimulado(Color.rgb(255, 152, 0));
+            activity.exibirRevisaoFotoCapturada(capturaTemp1);
+
+            View layoutConfirmacao = activity.findViewById(R.id.layout_confirmacao_foto);
+            ImageView ivConfirmacao = activity.findViewById(R.id.iv_preview_captura_confirmacao);
+            assertEquals(View.VISIBLE, layoutConfirmacao.getVisibility());
+            assertFalse(ImageUtil.estaExibindoPlaceholder(ivConfirmacao));
+
+            // Usuário toca em "Refazer": apaga temporário e retorna ao viewfinder
+            activity.findViewById(R.id.btn_refazer_foto).performClick();
+            assertEquals(View.GONE, layoutConfirmacao.getVisibility());
+            assertFalse("Arquivo temporário descartado ao refazer deve ser removido", capturaTemp1.exists());
+
+            // Segunda captura seguida de "Usar Foto": persiste em getFilesDir() e retorna RESULT_OK
+            File capturaTemp2 = gerarArquivoTemporarioSimulado(Color.rgb(0, 150, 136));
+            activity.exibirRevisaoFotoCapturada(capturaTemp2);
+            activity.findViewById(R.id.btn_confirmar_foto).performClick();
+
+            // Aguarda conclusão da gravação assíncrona no cameraExecutor
+            long inicio = System.currentTimeMillis();
+            while (!activity.isFinishing() && (System.currentTimeMillis() - inicio) < 3000L) {
+                Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+                Thread.sleep(25L);
+            }
+
+            assertTrue("Activity deve finalizar após confirmar foto", activity.isFinishing());
+            ShadowActivity shadowCamera = Shadows.shadowOf(activity);
+            assertEquals(Activity.RESULT_OK, shadowCamera.getResultCode());
+
+            Intent resultIntent = shadowCamera.getResultIntent();
+            assertNotNull(resultIntent);
+            String caminhoPrivado = resultIntent.getStringExtra(CameraFotoIdosoActivity.EXTRA_CAMINHO_FOTO_SALVA);
+            assertTrue(ImageUtil.possuiFotoValida(caminhoPrivado));
+            File arquivoFinal = new File(caminhoPrivado);
+            assertTrue(arquivoFinal.getCanonicalPath().startsWith(context.getFilesDir().getCanonicalPath()));
+            assertFalse("Arquivo temporário de captura deve ser removido após salvar", capturaTemp2.exists());
+        }
+    }
+
+    @Test
+    public void cameraFotoIdosoActivity_semPermissaoCamera_deveExibirCardPermissaoSemCrash() {
+        ShadowApplication shadowApp = Shadows.shadowOf((Application) context);
+        shadowApp.denyPermissions(Manifest.permission.CAMERA);
+
+        try (ActivityController<CameraFotoIdosoActivity> controller =
+                     Robolectric.buildActivity(CameraFotoIdosoActivity.class).setup()) {
+            CameraFotoIdosoActivity activity = controller.get();
+            View cardEstado = activity.findViewById(R.id.layout_estado_camera);
+            View btnPermitir = activity.findViewById(R.id.btn_solicitar_permissao_camera);
+
+            assertEquals(View.VISIBLE, cardEstado.getVisibility());
+            assertEquals(View.VISIBLE, btnPermitir.getVisibility());
+            assertFalse(activity.findViewById(R.id.btn_disparar_captura).isEnabled());
+        }
+    }
+
+    private String gerarArquivoFotoPrivadoSimulado(int cor) {
         Bitmap bmp = Bitmap.createBitmap(240, 240, Bitmap.Config.ARGB_8888);
         bmp.eraseColor(cor);
-        try (OutputStream out = context.getContentResolver().openOutputStream(uri)) {
-            assertNotNull(out);
+        String caminho = ImageUtil.salvarBitmapNoArmazenamentoPrivado(context, bmp);
+        assertNotNull(caminho);
+        return caminho;
+    }
+
+    private File gerarArquivoTemporarioSimulado(int cor) throws Exception {
+        File temp = ImageUtil.criarArquivoTemporarioCaptura(context);
+        Bitmap bmp = Bitmap.createBitmap(240, 240, Bitmap.Config.ARGB_8888);
+        bmp.eraseColor(cor);
+        try (FileOutputStream out = new FileOutputStream(temp)) {
             assertTrue(bmp.compress(Bitmap.CompressFormat.JPEG, 90, out));
             out.flush();
         }
+        return temp;
     }
 
     private void limparDiretorio(File dir) {

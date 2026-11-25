@@ -1,17 +1,23 @@
 package com.example;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -20,35 +26,60 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.database.DatabaseHelper;
 import com.example.database.IdosoDAO;
+import com.example.database.MedicamentoDAO;
+import com.example.database.PassagemTurnoDAO;
 import com.example.databinding.ActivityDashboardBinding;
+import com.example.model.DoseAlertaDTO;
 import com.example.model.Idoso;
+import com.example.model.Medicamento;
+import com.example.model.PassagemTurno;
 import com.example.model.PerfilUsuario;
 import com.example.util.DashboardManager;
+import com.example.util.EstoqueAlertaManager;
 import com.example.util.ImageUtil;
+import com.example.util.NotificationHelper;
+import com.example.util.PdfReportGenerator;
 import com.example.util.PerfilManager;
 import com.example.util.PermissaoUtils;
 import com.example.util.SessaoManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 
 /**
  * Tela dedicada de Dashboard da Instituição (Material Design 3).
- * Reúne os cards de resumo visual da ILPI Vovô Lar:
- * 1. Total de Residentes acolhidos;
- * 2. Ocupação de Vagas (ocupadas / disponíveis + ajuste de capacidade);
- * 3. Alerta de Aniversariantes do Mês.
+ * Reúne os cards de resumo visual e operacional da ILPI Vovô Lar:
+ * 1. Total de Residentes acolhidos e ocupação de vagas;
+ * 2. Alerta de Aniversariantes do Mês;
+ * 3. KPIs do Plantão (Doses Atrasadas, Estoque Crítico e Passagem de Turno);
+ * 4. Panorama Clínico e Relatório Gerencial Consolidado em PDF offline.
  */
 public class DashboardActivity extends AppCompatActivity {
 
+    private static final String TAG = "DashboardActivity";
+
     private ActivityDashboardBinding binding;
     private IdosoDAO idosoDAO;
+    private MedicamentoDAO medicamentoDAO;
+    private PassagemTurnoDAO passagemTurnoDAO;
+    private DatabaseHelper dbHelper;
     private String perfilAtual = MainActivity.PERFIL_ADMIN;
+    private boolean sincronizadoNaCriacao = false;
+
+    private final ActivityResultLauncher<String> requestNotificationPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (!isGranted) {
+                    Log.w(TAG, "Permissão POST_NOTIFICATIONS negada pelo usuário.");
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,15 +92,38 @@ public class DashboardActivity extends AppCompatActivity {
         configurarEdgeToEdgeInsets();
 
         idosoDAO = new IdosoDAO(this);
+        medicamentoDAO = new MedicamentoDAO(this);
+        passagemTurnoDAO = new PassagemTurnoDAO(this);
+        dbHelper = DatabaseHelper.getInstance(this);
         perfilAtual = PerfilManager.getPerfilAtual(this);
 
         configurarInteracoes();
+        NotificationHelper.criarCanalNotificacao(this);
         atualizarResumoDashboard();
+        sincronizadoNaCriacao = true;
+
+        binding.rootTelaDashboard.post(this::solicitarPermissaoNotificacoesSeNecessario);
+    }
+
+    private void solicitarPermissaoNotificacoesSeNecessario() {
+        if (!isTaskRoot() || isFinishing() || isDestroyed()) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (sincronizadoNaCriacao) {
+            sincronizadoNaCriacao = false;
+            return;
+        }
         perfilAtual = PerfilManager.getPerfilAtual(this);
         atualizarResumoDashboard();
     }
@@ -95,7 +149,11 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void configurarInteracoes() {
-        binding.toolbarDashboard.setNavigationOnClickListener(v -> finish());
+        if (isTaskRoot()) {
+            binding.toolbarDashboard.setNavigationIcon(null);
+        } else {
+            binding.toolbarDashboard.setNavigationOnClickListener(v -> finish());
+        }
 
         binding.cardResumoTotalResidentes.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardActivity.this, ListaIdososActivity.class);
@@ -109,6 +167,32 @@ public class DashboardActivity extends AppCompatActivity {
             } else {
                 exibirAvisoPerfilRestritoCapacidade();
             }
+        });
+
+        binding.cardKpiDosesAtrasadas.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardActivity.this, MedicamentoActivity.class);
+            intent.putExtra(MainActivity.EXTRA_PERFIL, perfilAtual);
+            startActivity(intent);
+        });
+
+        binding.cardKpiEstoqueCritico.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardActivity.this, EstoqueActivity.class);
+            intent.putExtra(MainActivity.EXTRA_PERFIL, perfilAtual);
+            startActivity(intent);
+        });
+
+        binding.cardKpiPassagemTurno.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardActivity.this, PassagemTurnoActivity.class);
+            intent.putExtra(MainActivity.EXTRA_PERFIL, perfilAtual);
+            startActivity(intent);
+        });
+
+        binding.btnDashboardRelatorioGerencialPdf.setOnClickListener(v -> gerarRelatorioGerencialPdf());
+
+        binding.btnAbrirModulosOperacao.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+            intent.putExtra(MainActivity.EXTRA_PERFIL, perfilAtual);
+            startActivity(intent);
         });
     }
 
@@ -170,6 +254,126 @@ public class DashboardActivity extends AppCompatActivity {
                 DashboardManager.filtrarAniversariantesDoMes(todosIdosos, referencia);
 
         preencherCardAniversariantes(nomeMes, aniversariantes);
+
+        // 4. KPIs Operacionais e Panorama Clínico (já dispara notificação com a mesma lista carregada)
+        atualizarKpisOperacionaisEClinicos(todosIdosos);
+    }
+
+    private void atualizarKpisOperacionaisEClinicos(List<Idoso> todosIdosos) {
+        List<DoseAlertaDTO> doses = dbHelper.buscarAlertasDoDia();
+        int dosesAtrasadas = 0;
+        int dosesPendentes = 0;
+        for (DoseAlertaDTO d : doses) {
+            if ("ATRASADO".equalsIgnoreCase(d.getStatusPontualidade())) {
+                dosesAtrasadas++;
+                dosesPendentes++;
+            } else if (!d.isAdministradoHoje() && !"CONCLUIDO".equalsIgnoreCase(d.getStatusPontualidade())) {
+                dosesPendentes++;
+            }
+        }
+        binding.tvKpiDosesAtrasadasValor.setText(String.valueOf(dosesAtrasadas));
+        if (dosesAtrasadas > 0) {
+            binding.tvKpiDosesAtrasadasValor.setTextColor(ContextCompat.getColor(this, R.color.danger_red));
+            binding.tvKpiDosesAtrasadasStatus.setText(getString(R.string.kpi_doses_atrasadas_status, dosesPendentes));
+            binding.cardKpiDosesAtrasadas.setStrokeColor(ContextCompat.getColor(this, R.color.danger_red));
+        } else {
+            binding.tvKpiDosesAtrasadasValor.setTextColor(ContextCompat.getColor(this, R.color.success_green));
+            binding.tvKpiDosesAtrasadasStatus.setText(
+                    dosesPendentes > 0
+                            ? getString(R.string.kpi_doses_atrasadas_status, dosesPendentes)
+                            : getString(R.string.kpi_doses_em_dia)
+            );
+            binding.cardKpiDosesAtrasadas.setStrokeColor(ContextCompat.getColor(this, R.color.divider));
+        }
+
+        List<Medicamento> todosMeds = medicamentoDAO.listarTodosMedicamentos();
+        NotificationHelper.avaliarENotificarEstoqueBaixo(this, todosMeds);
+        int limiteMinimo = EstoqueAlertaManager.getLimiteMinimoEstoque(this);
+        EstoqueAlertaManager.ResumoAlertaEstoque resumoEstoque =
+                EstoqueAlertaManager.avaliarMedicamentos(todosMeds, limiteMinimo);
+        int criticosEstoque = resumoEstoque.getQuantidadeAbaixoDoLimite();
+        binding.tvKpiEstoqueCriticoValor.setText(String.valueOf(criticosEstoque));
+        if (criticosEstoque > 0) {
+            binding.tvKpiEstoqueCriticoValor.setTextColor(ContextCompat.getColor(this, R.color.danger_red));
+            binding.tvKpiEstoqueCriticoStatus.setText(getString(R.string.kpi_estoque_critico_status, limiteMinimo));
+            binding.cardKpiEstoqueCritico.setStrokeColor(ContextCompat.getColor(this, R.color.danger_red));
+        } else {
+            binding.tvKpiEstoqueCriticoValor.setTextColor(ContextCompat.getColor(this, R.color.success_green));
+            binding.tvKpiEstoqueCriticoStatus.setText(R.string.kpi_estoque_em_dia);
+            binding.cardKpiEstoqueCritico.setStrokeColor(ContextCompat.getColor(this, R.color.divider));
+        }
+
+        int pendentesTurno = passagemTurnoDAO.contarPendentesConferencia();
+        int urgentesTurno = passagemTurnoDAO.contarUrgentesPendentes();
+        binding.tvKpiPassagemTurnoValor.setText(String.valueOf(pendentesTurno));
+        if (urgentesTurno > 0) {
+            binding.tvKpiPassagemTurnoStatus.setText(getString(R.string.kpi_passagem_pendente_status, urgentesTurno));
+            binding.tvKpiPassagemTurnoStatus.setTextColor(ContextCompat.getColor(this, R.color.danger_red));
+            binding.cardKpiPassagemTurno.setStrokeColor(ContextCompat.getColor(this, R.color.danger_red));
+        } else if (pendentesTurno > 0) {
+            binding.tvKpiPassagemTurnoStatus.setText(
+                    pendentesTurno == 1
+                            ? getString(R.string.badge_passagem_pendente_singular, pendentesTurno)
+                            : getString(R.string.badge_passagem_pendente_plural, pendentesTurno)
+            );
+            binding.tvKpiPassagemTurnoStatus.setTextColor(ContextCompat.getColor(this, R.color.vagas_alerta_fg));
+            binding.cardKpiPassagemTurno.setStrokeColor(ContextCompat.getColor(this, R.color.divider));
+        } else {
+            binding.tvKpiPassagemTurnoStatus.setText(R.string.kpi_passagem_conferida);
+            binding.tvKpiPassagemTurnoStatus.setTextColor(ContextCompat.getColor(this, R.color.success_green));
+            binding.cardKpiPassagemTurno.setStrokeColor(ContextCompat.getColor(this, R.color.divider));
+        }
+
+        int somaIdades = 0;
+        int validas = 0;
+        int comAlergias = 0;
+        for (Idoso i : todosIdosos) {
+            int idade = i.calcularIdade();
+            if (idade > 0) {
+                somaIdades += idade;
+                validas++;
+            }
+            if (i.getAlergias() != null && !i.getAlergias().trim().isEmpty()
+                    && !i.getAlergias().toLowerCase().contains("nenhuma")) {
+                comAlergias++;
+            }
+        }
+        int mediaIdade = validas > 0 ? Math.round((float) somaIdades / validas) : 0;
+        binding.tvClinicoMediaIdade.setText(mediaIdade > 0 ? (mediaIdade + " a") : "-");
+        binding.tvClinicoAlergias.setText(String.valueOf(comAlergias));
+        binding.tvClinicoPrescricoes.setText(String.valueOf(doses.size()));
+
+        boolean podePdf = PermissaoUtils.podeGerarRelatorio(this);
+        binding.btnDashboardRelatorioGerencialPdf.setVisibility(podePdf ? View.VISIBLE : View.GONE);
+    }
+
+    private void gerarRelatorioGerencialPdf() {
+        if (!PermissaoUtils.podeGerarRelatorio(this)) {
+            Toast.makeText(this, "Seu perfil não possui permissão para exportar relatórios PDF.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            List<Idoso> idosos = idosoDAO.listarTodos();
+            List<Medicamento> meds = medicamentoDAO.listarTodosMedicamentos();
+            List<DoseAlertaDTO> doses = dbHelper.buscarAlertasDoDia();
+            List<PassagemTurno> passagens = passagemTurnoDAO.listarTodas();
+            File pdf = PdfReportGenerator.gerarRelatorioGerencialIlpi(this, idosos, meds, doses, passagens);
+
+            Snackbar.make(binding.getRoot(), R.string.sucesso_pdf_gerado, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.acao_consultar_offline, v -> abrirPdfOffline(pdf))
+                    .show();
+            abrirPdfOffline(pdf);
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao gerar relatório gerencial em PDF", e);
+            Toast.makeText(this, R.string.erro_gerar_pdf, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void abrirPdfOffline(File pdf) {
+        Intent intent = new Intent(this, VisualizadorPdfOfflineActivity.class);
+        intent.putExtra(VisualizadorPdfOfflineActivity.EXTRA_CAMINHO_ARQUIVO_PDF, pdf.getAbsolutePath());
+        intent.putExtra(VisualizadorPdfOfflineActivity.EXTRA_NOME_RESIDENTE, getString(R.string.titulo_relatorio_gerencial_pdf));
+        startActivity(intent);
     }
 
     private void atualizarEstiloIndicadoresVagas(DashboardManager.ResumoVagas resumoVagas) {

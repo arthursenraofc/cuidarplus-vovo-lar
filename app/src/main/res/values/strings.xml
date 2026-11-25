@@ -231,6 +231,21 @@
     <string name="msg_permissao_camera_necessaria">Permissão de câmera necessária para fotografar os residentes. Por favor, conceda o acesso.</string>
     <string name="erro_camera_indisponivel">Nenhum aplicativo de câmera encontrado neste dispositivo.</string>
     <string name="erro_salvar_foto_camera">Não foi possível processar e salvar a foto capturada.</string>
+    <string name="titulo_camera_foto_idoso">Foto do Residente</string>
+    <string name="subtitulo_camera_padrao">Capturar com CameraX</string>
+    <string name="dica_enquadramento_camera">Enquadre o rosto do residente no círculo</string>
+    <string name="desc_fechar_camera">Fechar câmera</string>
+    <string name="desc_alternar_camera">Alternar entre câmera frontal e traseira</string>
+    <string name="desc_preview_foto_capturada">Pré-visualização da foto capturada</string>
+    <string name="desc_flash_desligado">Flash desligado. Toque para alternar</string>
+    <string name="desc_flash_auto">Flash automático. Toque para alternar</string>
+    <string name="desc_flash_ligado">Flash ligado. Toque para alternar</string>
+    <string name="btn_refazer_foto">Refazer</string>
+    <string name="btn_usar_foto">Usar Foto</string>
+    <string name="btn_permitir_camera_agora">Permitir Câmera</string>
+    <string name="btn_usar_camera_sistema">Câmera do Sistema</string>
+    <string name="msg_camera_x_indisponivel">Não foi possível inicializar a visualização da câmera neste dispositivo.</string>
+    <string name="msg_erro_captura_camerax">Falha ao capturar a imagem. Tente novamente.</string>
 
     <!-- Dashboard Institucional em Tela Dedicada (Material Design 3) -->
     <string name="titulo_dashboard_instituicao">Dashboard da Instituição</string>
@@ -246,6 +261,7 @@
     <string name="dashboard_secao_resumo_subtitulo">Indicadores de residentes, ocupação de leitos e celebrações do mês.</string>
     <string name="dashboard_secao_atalhos_titulo">Módulos e Operação Diária</string>
     <string name="dashboard_secao_atalhos_subtitulo">Acesse rapidamente prontuários, prescrições, estoque, indicadores e perfis.</string>
+    <string name="btn_abrir_modulos_operacao">Acessar Módulos e Operação Diária</string>
 
     <!-- Card 1: Total de Residentes -->
     <string name="card_total_residentes_titulo">Total de Residentes</string>
@@ -336,4 +352,100 @@
     <string name="btn_abrir_leitor_externo">Leitor Externo</string>
     <string name="desc_pagina_pdf_renderizada">Página renderizada do resumo do prontuário em PDF</string>
     <string name="aviso_visualizador_fallback">Arquivo PDF gravado e validado com sucesso no armazenamento local (%1$s). Utilize os botões abaixo para salvar em pasta pública ou compartilhar.</string>
+
+    <!-- Passagem de Turno e Observações (Plantão Manhã / Tarde / Noite) -->
+    <string name="btn_menu_passagem_turno">Passagem de Turno &amp; Observações</string>
+    <string name="btn_menu_passagem_turno_desc">Registro de intercorrências, pendências e conferência entre plantões</string>
+    <string name="badge_passagem_em_dia">Plantão em dia</string>
+    <string name="badge_passagem_pendente_singular" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d pendente de conferência</string>
+    <string name="badge_passagem_pendente_plural" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d pendentes de conferência</string>
+    <string name="badge_passagem_urgente_formato" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d pendente(s) • %2$d prioritário(s)</string>
+    <string name="titulo_passagem_turno">Passagem de Turno</string>
+    <string name="subtitulo_passagem_turno">Ocorrências e observações entre plantões</string>
+    <string name="btn_exportar_pdf_curto">PDF</string>
+    <string name="filtro_todos">Todos</string>
+    <string name="filtro_pendentes">Pendentes</string>
+    <string name="turno_manha">Manhã</string>
+    <string name="turno_tarde">Tarde</string>
+    <string name="turno_noite">Noite</string>
+    <string name="passagem_vazio_titulo">Nenhuma passagem registrada neste filtro</string>
+    <string name="passagem_vazio_subtitulo">Toque em [Registrar Passagem] para anotar ocorrências e orientações ao próximo plantão.</string>
+    <string name="btn_registrar_passagem_turno">Registrar Passagem</string>
+    <string name="formato_turno_badge">Turno: %1$s</string>
+    <string name="formato_registrado_por">Registrado por: %1$s</string>
+    <string name="formato_intercorrencias">Intercorrências: %1$s</string>
+    <string name="formato_pendencias_turno">Pendência p/ próximo turno: %1$s</string>
+    <string name="formato_conferido_por">Conferido por %1$s em %2$s</string>
+    <string name="prioridade_urgente">URGENTE</string>
+    <string name="prioridade_atencao">ATENÇÃO</string>
+    <string name="prioridade_normal">NORMAL</string>
+    <string name="btn_confirmar_recebimento_turno">Confirmar Recebimento</string>
+    <string name="desc_excluir_passagem_turno">Excluir registro de passagem de turno</string>
+    <string name="hint_turno_plantao">Turno do Plantão *</string>
+    <string name="hint_residente_passagem">Residente ou Escopo</string>
+    <string name="hint_prioridade_passagem">Nível de Prioridade</string>
+    <string name="hint_profissional_passagem">Profissional Responsável *</string>
+    <string name="hint_observacoes_passagem">Observações do Plantão *</string>
+    <string name="hint_intercorrencias_passagem">Intercorrências Clínicas (Opcional)</string>
+    <string name="hint_pendencias_passagem">Pendências p/ Próximo Turno (Opcional)</string>
+    <string name="resumo_passagem_em_dia">Todas as passagens de turno foram conferidas</string>
+    <string name="resumo_passagem_pendente_singular" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d passagem aguardando conferência</string>
+    <string name="resumo_passagem_pendente_plural" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d passagens aguardando conferência</string>
+    <string name="resumo_passagem_sem_urgencia" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d registro(s) no histórico • Sem pendências urgentes</string>
+    <string name="resumo_passagem_com_urgencia" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d registro(s) urgente/atenção ativo(s) • %2$d no total</string>
+    <string name="dialog_nova_passagem_titulo">Nova Passagem de Turno</string>
+    <string name="btn_salvar_passagem_turno">Registrar no Plantão</string>
+    <string name="sucesso_passagem_registrada">Passagem de turno registrada com sucesso!</string>
+    <string name="sucesso_passagem_conferida">Recebimento de turno confirmado!</string>
+
+    <!-- Melhorias Dashboard & Hub de Relatórios PDF -->
+    <string name="dashboard_secao_plantao_titulo">Plantão Clínico &amp; Alertas Operacionais</string>
+    <string name="dashboard_secao_plantao_subtitulo">Monitoramento em tempo real de doses atrasadas, estoque crítico e passagem de turno.</string>
+    <string name="kpi_doses_atrasadas_titulo">Doses Atrasadas</string>
+    <string name="kpi_doses_em_dia">Tudo em dia</string>
+    <string name="kpi_doses_atrasadas_status" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d pendente(s) no dia</string>
+    <string name="kpi_estoque_critico_titulo">Estoque Crítico</string>
+    <string name="kpi_estoque_em_dia">Nível normal</string>
+    <string name="kpi_estoque_critico_status" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">Abaixo de %1$d un.</string>
+    <string name="kpi_passagem_turno_titulo">Passagem de Turno</string>
+    <string name="kpi_passagem_conferida">Turnos em dia</string>
+    <string name="kpi_passagem_pendente_status" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">%1$d urgente/atenção</string>
+    <string name="dashboard_secao_clinico_titulo">Panorama Clínico &amp; Relatórios</string>
+    <string name="dashboard_clinico_media_idade">Média de Idade</string>
+    <string name="dashboard_clinico_alergias">Com Alergias</string>
+    <string name="dashboard_clinico_prescricoes">Prescrições Ativas</string>
+    <string name="btn_dashboard_relatorio_gerencial_pdf">Relatório Gerencial da ILPI (PDF)</string>
+
+    <string name="btn_exportar_doses_pdf">Doses do Dia (PDF)</string>
+    <string name="btn_exportar_gerencial_pdf">Relatório Gerencial (PDF)</string>
+    <string name="titulo_relatorio_estoque_pdf">Relatório de Estoque</string>
+    <string name="titulo_relatorio_doses_pdf">Administração de Doses do Dia</string>
+    <string name="titulo_relatorio_gerencial_pdf">Relatório Gerencial ILPI Vovô Lar</string>
+
+    <!-- Controle de Validade de Medicamentos -->
+    <string name="hint_data_validade">Data de Validade (Opcional - DD/MM/AAAA)</string>
+    <string name="helper_data_validade">Deixe vazio se não informada ou toque no calendário</string>
+    <string name="desc_selecionar_validade">Abrir calendário para selecionar data de validade</string>
+    <string name="rotulo_validade_formato">Validade: %1$s</string>
+    <string name="validade_nao_informada">Validade: Não informada</string>
+    <string name="badge_validade_vencido">Vencido</string>
+    <string name="badge_validade_hoje">Vence hoje</string>
+    <string name="badge_validade_proximo" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">Vence em %1$d dia(s)</string>
+    <string name="resumo_estoque_validade_sufixo" xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate"> • %1$d venc./próx.</string>
+    <string name="status_estoque_baixo">Estoque Baixo</string>
+
+    <!-- Passagem de Turno: Diurno/Noturno, Resumo Automático, Ocorrências & WhatsApp -->
+    <string name="turno_diurno">Diurno</string>
+    <string name="turno_noturno">Noturno</string>
+    <string name="titulo_resumo_plantao_auto">Resumo Automático do Plantão</string>
+    <string name="resumo_plantao_doses_12h">Doses (12h)</string>
+    <string name="resumo_plantao_pendentes">Atrasadas / Pend.</string>
+    <string name="resumo_plantao_estoque">Alertas Estoque</string>
+    <string name="btn_compartilhar_whatsapp_turno">Compartilhar no WhatsApp da Equipe</string>
+    <string name="chooser_compartilhar_passagem_turno">Compartilhar resumo do turno com a equipe</string>
+    <string name="label_ocorrencias_rapidas">Ocorrências rápidas do plantão (toque para adicionar):</string>
+    <string name="ocorrencia_recusa_alimentar">Recusa alimentar</string>
+    <string name="ocorrencia_febre">Febre</string>
+    <string name="ocorrencia_queda">Queda</string>
+    <string name="ocorrencia_recusa_medicacao">Recusa de medicação</string>
 </resources>
